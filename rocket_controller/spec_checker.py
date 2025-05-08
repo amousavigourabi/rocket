@@ -7,24 +7,10 @@ from typing import Any, List
 
 from loguru import logger
 
+from rocket_controller.consensus_properties import ConsensusProperties
 from rocket_controller.csv_logger import SpecCheckLogger
 
-
-def _get_last_row(file_path: str) -> List[Any]:
-    """
-    Get the last row from a CSV file.
-
-    Args:
-        file_path: The path to the CSV file.
-
-    Returns:
-        The last row of the CSV file as a list, or None if the file is empty.
-    """
-    with open(file_path, newline="") as file:
-        reader = csv.reader(file)
-        rows = list(reader)
-        return rows[-1] if rows else []
-
+from collections import defaultdict
 
 class SpecChecker:
     """Class to perform specification checks on the results of the iterations."""
@@ -38,17 +24,7 @@ class SpecChecker:
         self.spec_check_logger: SpecCheckLogger = SpecCheckLogger(log_dir)
         self.log_dir: str = log_dir
 
-    def spec_check(self, iteration: int):
-        """
-        Do a specification check for the current iteration and log the results.
-
-        Args:
-            iteration: The current iteration.
-        """
-        result_file_path = (
-            f"logs/{self.log_dir}/iteration-{iteration}/result-{iteration}.csv"
-        )
-
+    def read_results_log(self, result_file_path: str, iteration: int) -> dict[int, list[dict]]:
         ledgers_data = defaultdict(list)
         try:
             with open(result_file_path) as csvfile:
@@ -70,56 +46,151 @@ class SpecChecker:
                         }
                         ledgers_data[ledger_seq].append(parsed_row)
                     except (ValueError, KeyError) as e:
+                        logger.error(f"Skipping row due to parsing error: {e} in row: {row}")
+                        continue
+        except csv.Error as e:
+            logger.critical(f"CSV Results Error: {e}")
+            self.spec_check_logger.log_spec_check(
+                iteration, f"CSV Results Error: {e}", "-", "-", "-", "-"
+            )
+        return ledgers_data
+    def read_actions_log(self, actions_file_path: str, iteration: int) -> dict[int, list[dict]]:
+        actions_data = defaultdict(list)
+        try:
+            with open(actions_file_path, newline="") as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    try:
+                        timestamp = int(row["timestamp"])
+                        action = int(row["action"])
+                        from_node_id = int(row["from_node_id"])
+                        to_node_id = int(row["to_node_id"])
+                        message_type = row["message_type"]
+                        original_data = row["original_data"]
+                        possibly_mutated_data = row["possibly_mutated_data"]
+
+                        if message_type == "TMProposeSet":
+                            parsed_propose_set = self.parse_tmproposeset_message(original_data)
+                            proto_obj = parsed_propose_set
+                        elif message_type == "TMStatusChange":
+                            parsed_status_change = self.parse_tmstatuschange_message(original_data)
+                            proto_obj = parsed_status_change
+                        else:
+                            proto_obj = None
+                        
+                        actions_data[from_node_id].append({
+                            "timestamp": timestamp,
+                            "action": action,
+                            "to_node_id": to_node_id,
+                            "message_type": message_type,
+                            "protobuf_obj": proto_obj,
+                            "possibly_mutated_data": possibly_mutated_data,
+                        })
+                    except Exception as e:
                         logger.error(
                             f"Skipping row due to parsing error: {e} in row: {row}"
                         )
                         continue
         except csv.Error as e:
-            logger.critical(f"CSV Error: {e}")
+            logger.critical(f"CSV Action Error: {e}")
             self.spec_check_logger.log_spec_check(
-                iteration, f"CSV Error: {e}", "-", "-"
+                iteration, f"CSV Action Error: {e}", "-", "-", "-", "-"
             )
-            return
+        return actions_data
 
+    def parse_tmstatuschange_message(self, message: str) -> dict:
+        parsed_data = {}
+        try:
+            pairs = message.split(";")
+            for pair in pairs:
+                if ":" in pair:
+                    key, value = pair.split(":", 1)
+                    key = key.strip()
+                    value = value.strip()
+
+                    if value.startswith('"') and value.endswith('"'):
+                        value = value[1:-1]
+
+                    if value.isdigit():
+                        value = int(value)
+
+                    parsed_data[key] = value
+        except Exception as e:
+            logger.error(f"Error parsing TMStatusChange message: {e}")
+        return parsed_data
+    
+    def parse_tmproposeset_message(self, message: str) -> dict:
+        parsed_data = {}
+        try:
+            pairs = message.split(";")
+            for pair in pairs:
+                if ":" in pair:
+                    key, value = pair.split(":", 1)
+                    key = key.strip()
+                    value = value.strip()
+
+                    if value.startswith('"') and value.endswith('"'):
+                        value = value[1:-1]
+
+                    if value.isdigit():
+                        value = int(value)
+
+                    parsed_data[key] = value
+        except Exception as e:
+            logger.error(f"Error parsing TMProposeSet message: {e}")
+        return parsed_data
+    
+    def spec_check(self, iteration: int):
+        """
+        Do a specification check for the current iteration and log the results.
+
+        Args:
+            iteration: The current iteration.
+        """
+        result_file_path = (
+            f"logs/{self.log_dir}/iteration-{iteration}/result-{iteration}.csv"
+        )
+        ledgers_data = self.read_results_log(result_file_path, iteration)
         if not ledgers_data:
             logger.critical("No valid ledger data found.")
             self.spec_check_logger.log_spec_check(
-                iteration, "No valid ledger data found.", "-", "-"
+                iteration, "No valid ledger data found.", "-", "-", "-", "-"
+            )
+            return
+        
+        actions_file_path = (
+            f"logs/{self.log_dir}/iteration-{iteration}/action-{iteration}.csv"
+        )
+        actions_data = self.read_actions_log(actions_file_path, iteration)
+        if not actions_data:
+            logger.critical("No valid action data found.")
+            self.spec_check_logger.log_spec_check(
+                iteration, "No valid action data found.", "-", "-", "-", "-"
             )
             return
 
-        sorted_keys = sorted(ledgers_data.keys())
-        logger.debug(f"Found data for ledger sequences: {sorted_keys}")
-        max_seq = sorted_keys[-1]
-        min_seq = sorted_keys[0]
-
-        all_hashes_pass = True
-        all_indexes_pass = True
-        all_ledger_goal_reached = (
-            len(ledgers_data[max_seq]) == len(ledgers_data[min_seq])
-            and max_seq == ledgers_data[min_seq][0]["goal_ledger_seq"]
+        agreement_results = ConsensusProperties.check_agreement_properties(ledgers_data)
+        integrity_results = ConsensusProperties.check_integrity_properties(actions_data)
+        validity_results = ConsensusProperties.check_validity_properties(
+            ledgers_data, actions_data, [] # Placeholder for Byzantine nodes list
         )
-        for _, records in ledgers_data.items():
-            ledger_hashes_same = all(
-                x["ledger_hash"] == records[0]["ledger_hash"] for x in records
-            )
-            ledger_indexes_same = all(
-                x["ledger_index"] == records[0]["ledger_index"] for x in records
-            )
-            all_hashes_pass &= ledger_hashes_same
-            all_indexes_pass &= ledger_indexes_same
 
         self.spec_check_logger.log_spec_check(
             iteration,
-            all_ledger_goal_reached,
-            all_hashes_pass,
-            all_indexes_pass,
+            agreement_results["all_ledger_goal_reached"],
+            agreement_results["all_hashes_pass"],
+            agreement_results["all_indexes_pass"],
+            integrity_results["integrity"],
+            validity_results["validity"]
         )
 
         logger.info(
             f"Specification check for iteration {iteration}: "
-            f"reached goal ledger: {all_ledger_goal_reached}, "
-            f"same ledger hashes: {all_hashes_pass}, same ledger indexes: {all_indexes_pass}"
+            f"reached goal ledger: {agreement_results['all_ledger_goal_reached']}, "
+            f"same ledger hashes: {agreement_results['all_hashes_pass']}, "
+            f"same ledger indexes: {agreement_results['all_indexes_pass']}"
+            f"integrity: {integrity_results['integrity']}"
+            f"validity: {validity_results['validity']}"
         )
 
     def aggregate_spec_checks(self):
@@ -139,6 +210,8 @@ class SpecChecker:
                 if row["reached_goal_ledger"] == "True"
                 and row["same_ledger_hashes"] == "True"
                 and row["same_ledger_indexes"] == "True"
+                and row["integrity"] == "True"
+                and row["validity"] == "True"
             )
             timeout_before_startup = sum(
                 1
@@ -155,6 +228,12 @@ class SpecChecker:
                 if row["same_ledger_hashes"] == "False"
                 or row["same_ledger_indexes"] == "False"
             )
+            failed_integrity = sum(
+                1 for row in rows if row["integrity"] == "False"
+            )
+            failed_validity = sum(
+                1 for row in rows if row["validity"] == "False"
+            )
             failed_termination_iterations = [
                 row["iteration"]
                 for row in rows
@@ -166,6 +245,16 @@ class SpecChecker:
                 if row["same_ledger_hashes"] == "False"
                 or row["same_ledger_indexes"] == "False"
             ]
+            failed_integrity_iterations = [
+                row["iteration"]
+                for row in rows
+                if row["integrity"] == "False"
+            ]
+            failed_validity_iterations = [
+                row["iteration"]
+                for row in rows
+                if row["validity"] == "False"
+            ]
 
             aggregated_data = {
                 "total_iterations": total_iterations,
@@ -174,8 +263,12 @@ class SpecChecker:
                 "errors": errors,
                 "failed_termination": failed_termination,
                 "failed_agreement": failed_agreement,
+                "failed_integrity": failed_integrity,
+                "failed_validity": failed_validity,
                 "failed_termination_iterations": failed_termination_iterations,
                 "failed_agreement_iterations": failed_agreement_iterations,
+                "failed_integrity_iterations": failed_integrity_iterations,
+                "failed_validity_iterations": failed_validity_iterations,
             }
 
             logger.info(f"Aggregated spec check results: {aggregated_data}")
