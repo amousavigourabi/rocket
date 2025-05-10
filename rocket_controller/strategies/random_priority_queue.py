@@ -50,7 +50,50 @@ class RandomPriorityQueue(Strategy):
         if self.params["seed"] is not None:
             random.seed(self.params["seed"])
 
+        # Validate required parameters exist
+        required_params = [
+            "min_priority",
+            "max_priority",
+            "target_inbox",
+            "overflow_factor",
+            "underflow_factor",
+            "sensitivity_ratio",
+            "max_events",
+            "priority_list"
+        ]
 
+        missing_params = [param for param in required_params if param not in self.params]
+        if missing_params:
+            raise ValueError(f"Missing required parameters in configuration: {', '.join(missing_params)}")
+
+        # Validate numeric parameters and their ranges
+        try:
+            self.min_priority = int(self.params.get("min_priority"))
+            self.max_priority = int(self.params.get("max_priority"))
+            self.target_inbox = int(self.params.get("target_inbox"))
+            self.overflow_factor = float(self.params.get("overflow_factor"))
+            self.underflow_factor = float(self.params.get("underflow_factor"))
+            self.sensitivity_ratio = float(self.params.get("sensitivity_ratio"))
+            self.max_events = int(self.params.get("max_events"))
+        except ValueError as e:
+            raise ValueError("Invalid numeric value in configuration") from e
+
+        # Validate value ranges
+        if self.min_priority < 0:
+            raise ValueError(f"min_priority must be non-negative, got {self.min_priority}")
+        if self.max_priority <= self.min_priority:
+            raise ValueError(
+                f"max_priority ({self.max_priority}) must be greater than min_priority ({self.min_priority})")
+        if self.target_inbox <= 0:
+            raise ValueError(f"target_inbox must be positive, got {self.target_inbox}")
+        if self.overflow_factor <= 1:
+            raise ValueError(f"overflow_factor must be greater than 1, got {self.overflow_factor}")
+        if self.underflow_factor >= 1:
+            raise ValueError(f"underflow_factor must be less than 1, got {self.underflow_factor}")
+        if self.sensitivity_ratio <= 1:
+            raise ValueError(f"sensitivity_ratio must be greater than 1, got {self.sensitivity_ratio}")
+        if self.max_events <= 0:
+            raise ValueError(f"max_events must be positive, got {self.max_events}")
 
     def setup(self):
         """Setup method for RandomFuzzer."""
