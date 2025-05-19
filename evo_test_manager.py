@@ -1,10 +1,14 @@
 """This file contains a class to run and manage evolutionary based testing approaches."""
 import argparse
 import random
+import subprocess
+import sys
 from pathlib import Path
 
 import yaml
 from typing import Tuple
+
+from mypy.stubinfo import stub_distribution_name
 
 from rocket_controller.cli_helper import process_args, str_to_strategy
 from rocket_controller.packet_server import serve
@@ -60,10 +64,11 @@ class EvoTestManager:
         encoding = self._config['encoding']
         self.encoding_min = encoding['min_value']
         self.encoding_max = encoding['max_value']
-        self.encoding_length = (self.nodes * (self.nodes - 1)) * 7
+        self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
 
     def initial_population(self):
+        print(f"Creating population of length {self.encoding_length}")
         return [random.randint(self.encoding_min, self.encoding_max) for _ in range(self.encoding_length)]
 
     def selection(self, results: list[Tuple[list[int], list[int]]]):
@@ -81,6 +86,8 @@ class EvoTestManager:
         # TODO Mutation
 
         # Temporarily passthrough all populations
+        for i in range(len(populations)):
+            populations[i] = self.initial_population()
         return populations
 
 
@@ -94,30 +101,45 @@ class EvoTestManager:
 
         if len(encoding) != self.encoding_length:
             raise ValueError(f"Encoding should be of length {self.encoding_length}, but got {len(encoding)}")
-
-        params_dict = process_args(
-            argparse.Namespace(strategy=self.strategy,   # Not yet implemented!
-                               nodes=self.nodes,
-                               partition=None,           # No partition
-                               nodes_unl=None,           # Default nodes_unl
-                               network_config=None,      # Default network_config
-                               config=None,              # Default config
-                               overrides={'encoding': encoding})
-        )
-
+        #
+        # params_dict = process_args(
+        #     argparse.Namespace(strategy=self.strategy,   # Not yet implemented!
+        #                        nodes=self.nodes,
+        #                        partition=None,           # No partition
+        #                        nodes_unl=None,           # Default nodes_unl
+        #                        network_config=None,      # Default network_config
+        #                        config=None,              # Default config
+        #                        overrides={'encoding': encoding})
+        # )
         # Do note: for more granular configurations, modify params_dict directly
         # See the constructor of Strategy for all possible parameters
         # The above Namespace may even be removed entirely as its functionalities are limited
-        strategy: Strategy = str_to_strategy(self.strategy)(**params_dict)
-        server = serve(strategy)
-        server.wait_for_termination()
-        return [], encoding # TODO should return some sort of results
+        print(f"Running rocket with encoding {encoding}")
+
+        command = [sys.executable, "-m", "rocket_controller", "--nodes", str(self.nodes), "--encoding", str(encoding), self.strategy]
+
+        try:
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            stdout, stderr = process.communicate()
+            return_code = process.wait()
+            if return_code != 0:
+                print(f"Rocket failed: {stderr}")
+                return [], encoding
+            return [], encoding
+        except Exception as e:
+            print(f"Rocket failed: {e}")
+            return [], encoding
 
     def run_evolution_round(self, populations: list[list[int]]):
         results = []
+        print(f"Running evolution with {len(populations)} populations.")
         for population in populations:
-            # TODO This is the part that could be run in parallel, if we figure out how with docker networking and stuff.
-            print(f"Running rocket with population {population}")
+            # This is the part that could be run in parallel, if we figure out how with docker networking and stuff.
             results.append(self.run_rocket(population))
         return results
 
