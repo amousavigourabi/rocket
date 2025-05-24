@@ -8,7 +8,7 @@ from xrpl.clients import WebsocketClient
 from xrpl.models import Ledger
 
 from rocket_controller.csv_logger import ResultLogger
-from rocket_controller.validator_node_info import ValidatorNode
+from rocket_controller.validator_node_info import ValidatorNode, SocketAddress
 
 
 class LedgerResult:
@@ -32,7 +32,7 @@ class LedgerResult:
 
     @staticmethod
     def _fetch_ledger(
-        ws_port: int, ledger_seq: int, retries: int = 3
+        ws_connection: SocketAddress, ledger_seq: int, retries: int = 3
     ) -> dict[str, Any] | None:
         """
         Fetch the node info from the websocket server at a specific port.
@@ -45,17 +45,17 @@ class LedgerResult:
         Returns:
             A dictionary containing the node info if available, None otherwise.
         """
-        with WebsocketClient(f"ws://localhost:{ws_port}") as client:
+        with WebsocketClient(f"ws://{ws_connection.host}:{ws_connection.port}") as client:
             ledger_info = Ledger(ledger_index=ledger_seq)
             ledger_response = client.request(ledger_info)
             if not ledger_response.is_successful():
                 if retries > 0:
                     sleep(5)
-                    return LedgerResult._fetch_ledger(ws_port, ledger_seq, retries - 1)
+                    return LedgerResult._fetch_ledger(ws_connection, ledger_seq, retries - 1)
                 logger.error(
-                    f"Could not fetch ledger {ledger_seq} from port {ws_port}."
+                    f"Could not fetch ledger {ledger_seq} from connection {ws_connection}."
                 )
-                logger.debug(f"Response from {ws_port}:\n{ledger_response}")
+                logger.debug(f"Response from {ws_connection}:\n{ledger_response}")
                 return None
             return ledger_response.result.get("ledger")
 
@@ -78,7 +78,7 @@ class LedgerResult:
             validator_nodes: The list of validator nodes to check on.
         """
         node = validator_nodes[node_id]
-        result = self._fetch_ledger(node.ws_private.port, ledger_seq)
+        result = self._fetch_ledger(node.ws_private, ledger_seq)
         if result is None:
             logger.error(f"Could not retrieve ledger from node {node_id}")
             return

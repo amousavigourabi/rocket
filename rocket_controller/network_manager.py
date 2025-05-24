@@ -15,7 +15,7 @@ from rocket_controller.helper import (
     flatten,
     parse_to_2d_list_of_ints,
     parse_to_list_of_ints,
-    validate_ports_or_ids,
+    validate_ids,
 )
 from rocket_controller.message_action import MessageAction
 from rocket_controller.message_action_buffer import MessageActionBuffer
@@ -43,8 +43,8 @@ class NetworkManager:
         self.validator_node_list: list[ValidatorNode] = []
         self.public_to_private_key_map: dict[str, str] = {}
         self.node_amount: int = 0
-        self.port_to_id_dict: dict[int, int] = {}
-        self.id_to_port_dict: dict[int, int] = {}
+        self.hostname_to_id_dict: dict[str, int] = {}
+        self.id_to_hostname_dict: dict[int, str] = {}
         self.communication_matrix: list[list[bool]] = []
         self.prev_message_action_matrix: list[list[MessageActionBuffer]] = []
         self.subsets_dict: dict[int, list[list[int]] | list[int]] = {}
@@ -63,16 +63,16 @@ class NetworkManager:
         self.validator_node_list = validator_node_list
         self.public_to_private_key_map.clear()
         self.node_amount = len(validator_node_list)
-        self.port_to_id_dict = {
-            port: index
-            for index, port in enumerate(
-                [node.peer.port for node in validator_node_list]
+        self.hostname_to_id_dict = {
+            hostname: index
+            for index, hostname in enumerate(
+                [node.peer.host for node in validator_node_list]
             )
         }
-        self.id_to_port_dict = {
-            index: port
-            for index, port in enumerate(
-                [node.peer.port for node in validator_node_list]
+        self.id_to_hostname_dict = {
+            index: hostname
+            for index, hostname in enumerate(
+                [node.peer.host for node in validator_node_list]
             )
         }
 
@@ -148,7 +148,7 @@ class NetworkManager:
         Raises:
             ValueError: if peer_id_1 is equal to peer_id_2 or if any is negative.
         """
-        validate_ports_or_ids(peer_id_1, peer_id_2)
+        validate_ids(peer_id_1, peer_id_2)
         self.communication_matrix[peer_id_1][peer_id_2] = True
         self.communication_matrix[peer_id_2][peer_id_1] = True
 
@@ -163,7 +163,7 @@ class NetworkManager:
         Raises:
             ValueError: if peer_id_1 is equal to peer_id_2 or if any is negative.
         """
-        validate_ports_or_ids(peer_id_1, peer_id_2)
+        validate_ids(peer_id_1, peer_id_2)
         self.communication_matrix[peer_id_1][peer_id_2] = False
         self.communication_matrix[peer_id_2][peer_id_1] = False
 
@@ -181,7 +181,7 @@ class NetworkManager:
         Raises:
             ValueError: if peer_from_id is equal to peer_to_id or if any is negative.
         """
-        validate_ports_or_ids(peer_from_id, peer_to_id)
+        validate_ids(peer_from_id, peer_to_id)
         return self.communication_matrix[peer_from_id][peer_to_id]
 
     def reset_communications(self):
@@ -259,7 +259,7 @@ class NetworkManager:
                 "auto_parse_subsets must be set to True when calling set_message_action."
             )
 
-        validate_ports_or_ids(peer_from_id, peer_to_id)
+        validate_ids(peer_from_id, peer_to_id)
         self.prev_message_action_matrix[peer_from_id][peer_to_id].add(
             MessageAction(initial_message, final_message, action)
         )
@@ -376,7 +376,7 @@ class NetworkManager:
                 parse_to_list_of_ints(self.subsets_dict[peer_from_id]),
             )
 
-    def port_to_id(self, port: int) -> int:
+    def hostname_to_id(self, hostname: str) -> int:
         """
         Transform a port to its corresponding index.
 
@@ -390,11 +390,11 @@ class NetworkManager:
             ValueError: If port is not in port_dict.
         """
         try:
-            return self.port_to_id_dict[port]
+            return self.hostname_to_id_dict[hostname]
         except KeyError as err:
-            raise ValueError(f"Port {port} not found in port_to_id_dict") from err
+            raise ValueError(f"Hostname {hostname} not found in hostname_to_id_dict") from err
 
-    def id_to_port(self, peer_id: int) -> int:
+    def id_to_hostname(self, peer_id: int) -> str:
         """
         Transform a peer ID to its corresponding port.
 
@@ -408,9 +408,9 @@ class NetworkManager:
             ValueError: If peer_id is not in port_dict.
         """
         try:
-            return self.id_to_port_dict[peer_id]
+            return self.id_to_hostname_dict[peer_id]
         except KeyError as err:
-            raise ValueError(f"peer ID {peer_id} not found in id_to_port_dict") from err
+            raise ValueError(f"peer ID {peer_id} not found in id_to_hostname_dict") from err
 
     def get_account(
             self,
@@ -449,14 +449,14 @@ class NetworkManager:
         Raises:
             ValueError: if peer_id is not in id_to_port_dict.
         """
-        if peer_id not in self.id_to_port_dict:
+        if peer_id not in self.id_to_hostname_dict:
             raise ValueError(
                 f"Given peer ID does not exist in the current network: {peer_id}"
             )
 
         rpc_address = ""
         for validator in self.validator_node_list:
-            if validator.peer.port == self.id_to_port(peer_id):
+            if validator.peer.host == self.id_to_hostname(peer_id):
                 rpc_address = f"http://{validator.rpc.as_url()}/"
         tx = self.tx_builder.build_transaction(
             amount=amount,

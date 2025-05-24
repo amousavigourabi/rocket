@@ -22,24 +22,32 @@ def flatten(xss: list[list[int]]) -> list[int]:
     return [x for xs in xss for x in xs]
 
 
-def validate_ports_or_ids(num_1: int, num_2: int):
+def validate_ids(id_1: int, id_2: int):
     """
-    Validate whether 2 ports or ID's are not equal to each other.
+    Validate whether 2 ID's are not equal to each other.
 
     Args:
-        num_1: Port or ID 1.
+        id_1: Port or ID 1.
         num_2: Port or ID 2.
 
     Raises:
         ValueError: If the ports or ID's are equal or if any of the ports or ID's are negative.
     """
-    if num_1 < 0 or num_2 < 0:
-        raise ValueError("Received ports or ID's must be non-negative.")
+    if id_1 < 0 or id_2 < 0:
+        raise ValueError("Received ID's must be non-negative.")
 
-    elif num_1 == num_2:
+    elif id_1 == id_2:
         raise ValueError(
-            f"Received ports or ID's can not be equal to each other, value: {num_1}."
+            f"Received ID's can not be equal to each other, value: {id_1}."
         )
+
+def validate_hostnames(hostname_1: str, hostname_2: str):
+
+    if hostname_1 == hostname_2:
+        raise ValueError(
+            f"Received hostnames can not be equal to each other, value: {hostname_1}."
+        )
+
 
 
 def format_datetime(time: datetime) -> str:

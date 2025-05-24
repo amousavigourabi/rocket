@@ -11,7 +11,7 @@ from protos import packet_pb2, packet_pb2_grpc
 from protos.packet_pb2 import Packet
 from rocket_controller.csv_logger import ActionLogger
 from rocket_controller.encoder_decoder import PacketEncoderDecoder
-from rocket_controller.helper import format_datetime, validate_ports_or_ids
+from rocket_controller.helper import format_datetime, validate_ids, validate_hostnames
 from rocket_controller.strategies.strategy import Strategy
 from rocket_controller.validator_node_info import (
     SocketAddress,
@@ -19,7 +19,6 @@ from rocket_controller.validator_node_info import (
     ValidatorNode,
 )
 
-HOST = "localhost"
 
 
 class PacketService(packet_pb2_grpc.PacketServiceServicer):
@@ -54,7 +53,7 @@ class PacketService(packet_pb2_grpc.PacketServiceServicer):
             ValueError: If request.from_port == request.to_port or if any is negative.
         """
         timestamp = int(datetime.datetime.now().timestamp() * 1000)
-        validate_ports_or_ids(request.from_port, request.to_port)
+        validate_hostnames(request.to_hostname, request.to_hostname)
 
         (new_data, action, send_amount) = self.strategy.process_packet(request)
 
@@ -68,15 +67,15 @@ class PacketService(packet_pb2_grpc.PacketServiceServicer):
 
         original_packet_decoded = PacketEncoderDecoder.decode_packet(request)
         new_packet = Packet(
-            data=new_data, from_port=request.from_port, to_port=request.to_port
+            data=new_data, from_hostname=request.from_hostname, to_hostname=request.to_hostname
         )
         new_packet_decoded = PacketEncoderDecoder.decode_packet(new_packet)
 
         self.logger.log_action(
             action=action,
             send_amount=send_amount,
-            from_node_id=self.strategy.network.port_to_id(request.from_port),
-            to_node_id=self.strategy.network.port_to_id(request.to_port),
+            from_node_id=self.strategy.network.hostname_to_id(request.from_hostname),
+            to_node_id=self.strategy.network.hostname_to_id(request.to_hostname),
             message_type=PacketEncoderDecoder.message_type_map[
                 original_packet_decoded[1]
             ].__name__,
@@ -110,20 +109,20 @@ class PacketService(packet_pb2_grpc.PacketServiceServicer):
             validator_node_list.append(
                 ValidatorNode(
                     peer=SocketAddress(
-                        host=HOST,
-                        port=request.peer_port,
+                        host=request.hostname,
+                        port=51235, # Peer port
                     ),
                     ws_public=SocketAddress(
-                        host=HOST,
-                        port=request.ws_public_port,
+                        host=request.hostname,
+                        port=6005, # Public ws port
                     ),
                     ws_admin=SocketAddress(
-                        host=HOST,
-                        port=request.ws_admin_port,
+                        host=request.hostname,
+                        port=6006, # admin ws port
                     ),
                     rpc=SocketAddress(
-                        host=HOST,
-                        port=request.rpc_port,
+                        host=request.hostname,
+                        port=5005, # rpc port
                     ),
                     validator_key_data=ValidatorKeyData(
                         status=request.status,
@@ -162,14 +161,11 @@ class PacketService(packet_pb2_grpc.PacketServiceServicer):
             TypeError: If the type of one of the fields in the config file does not match the expected type.
         """
         config = self.strategy.network.network_config
-
         config_values_types = {
-            "network_partition": List[List[int]],
-            "base_port_peer": int,
-            "base_port_ws": int,
-            "base_port_ws_admin": int,
-            "base_port_rpc": int,
+            "hostname_prefix": str,
             "number_of_nodes": int,
+            "network_partition": List[List[int]],
+            "unl_partition": List[List[int]],
         }
 
         for name, name_type in config_values_types.items():
@@ -196,10 +192,7 @@ class PacketService(packet_pb2_grpc.PacketServiceServicer):
         )
 
         return packet_pb2.Config(
-            base_port_peer=config.get("base_port_peer"),
-            base_port_ws=config.get("base_port_ws"),
-            base_port_ws_admin=config.get("base_port_ws_admin"),
-            base_port_rpc=config.get("base_port_rpc"),
+            hostname_prefix=config.get("hostname_prefix"),
             number_of_nodes=config.get("number_of_nodes"),
             net_partitions=net_partitions,
             unl_partitions=unl_partitions,

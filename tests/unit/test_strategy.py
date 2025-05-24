@@ -38,10 +38,10 @@ def test_update_network(mock_init_configs):
     strategy.update_network([node_0, node_1, node_2])
     assert strategy.network.validator_node_list == [node_0, node_1, node_2]
     assert strategy.network.node_amount == 3
-    assert strategy.network.port_to_id_dict == {10: 0, 11: 1, 12: 2}
-    assert strategy.network.id_to_port_dict == {0: 10, 1: 11, 2: 12}
-    assert strategy.network.id_to_port(2) == 12
-    assert strategy.network.port_to_id(12) == 2
+    assert strategy.network.hostname_to_id_dict == {10: 0, 11: 1, 12: 2}
+    assert strategy.network.id_to_hostname_dict == {0: 10, 1: 11, 2: 12}
+    assert strategy.network.id_to_hostname(2) == 12
+    assert strategy.network.hostname_to_id(12) == 2
     assert strategy.network.communication_matrix == [
         [False, True, True],
         [True, False, True],

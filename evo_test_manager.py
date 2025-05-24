@@ -139,6 +139,7 @@ class EvoTestManager:
         command = [sys.executable, "-m", "rocket_controller", "--nodes", str(self.nodes), "--encoding", str(encoding), "--log_dir", log_dir, self.strategy]
 
         # TODO Python process -> Docker container start depending on flag. For dev still sequential
+        # Can do with different command, prob docker run.
         process = subprocess.Popen(
             command,
             text=True

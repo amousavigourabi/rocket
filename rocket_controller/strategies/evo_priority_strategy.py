@@ -15,7 +15,8 @@ from rocket_controller.encoder_decoder import (
     DecodingNotSupportedError,
     PacketEncoderDecoder,
 )
-from rocket_controller.iteration_type import LedgerBasedIteration, TimeBasedIteration
+from rocket_controller.iteration_type import LedgerBasedIteration, TimeBasedIteration, NoneIteration
+
 
 class EvoPriorityStrategy(Strategy):
     def __init__(
@@ -27,6 +28,7 @@ class EvoPriorityStrategy(Strategy):
         auto_parse_subsets: bool = True,
         keep_action_log: bool = True,
         iteration_type = LedgerBasedIteration(10, 10, 65),
+        # iteration_type = NoneIteration(),
         log_dir: str | None = None,
         network_overrides=None,
         strategy_overrides=None,
@@ -94,8 +96,8 @@ class EvoPriorityStrategy(Strategy):
 
             # To get type index -> subtract 30, for validation, subtract 35
         type_id = message_type_no - 30 if message_type_no != 41 else 6
-        sender_node_id = self.network.port_to_id(packet.from_port)
-        receiver_node_id = self.network.port_to_id(packet.to_port)
+        sender_node_id = self.network.hostname_to_id(packet.from_hostname)
+        receiver_node_id = self.network.hostname_to_id(packet.to_hostname)
 
         index = (type_id * (self.network.node_amount * (self.network.node_amount - 1))
                  + sender_node_id * (self.network.node_amount - 1)
@@ -114,7 +116,7 @@ class EvoPriorityStrategy(Strategy):
         exit_time = time.time() * 1000
         if exit_time - entry_time > 1000:
             logger.warning(f"It took {exit_time - entry_time} ms to process a packet")
-            # print(f"[handle_packet] Queued packet from {packet.from_port} to {packet.to_port} with priority {priority}")
+            # print(f"[handle_packet] Queued packet from {packet.from_hostname} to {packet.to_hostname} with priority {priority}")
 
         # For the threading test -> numbers should be printed in a nondeterministic order
         # curr_count = self.counter
@@ -122,7 +124,7 @@ class EvoPriorityStrategy(Strategy):
         # time.sleep(random.randint(1, 3))  # Wait random amount of time
         # print(curr_count)
 
-        # print(f"[handle_packet] Resumed packet from {packet.from_port} to {packet.to_port}")
+        # print(f"[handle_packet] Resumed packet from {packet.from_hostname} to {packet.to_hostname}")
         return packet.data, 0, 1
 
     def dispatch_loop(self):
