@@ -22,13 +22,17 @@ The interceptor is run as a subprocess from the controller.
 ```bash
 pip install -r requirements.txt
 docker pull xrpllabsofficial/xrpld:2.3.0
+docker network create rocket_net
 ```
 
-### Adding the interceptor binary
+### Adding the interceptor
 
 After compiling the [rocket_interceptor](https://github.com/diseb-lab/rocket-interceptor) module,
 place the resulting binary in the `rocket_interceptor` subdirectory. This is where Rocket
 expects the binary to be.
+
+Copy the folder 'network' to a location which you can mount to docker.
+The xrpl nodes use this to create their config files.
 
 ### Configuration
 
@@ -73,10 +77,18 @@ overrides need to be present in the corresponding strategy's configuration file.
 
 Below is a basic example of running the tool with default settings, using
 the included RandomFuzzer as the fuzzing strategy.
+Make sure you use at least all options shown in the example.
+
+- First build the docker image, you will have to do this after each code change.
+- Then run the container with your options.
 
 ```bash
-python3 -m rocket_controller RandomFuzzer
+docker build -t rocket-image .
+docker run --name LOCAL_controller --network rocket_net -v /var/run/docker.sock:/var/run/docker.sock -v /rocket_network:/rocket_network -e ROCKET_NETWORK_MOUNT="/rocket_network" rocket-image RandomFuzzer
 ```
+In this example the following was assumed:
+- The variable 'hostname_prefix' was set to "LOCAL" in default_network.yml
+- Your network folder from the interceptor was located in /rocket_network (this is an absolute path)
 
 For the full list of CLI options, run the following command:
 
