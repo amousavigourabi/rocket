@@ -53,7 +53,7 @@ class PacketService(packet_pb2_grpc.PacketServiceServicer):
             ValueError: If request.from_port == request.to_port or if any is negative.
         """
         timestamp = int(datetime.datetime.now().timestamp() * 1000)
-        validate_hostnames(request.to_hostname, request.to_hostname)
+        validate_hostnames(request.from_hostname, request.to_hostname)
 
         (new_data, action, send_amount) = self.strategy.process_packet(request)
 
