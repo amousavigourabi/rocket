@@ -2,6 +2,9 @@
 import csv
 import glob
 import shutil
+from asyncio import as_completed
+from concurrent.futures.thread import ThreadPoolExecutor
+from curses.ascii import isxdigit
 from datetime import datetime
 import random
 import subprocess
@@ -83,6 +86,12 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
+        self.image = "rocket-image"
+        self.shared_path = "/home/bwassenaar/Projects/research_project"
+        self.main_hostname_prefix = "BW_Baseline"
+        self.workers = 5 # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
+        # Do not use more than 5 on the research server!
+
 
     def initial_population(self):
         return [random.randint(self.encoding_min, self.encoding_max) for _ in range(self.encoding_length)]
@@ -117,7 +126,7 @@ class EvoTestManager:
         return elite + mutated_population
 
 
-    def run_rocket(self, encoding: list[int], log_dir: str, retry: int = 0):
+    def run_rocket(self, encoding: list[int], generation: int, testcase: int, retry: int = 0):
         """
         Run rocket with set configurations.
 
@@ -130,51 +139,59 @@ class EvoTestManager:
         if len(encoding) != self.encoding_length:
             raise ValueError(f"Encoding should be of length {self.encoding_length}, but got {len(encoding)}")
         print(f"Running rocket with encoding {encoding}")
+        hostname_prefix = f"{self.main_hostname_prefix}_G{generation}T{testcase}R{retry}"
 
-        Path.mkdir(Path(f"logs/{log_dir}"), parents=True, exist_ok=True)
-        with open(f"logs/{log_dir}/run_info.txt", mode="a") as f:
+        log_dir = f"{self.shared_path}/logs/{self.main_hostname_prefix}/{hostname_prefix}"
+        Path.mkdir(Path(log_dir), parents=True, exist_ok=True)
+        with open(f"{log_dir}/run_info.txt", mode="a") as f:
             f.write(f"Seed: {self.seed}")
             f.write(f"\nEncoding: {encoding}")
 
-        command = [sys.executable, "-m", "rocket_controller", "--nodes", str(self.nodes), "--encoding", str(encoding), "--log_dir", log_dir, self.strategy]
+        name = f"{hostname_prefix}_controller"
+        docker_command = ["docker","run","--rm","--name", name,"--network", "rocket_net","-v","/var/run/docker.sock:/var/run/docker.sock","-v",f"{self.shared_path}:{self.shared_path}", "-e", f"ROCKET_NETWORK_MOUNT={self.shared_path}", self.image]
+        python_args = [self.strategy, "--nodes", str(self.nodes), "--encoding", str(encoding),"--hostname_prefix",hostname_prefix,"--log_dir",log_dir ]
+        command = docker_command + python_args
 
-        # TODO Python process -> Docker container start depending on flag. For dev still sequential
-        # Can do with different command, prob docker run.
         process = subprocess.Popen(
             command,
             text=True
         )
         return_code = process.wait()
-        if return_code != 0: # TODO return_code does probably not work, but will be different anyway when DinD is used.
+        if return_code != 0:
             if retry < 3:
                 retry += 1
                 print(f"Rocket failed on attempt {retry}. Retrying...")
-                shutil.copytree(f"logs/{log_dir}", f"logs/failed/{log_dir}/retry-{retry}")
-                shutil.rmtree(f"logs/{log_dir}")
                 sleep(5)
-                return self.run_rocket(encoding, log_dir, retry)
+                return self.run_rocket(encoding, generation, testcase, retry)
             raise Exception(f"Rocket failed after {retry} retries. THIS IS NOT GOOD!")
 
         average_validation_time = process_results(log_dir)
-        with open(f"logs/{log_dir}/run_info.txt", mode="a") as f:
+        with open(f"logs/{hostname_prefix}/run_info.txt", mode="a") as f:
             f.write(f"\nAverage validation time: {average_validation_time} seconds")
         print(f"Average validation time: {average_validation_time} seconds")
         return average_validation_time, encoding
 
-    def run_evolution_round(self, population: list[list[int]], log_dir: str):
+    def run_evolution_round(self, generation: int, population: list[list[int]]):
         results = []
         print(f"Running evolution with {len(population)} test cases.")
-        for idx, test_case in enumerate(population):
-            # This is the part that could be run in parallel, if we figure out how with docker networking and stuff.
-            results.append(self.run_rocket(test_case, f"{log_dir}/test_case-{idx+1}"))
+
+        with ThreadPoolExecutor(max_workers=self.workers) as executor:
+            future_to_test = {
+                executor.submit(self.run_rocket, test_case, generation, idx + 1, 0): idx
+                for idx, test_case in enumerate(population)
+            }
+            for future in as_completed(future_to_test):
+                result = future.result()
+                results.append(result)
+
         return results
 
     def main(self):
         start_time = datetime.now()
         population = [self.initial_population() for _ in range(self.population_size)]
-        for _ in range(self.generations):
-            print(f"Generation {_+1}")
-            results = self.run_evolution_round(population, f"{format_datetime(start_time)}/generation-{_+1}")
+        for idx in range(self.generations):
+            print(f"Generation {idx+1}")
+            results = self.run_evolution_round(idx+1, population)
 
             new_population = [] #elitism, add x best individuals
 

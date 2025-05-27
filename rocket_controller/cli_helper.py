@@ -91,6 +91,13 @@ def parse_args() -> argparse.Namespace:
         help="The directory where the logs should be stored. Defaults to ./logs/timestamp",
         metavar="PATH",
     )
+    parser.add_argument(
+        "--hostname_prefix",
+        type=str,
+        default=None,
+        help="The prefix to use for the hostnames of the nodes. Defaults to 'LOCAL'.",
+        metavar="PREFIX",
+    )
 
     return parser.parse_args()
 
@@ -181,6 +188,8 @@ def process_args(args: argparse.Namespace) -> Dict[str, Any]:
         network_overrides["network_partition"] = args.partition
     if args.nodes_unl:
         network_overrides["unl_partition"] = args.nodes_unl
+    if args.hostname_prefix:
+        network_overrides["hostname_prefix"] = args.hostname_prefix
 
     if args.encoding:
         strategy_overrides["encoding"] = args.encoding
