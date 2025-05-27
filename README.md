@@ -75,20 +75,28 @@ overrides need to be present in the corresponding strategy's configuration file.
 
 ### Running
 
-Below is a basic example of running the tool with default settings, using
+Below is a basic example of running rocket with default settings, using
 the included RandomFuzzer as the fuzzing strategy.
 Make sure you use at least all options shown in the example.
 
 - First build the docker image, you will have to do this after each code change.
 - Then run the container with your options.
+- Extract the logs to your local machine when the test has run
 
 ```bash
 docker build -t rocket-image .
 docker run --name LOCAL_controller --network rocket_net -v /var/run/docker.sock:/var/run/docker.sock -v /rocket_network:/rocket_network -e ROCKET_NETWORK_MOUNT="/rocket_network" rocket-image RandomFuzzer
+docker cp LOCAL_controller:/rocket/logs /logs/LOCAL
 ```
+
 In this example the following was assumed:
 - The variable 'hostname_prefix' was set to "LOCAL" in default_network.yml
 - Your network folder from the interceptor was located in /rocket_network (this is an absolute path)
+
+If you want to use the same hostname_prefix again, you will first have to remove your controller container. IMPORTANT: You will lose the previous logs if you didn't extract them yet.
+```bash
+docker remove LOCAL_controller
+```
 
 For the full list of CLI options, run the following command:
 
