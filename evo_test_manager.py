@@ -87,9 +87,10 @@ class EvoTestManager:
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
         self.image = "rocket-image-bryan"
-        self.shared_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "BW_Test5"
-        self.workers = 5 # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
+        self.output_path = "/data/home/bwassenaar/shared_rocket"
+        self.main_hostname_prefix = "BW_Test6"
+        self.shared_volume = f"{self.main_hostname_prefix}_data"
+        self.workers = 1 # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
 
 
@@ -145,14 +146,14 @@ class EvoTestManager:
         print(f"Running rocket with encoding {encoding}")
         hostname_prefix = f"{self.main_hostname_prefix}_G{generation}T{testcase}R{retry}"
 
-        log_dir = f"{self.shared_path}/logs/{self.main_hostname_prefix}/{hostname_prefix}"
+        log_dir = f"/shared/logs/{self.main_hostname_prefix}/{hostname_prefix}"
         Path.mkdir(Path(log_dir), parents=True, exist_ok=True)
         with open(f"{log_dir}/run_info.txt", mode="a") as f:
             f.write(f"Seed: {self.seed}")
             f.write(f"\nEncoding: {encoding}")
 
         name = f"{hostname_prefix}_controller"
-        docker_command = ["docker","run","--rm","--name", name,"--network", "rocket_net","-v","/var/run/docker.sock:/var/run/docker.sock","-v",f"{self.shared_path}:{self.shared_path}", "-e", f"ROCKET_NETWORK_MOUNT={self.shared_path}", self.image]
+        docker_command = ["docker","run","--rm","--name", name,"--network", "rocket_net","-v","/var/run/docker.sock:/var/run/docker.sock","-v",f"{self.shared_volume}:/shared", "-e", f"ROCKET_NETWORK_MOUNT={self.shared_volume}", self.image]
         python_args = ["-m", "rocket_controller", self.strategy, "--nodes", str(self.nodes), "--encoding", str(encoding),"--hostname_prefix",hostname_prefix,"--log_dir",log_dir ]
         command = docker_command + python_args
 
@@ -192,6 +193,9 @@ class EvoTestManager:
 
     def main(self):
         start_time = datetime.now()
+        shutil.copytree("./rocket_interceptor/network", f"/shared/network")
+
+
         population = [self.initial_population() for _ in range(self.population_size)]
         for idx in range(self.generations):
             print(f"Generation {idx+1}")
