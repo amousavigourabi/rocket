@@ -33,6 +33,13 @@ def process_results(log_dir):
     return sum(validation_times) / len(validation_times) if validation_times else 0
 
 
+def cleanup_docker(hostname_prefix: str):
+    try:
+        subprocess.run(["docker", "container", "stop", f"$(docker ps -a -q --filter name={hostname_prefix}*)"])
+        subprocess.run(["docker", "container", "rm", "-f", f"$(docker ps -a -q --filter name={hostname_prefix}*)"])
+        subprocess.run(["docker", "volume", "rm","-f", f"$(docker volume ls -q --filter name={hostname_prefix}*)"])
+    except Exception as e:
+        print(f"Error cleaning up docker containers: {e}")
 
 
 class EvoTestManager:
@@ -130,7 +137,6 @@ class EvoTestManager:
         return new_population
         # return elite + mutated_population
 
-
     def run_rocket(self, encoding: list[int], generation: int, testcase: int, retry: int = 0):
         """
         Run rocket with set configurations.
@@ -157,15 +163,24 @@ class EvoTestManager:
         python_args = ["-m", "rocket_controller", self.strategy, "--nodes", str(self.nodes), "--encoding", str(encoding),"--hostname_prefix",hostname_prefix,"--log_dir",log_dir ]
         command = docker_command + python_args
 
-        process = subprocess.Popen(
-            command,
-            text=True
-        )
-        return_code = process.wait()
-        if return_code != 0:
-            if retry < 3:
+        try:
+            with open(f"{log_dir}/stdout.txt", mode="w") as out_file, open(f"{log_dir}/stderr.txt", mode="w") as err_file:
+                result = subprocess.run(command, stdout=out_file, stderr=err_file, text=True, timeout=30*60)
+        except subprocess.TimeoutExpired:
+            if retry < 2:
+                retry += 1
+                print(f"Rocket timed out on attempt {retry}. Retrying...")
+                cleanup_docker(hostname_prefix)
+                sleep(5)
+                return self.run_rocket(encoding, generation, testcase, retry)
+            raise Exception(f"Rocket timed out after {retry} retries. THIS IS NOT GOOD!")
+
+
+        if result.returncode != 0:
+            if retry < 2:
                 retry += 1
                 print(f"Rocket failed on attempt {retry}. Retrying...")
+                cleanup_docker(hostname_prefix)
                 sleep(5)
                 return self.run_rocket(encoding, generation, testcase, retry)
             raise Exception(f"Rocket failed after {retry} retries. THIS IS NOT GOOD!")
