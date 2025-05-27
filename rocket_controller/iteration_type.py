@@ -285,11 +285,12 @@ class TimeBasedIteration:
             raise ValueError("Log directory not initialized")
 
         self.cur_iteration += 1
-
+        logger.debug("Stopping logLedgerResul;t")
         # Wait for the logging threads to finish
         for t in threading.enumerate():
             if "LogLedgerResult" in t.name: # TODO Stopping here is dangerous.
                 t.join()
+        logger.debug("Done stopping logLedgerResul;t")
 
         if self.cur_iteration > 1:
             self._spec_checker.spec_check(self.cur_iteration - 1, len(self._validator_nodes), self._max_ledger_seq)
@@ -327,6 +328,7 @@ class TimeBasedIteration:
         # TODO Network should not reset here!
         self._network.accounts = {}
         self._network.tx_builder = TransactionBuilder()
+        logger.debug("State variables reset.")
 
     def on_status_change(
         self, status: ripple_pb2.TMStatusChange, from_id: int, to_id: int

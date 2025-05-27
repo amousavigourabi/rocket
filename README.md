@@ -79,19 +79,20 @@ Below is a basic example of running rocket with default settings, using
 the included RandomFuzzer as the fuzzing strategy.
 Make sure you use at least all options shown in the example.
 
+In this example the following was assumed:
+- The variable 'hostname_prefix' was set to "LOCAL" in default_network.yml
+- Your network folder from the interceptor was located in /rocket_network (this is an absolute path)
+
+Steps:
 - First build the docker image, you will have to do this after each code change.
 - Then run the container with your options.
 - Extract the logs to your local machine when the test has run
 
 ```bash
 docker build -t rocket-image .
-docker run --name LOCAL_controller --network rocket_net -v /var/run/docker.sock:/var/run/docker.sock -v /rocket_network:/rocket_network -e ROCKET_NETWORK_MOUNT="/rocket_network" rocket-image RandomFuzzer
+docker run --name LOCAL_controller --network rocket_net -v /var/run/docker.sock:/var/run/docker.sock -v /rocket_network:/rocket_network -e ROCKET_NETWORK_MOUNT="/rocket_network" rocket-image -m rocket_controller RandomFuzzer
 docker cp LOCAL_controller:/rocket/logs /logs/LOCAL
 ```
-
-In this example the following was assumed:
-- The variable 'hostname_prefix' was set to "LOCAL" in default_network.yml
-- Your network folder from the interceptor was located in /rocket_network (this is an absolute path)
 
 If you want to use the same hostname_prefix again, you will first have to remove your controller container. IMPORTANT: You will lose the previous logs if you didn't extract them yet.
 ```bash
@@ -102,6 +103,25 @@ For the full list of CLI options, run the following command:
 
 ```bash
 python3 -m rocket_controller -h
+```
+
+## Running the evolutionary algorithm on research server
+
+Words in CAPSLOCK are variables!
+
+prerequisites
+- Make sure you changed the variables in the init of evo_test_manager.py according to your setup.
+- Make sure you created a shared folder (shared_rocket) in your home folder on the server. The path to this folder is /data/home/NETID/shared_rocket
+- Make sure you transferred the folder network (from the interceptor repo) to this shared folder.
+
+steps:
+- First build your image.
+- Then save your image and transfer it to the server.
+- Finally run your image.
+```bash
+docker build -t rocket-image-YOURNAME .
+docker save rocket-image-YOURNAME | gzip | ssh REMOTE-HOST "gunzip | docker load"
+docker run -d --name MAIN_HOSTNAME_PREFIX_manager -v /var/run/docker.sock:/var/run/docker.sock -v /data/home/NETID/shared_rocket:/data/home/NETID/shared_rocket rocket-image-YOURNAME evo_test_manager.py
 ```
 
 ## Creating a new Strategy

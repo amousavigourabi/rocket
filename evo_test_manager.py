@@ -21,7 +21,7 @@ from rocket_controller.helper import format_datetime
 
 
 def process_results(log_dir):
-    result_files = glob.glob(f"logs/{log_dir}/**/result-*.csv")
+    result_files = glob.glob(f"{log_dir}/**/result-*.csv")
     validation_times = []
 
     for result_file in result_files:
@@ -86,9 +86,9 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
-        self.image = "rocket-image"
-        self.shared_path = "/home/bwassenaar/Projects/research_project"
-        self.main_hostname_prefix = "BW_Baseline"
+        self.image = "rocket-image-bryan"
+        self.shared_path = "/data/home/bwassenaar/shared_rocket"
+        self.main_hostname_prefix = "BW_Test5"
         self.workers = 5 # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
 
@@ -115,15 +115,19 @@ class EvoTestManager:
         Returns:
             List of new populations after crossover and mutation
         """
-        crossover = SBX()
-        mutate = GaussianMutation(self.encoding_min, self.encoding_max)
+        # crossover = SBX()
+        # mutate = GaussianMutation(self.encoding_min, self.encoding_max)
+        #
+        # elite = population[0:5]
+        #
+        # crossover_population = crossover.crossover(population[:-5])
+        # mutated_population = mutate.mutate(crossover_population)
 
-        elite = population[0:5]
-
-        crossover_population = crossover.crossover(population[:-5])
-        mutated_population = mutate.mutate(crossover_population)
-    
-        return elite + mutated_population
+        new_population: list[list[int]] = []
+        for idx, individual in enumerate(population):
+            new_population.append(self.initial_population())
+        return new_population
+        # return elite + mutated_population
 
 
     def run_rocket(self, encoding: list[int], generation: int, testcase: int, retry: int = 0):
@@ -149,7 +153,7 @@ class EvoTestManager:
 
         name = f"{hostname_prefix}_controller"
         docker_command = ["docker","run","--rm","--name", name,"--network", "rocket_net","-v","/var/run/docker.sock:/var/run/docker.sock","-v",f"{self.shared_path}:{self.shared_path}", "-e", f"ROCKET_NETWORK_MOUNT={self.shared_path}", self.image]
-        python_args = [self.strategy, "--nodes", str(self.nodes), "--encoding", str(encoding),"--hostname_prefix",hostname_prefix,"--log_dir",log_dir ]
+        python_args = ["-m", "rocket_controller", self.strategy, "--nodes", str(self.nodes), "--encoding", str(encoding),"--hostname_prefix",hostname_prefix,"--log_dir",log_dir ]
         command = docker_command + python_args
 
         process = subprocess.Popen(

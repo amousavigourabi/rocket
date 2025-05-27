@@ -72,7 +72,7 @@ account_log_columns = [
 class CSVLogger:
     """CSVLogger class which can be utilized to log to a csv file."""
 
-    def __init__(self, filename: str, columns: list[Any], directory: str = ""):
+    def __init__(self, filename: str, columns: list[Any], directory: str = "./logs"):
         """
         Initialize CSVLogger class.
 
@@ -81,11 +81,11 @@ class CSVLogger:
             columns: The columns to be used in the log.
             directory: The directory to store the log file in.
         """
-        Path("./logs/" + directory).mkdir(parents=True, exist_ok=True)
+        Path(directory).mkdir(parents=True, exist_ok=True)
 
         filename = filename if filename.endswith(".csv") else filename + ".csv"
 
-        self.filepath = "./logs/" + directory + "/" + filename
+        self.filepath = directory + "/" + filename
         self.columns = [col.__str__ for col in columns]
 
         self._lock = threading.Lock()

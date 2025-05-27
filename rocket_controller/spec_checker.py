@@ -47,7 +47,7 @@ class SpecChecker:
             iteration: The current iteration.
         """
         ledger_file_path = (
-            f"logs/{self.log_dir}/iteration-{iteration}/ledger-{iteration}.csv"
+            f"{self.log_dir}/iteration-{iteration}/ledger-{iteration}.csv"
         )
 
         ledgers_data = defaultdict(list)
@@ -75,10 +75,7 @@ class SpecChecker:
                         continue
         except csv.Error as e:
             logger.critical(f"CSV Error: {e}")
-            self.spec_check_logger.log_spec_check(
-                iteration, f"CSV Error: {e}", "-", "-"
-            )
-            return
+            raise IOError(f"Error reading ledger file: {ledger_file_path}") from e
 
         if not ledgers_data:
             logger.critical("No valid ledger data found.")
