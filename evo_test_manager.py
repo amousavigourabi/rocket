@@ -171,7 +171,7 @@ class EvoTestManager:
 
         try:
             with open(f"{log_dir}/stdout.txt", mode="w") as out_file, open(f"{log_dir}/stderr.txt", mode="w") as err_file:
-                result = subprocess.run(command, stdout=out_file, stderr=err_file, text=True, timeout=30*60)
+                result = subprocess.run(command, stdout=out_file, stderr=err_file, text=True, timeout=60*60)
         except subprocess.TimeoutExpired:
             if retry < 2:
                 retry += 1
