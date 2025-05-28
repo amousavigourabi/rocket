@@ -2,7 +2,7 @@
 import csv
 import glob
 import shutil
-from asyncio import as_completed
+from concurrent.futures import as_completed
 from concurrent.futures.thread import ThreadPoolExecutor
 from curses.ascii import isxdigit
 from datetime import datetime
@@ -35,9 +35,15 @@ def process_results(log_dir):
 
 def cleanup_docker(hostname_prefix: str):
     try:
-        subprocess.run(["docker", "container", "stop", f"$(docker ps -a -q --filter name={hostname_prefix}*)"])
-        subprocess.run(["docker", "container", "rm", "-f", f"$(docker ps -a -q --filter name={hostname_prefix}*)"])
-        subprocess.run(["docker", "volume", "rm","-f", f"$(docker volume ls -q --filter name={hostname_prefix}*)"])
+        containers = subprocess.run(["docker", "container", "ls", "-q", "-a", "--filter", f"name={hostname_prefix}*"], capture_output=True, text=True).stdout.strip().splitlines()
+        if containers:
+            subprocess.run(["docker", "container", "stop"] + containers, check=True)
+            subprocess.run(["docker", "container", "rm"] + containers, check=True)
+
+        all_volumes = subprocess.run(["docker", "volume", "ls", "-q"], capture_output=True, text=True).stdout.strip().splitlines()
+        volumes = [v for v in all_volumes if v.startswith(hostname_prefix)]
+        if volumes:
+            subprocess.run(["docker", "volume", "rm"] + volumes, check=True)
     except Exception as e:
         print(f"Error cleaning up docker containers: {e}")
 
@@ -186,9 +192,10 @@ class EvoTestManager:
             raise Exception(f"Rocket failed after {retry} retries. THIS IS NOT GOOD!")
 
         average_validation_time = process_results(log_dir)
-        with open(f"logs/{hostname_prefix}/run_info.txt", mode="a") as f:
+        with open(f"{log_dir}/run_info.txt", mode="a") as f:
             f.write(f"\nAverage validation time: {average_validation_time} seconds")
         print(f"Average validation time: {average_validation_time} seconds")
+        cleanup_docker(hostname_prefix)
         return average_validation_time, encoding
 
     def run_evolution_round(self, generation: int, population: list[list[int]]):
@@ -196,12 +203,13 @@ class EvoTestManager:
         print(f"Running evolution with {len(population)} test cases.")
 
         with ThreadPoolExecutor(max_workers=self.workers) as executor:
-            future_to_test = {
-                executor.submit(self.run_rocket, test_case, generation, idx + 1, 0): idx
-                for idx, test_case in enumerate(population)
-            }
-            for future in as_completed(future_to_test):
-                result = future.result()
+            futures = {}
+            for idx, test_case in enumerate(population):
+                future = executor.submit(self.run_rocket, test_case, generation, idx + 1, 0)
+                futures[future] = test_case
+
+            for future in as_completed(futures.keys()):
+                result = (future.result(), futures[future])
                 results.append(result)
 
         return results
