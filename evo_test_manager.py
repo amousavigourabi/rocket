@@ -100,10 +100,10 @@ class EvoTestManager:
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
         self.image = "rocket-image-bryan"
-        self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "BW_Test6"
+        # self.output_path = "/data/home/bwassenaar/shared_rocket"
+        self.main_hostname_prefix = "BW_Baseline"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
-        self.workers = 1 # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
+        self.workers = 5 # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
 
 
@@ -154,7 +154,7 @@ class EvoTestManager:
         """
 
         if len(encoding) != self.encoding_length:
-            raise ValueError(f"Encoding should be of length {self.encoding_length}, but got {len(encoding)}")
+            raise ValueError(f"Encoding should be of length {self.encoding_length}, but got {len(encoding)}\nEncoding: {encoding}")
         print(f"Running rocket with encoding {encoding}")
         hostname_prefix = f"{self.main_hostname_prefix}_G{generation}T{testcase}R{retry}"
 
@@ -224,12 +224,8 @@ class EvoTestManager:
             print(f"Generation {idx+1}")
             results = self.run_evolution_round(idx+1, population)
 
-            new_population = [] #elitism, add x best individuals
-
-            while len(new_population) < len(population):
-                selected = self.selection(results) # 2 paremts
-                children = self.reproduction(selected)
-                new_population.append(children)
+            selected = self.selection(results)
+            new_population = self.reproduction(selected)
 
             population = new_population
         return
