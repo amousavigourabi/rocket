@@ -90,8 +90,8 @@ Steps:
 
 ```bash
 docker build -t rocket-image .
-docker run --name LOCAL_controller --network rocket_net -v /var/run/docker.sock:/var/run/docker.sock -v /rocket_network:/rocket_network -e ROCKET_NETWORK_MOUNT="/rocket_network" rocket-image -m rocket_controller RandomFuzzer
-docker cp LOCAL_controller:/rocket/logs /logs/LOCAL
+docker run --name LOCAL_controller --network rocket_net -v /var/run/docker.sock:/var/run/docker.sock -v LOCAL_data:/shared -e ROCKET_NETWORK_MOUNT="LOCAL_data" -e ROCKET_XRPLD_DOCKER_CONTAINER=xrpllabsofficial/xrpld:1.7.3 rocket-image -m rocket_controller RandomFuzzer
+docker cp LOCAL_controller:/shared/logs YOUR/PATH/logs
 ```
 
 If you want to use the same hostname_prefix again, you will first have to remove your controller container. IMPORTANT: You will lose the previous logs if you didn't extract them yet.
@@ -121,9 +121,14 @@ steps:
 ```bash
 docker build -t rocket-image-YOURNAME .
 docker save rocket-image-YOURNAME | gzip | ssh REMOTE-HOST "gunzip | docker load"
-docker run -d --name MAIN_HOSTNAME_PREFIX_manager -v /var/run/docker.sock:/var/run/docker.sock -v /data/home/NETID/shared_rocket:/data/home/NETID/shared_rocket rocket-image-YOURNAME evo_test_manager.py
+ssh REMOTE-HOST
+docker run -d --name MAIN_HOSTNAME_PREFIX -v /var/run/docker.sock:/var/run/docker.sock -v MAIN_HOSTNAME_PREFIX_data:/shared rocket-image-YOURNAME evo_test_manager.py
 ```
 
+Then when you are done you can use the following ot extract the logs after which you can copy them using scp to your local machine.
+```bash
+docker cp MAIN_HOSTNAME_PREFIX:/shared/logs /data/home/NETID/logs
+````
 ## Creating a new Strategy
 
 Rocket's design allows for easy creation of new fuzzing strategies. Below are
