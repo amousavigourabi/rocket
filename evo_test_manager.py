@@ -100,6 +100,7 @@ class EvoTestManager:
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
         self.image = "rocket-image-bryan"
+        self.xrpl_image = "xrpllabsofficial/xrpld:1.7.3"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
         self.main_hostname_prefix = "BW_Baseline"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
@@ -165,7 +166,7 @@ class EvoTestManager:
             f.write(f"\nEncoding: {encoding}")
 
         name = f"{hostname_prefix}_controller"
-        docker_command = ["docker","run","--rm","--name", name,"--network", "rocket_net","-v","/var/run/docker.sock:/var/run/docker.sock","-v",f"{self.shared_volume}:/shared", "-e", f"ROCKET_NETWORK_MOUNT={self.shared_volume}", self.image]
+        docker_command = ["docker","run","--rm","--name", name,"--network", "rocket_net","-v","/var/run/docker.sock:/var/run/docker.sock","-v",f"{self.shared_volume}:/shared", "-e", f"ROCKET_NETWORK_MOUNT={self.shared_volume}", "-e", f"ROCKET_XRPLD_DOCKER_CONTAINER={self.xrpl_image}", self.image]
         python_args = ["-m", "rocket_controller", self.strategy, "--nodes", str(self.nodes), "--encoding", str(encoding),"--hostname_prefix",hostname_prefix,"--log_dir",log_dir ]
         command = docker_command + python_args
 
