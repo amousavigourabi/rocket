@@ -121,8 +121,8 @@ class SpecChecker:
 
     def aggregate_spec_checks(self):
         """Aggregate the spec check results and write them to a final file."""
-        spec_check_file_path = f"logs/{self.log_dir}/spec_check_log.csv"
-        agg_spec_check_file_path = f"logs/{self.log_dir}/aggregated_spec_check_log.json"
+        spec_check_file_path = f"/shared/logs/{self.log_dir}/spec_check_log.csv"
+        agg_spec_check_file_path = f"/shared/logs/{self.log_dir}/aggregated_spec_check_log.json"
 
         try:
             with open(spec_check_file_path, newline="") as file:
