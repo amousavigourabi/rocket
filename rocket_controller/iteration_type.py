@@ -84,7 +84,7 @@ class TimeBasedIteration:
         if self._server:
             self._server.stop(grace=1)
 
-    def _start_timeout_timer(self):
+    def _start_timeout_timer(self, timeout_seconds: int):
         """Starts a timeout timer, which starts a new iteration when the timeout is reached."""
         if self._timer:
             self._timer.cancel()
@@ -303,7 +303,7 @@ class TimeBasedIteration:
             self._account_logger = AccountLogger(f"{self._log_dir}/iteration-{self.cur_iteration}", self.cur_iteration)
             logger.info(f"Starting iteration {self.cur_iteration}")
             self._interceptor_manager.start_new()
-            self._start_timeout_timer()
+            self._start_timeout_timer(300)
             self._start_transactions()
         else:
             self._stop_all()
@@ -362,7 +362,7 @@ class TimeBasedIteration:
                 self.ledger_validation_map[from_id]["time"] = _now
                 # At least one node has validated a new ledger, we can reset the timeout.
                 if self.ledger_timeout:
-                    self._start_timeout_timer()
+                    self._start_timeout_timer(self._timeout_seconds)
 
                 logger.info(
                     f"Node {from_id} validated ledger {self.ledger_validation_map[from_id]['seq']} in {_validation_time}"
@@ -481,7 +481,7 @@ class NoneIteration(TimeBasedIteration):
         Args:
             max_ledger_seq: Unused argument, required for the override.
         """
-        self._start_timeout_timer()
+        self._start_timeout_timer(300)
         self.cur_iteration += 1
 
     def _reset_values(self):
