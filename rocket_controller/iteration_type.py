@@ -88,7 +88,7 @@ class TimeBasedIteration:
         """Starts a timeout timer, which starts a new iteration when the timeout is reached."""
         if self._timer:
             self._timer.cancel()
-        self._timer = threading.Timer(self._timeout_seconds, self._timeout_reached)
+        self._timer = threading.Timer(timeout_seconds, self._timeout_reached)
         self._timer.start()
 
     def _timeout_reached(self):
