@@ -12,14 +12,17 @@ from loguru import logger
 
 def cleanup_docker_containers(hostname_prefix: str):
     try:
-        all_containers = subprocess.run(
-            ["docker", "container", "ls", "-q", "-a"],
-            capture_output=True, text=True).stdout.strip().splitlines()
-        containers = [c for c in all_containers if c.startswith(f"{hostname_prefix}_validator")]
-        if containers:
-            subprocess.run(["docker", "container", "stop"] + containers, check=True)
+        client = docker.from_env()
+
+        all_containers = client.containers.list()
+        containers = [c for c in all_containers if c.name.startswith(f"{hostname_prefix}_validator")]
+        for container in containers:
+            try:
+                container.stop()
+            except Exception as e:
+                print(f"Failed to stop container {container.name}. Error: {e}")
     except Exception as e:
-        logger.warning(f"Error cleaning up docker containers: {e}")
+        print(f"Error cleaning up docker containers: {e}")
 
 
 class InterceptorManager:

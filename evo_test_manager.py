@@ -2,6 +2,7 @@
 import csv
 import glob
 import shutil
+import signal
 from concurrent.futures import as_completed
 from concurrent.futures.thread import ThreadPoolExecutor
 from curses.ascii import isxdigit
@@ -12,11 +13,10 @@ import sys
 from pathlib import Path
 from time import sleep
 
+import docker
 import yaml
 from typing import Tuple
 
-from operators import SBX, GaussianMutation
-from rocket_controller.helper import format_datetime
 
 
 def process_results(log_dir):
@@ -34,12 +34,15 @@ def process_results(log_dir):
 
 def cleanup_docker(hostname_prefix: str):
     try:
-        all_containers = subprocess.run(["docker", "container", "ls", "-q", "-a"],
-                                    capture_output=True, text=True).stdout.strip().splitlines()
-        containers = [c for c in all_containers if c.startswith(hostname_prefix)]
-        if containers:
-            subprocess.run(["docker", "container", "stop"] + containers, check=True)
-            subprocess.run(["docker", "container", "rm"] + containers, check=True)
+        client = docker.from_env()
+
+        all_containers = client.containers.list()
+        containers = [c for c in all_containers if c.name.startswith(hostname_prefix)]
+        for container in containers:
+            try:
+                container.stop()
+            except Exception as e:
+                print(f"Failed to stop container {container.name}. Error: {e}")
     except Exception as e:
         print(f"Error cleaning up docker containers: {e}")
 
@@ -161,28 +164,44 @@ class EvoTestManager:
             f.write(f"\nEncoding: {encoding}")
 
         name = f"{hostname_prefix}_controller"
-        docker_command = ["docker", "run", "--rm", "--name", name, "--network", "rocket_net", "-v",
-                          "/var/run/docker.sock:/var/run/docker.sock", "-v", f"{self.shared_volume}:/shared", "-e",
-                          f"ROCKET_NETWORK_MOUNT={self.shared_volume}", "-e",
-                          f"ROCKET_XRPLD_DOCKER_CONTAINER={self.xrpl_image}", self.image]
+
         python_args = ["-m", "rocket_controller", self.strategy, "--nodes", str(self.nodes), "--encoding",
                        str(encoding), "--hostname_prefix", hostname_prefix, "--log_dir", log_dir]
-        command = docker_command + python_args
 
+        client = docker.from_env()
         try:
-            with open(f"{log_dir}/stdout.txt", mode="w") as out_file, open(f"{log_dir}/stderr.txt",
-                                                                           mode="w") as err_file:
-                result = subprocess.run(command, stdout=out_file, stderr=err_file, text=True, timeout=30 * 60) # Normally takes around 13 min, so twice the time.
-        except subprocess.TimeoutExpired:
+            container = client.containers.run(
+                image=self.image,
+                name=name,
+                command=python_args,
+                network="rocket_net",
+                auto_remove=False,
+                environment={
+                    "ROCKET_NETWORK_MOUNT": self.shared_volume,
+                    "ROCKET_XRPLD_DOCKER_CONTAINER": self.xrpl_image
+                },
+                volumes={
+                    "/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"},
+                    self.shared_volume: {"bind": "/shared", "mode": "rw"},
+                },
+                detach=True,
+            )
+
+            with open(f"{log_dir}/stdout.txt", mode="w") as out_file:
+                result = container.wait(timeout=30*60)
+                logs = container.logs(stdout=True, stderr=True, timestamps=True)
+                out_file.write(logs.decode(errors="ignore"))
+            exit_code = result.get("StatusCode", -1)
+        except Exception as e:
             if retry < 2:
                 retry += 1
-                print(f"Rocket timed out on attempt {retry}. Retrying...")
+                print(f"Rocket failed on attempt {retry}. Retrying...")
                 cleanup_docker(hostname_prefix)
                 sleep(5)
                 return self.run_rocket(encoding, generation, testcase, retry)
             raise Exception(f"Rocket timed out after {retry} retries. THIS IS NOT GOOD!")
 
-        if result.returncode != 0:
+        if exit_code != 0:
             if retry < 2:
                 retry += 1
                 print(f"Rocket failed on attempt {retry}. Retrying...")
@@ -233,3 +252,4 @@ class EvoTestManager:
 if __name__ == "__main__":
     manager = EvoTestManager()
     manager.main()
+
