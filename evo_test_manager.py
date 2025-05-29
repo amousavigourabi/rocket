@@ -19,7 +19,6 @@ from operators import SBX, GaussianMutation
 from rocket_controller.helper import format_datetime
 
 
-
 def process_results(log_dir):
     result_files = glob.glob(f"{log_dir}/**/result-*.csv")
     validation_times = []
@@ -35,12 +34,14 @@ def process_results(log_dir):
 
 def cleanup_docker(hostname_prefix: str):
     try:
-        containers = subprocess.run(["docker", "container", "ls", "-q", "-a", "--filter", f"name={hostname_prefix}*"], capture_output=True, text=True).stdout.strip().splitlines()
+        containers = subprocess.run(["docker", "container", "ls", "-q", "-a", "--filter", f"name={hostname_prefix}*"],
+                                    capture_output=True, text=True).stdout.strip().splitlines()
         if containers:
             subprocess.run(["docker", "container", "stop"] + containers, check=True)
             subprocess.run(["docker", "container", "rm"] + containers, check=True)
 
-        all_volumes = subprocess.run(["docker", "volume", "ls", "-q"], capture_output=True, text=True).stdout.strip().splitlines()
+        all_volumes = subprocess.run(["docker", "volume", "ls", "-q"], capture_output=True,
+                                     text=True).stdout.strip().splitlines()
         volumes = [v for v in all_volumes if v.startswith(hostname_prefix)]
         if volumes:
             subprocess.run(["docker", "volume", "rm"] + volumes, check=True)
@@ -69,7 +70,6 @@ class EvoTestManager:
         if nodes < 2:
             raise ValueError(f"nodes should be at least 2, but got {nodes}")
         self.nodes = nodes
-
 
         strategy = self._config['general']['strategy']
         if not strategy in ['EvoDelayStrategy', 'EvoPriorityStrategy']:
@@ -100,13 +100,12 @@ class EvoTestManager:
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
         self.image = "rocket-image-bryan"
-        self.xrpl_image = "xrpllabsofficial/xrpld:1.7.3"
+        self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
         self.main_hostname_prefix = "BW_Baseline"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
-        self.workers = 5 # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
+        self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
-
 
     def initial_population(self):
         return [random.randint(self.encoding_min, self.encoding_max) for _ in range(self.encoding_length)]
@@ -155,7 +154,8 @@ class EvoTestManager:
         """
 
         if len(encoding) != self.encoding_length:
-            raise ValueError(f"Encoding should be of length {self.encoding_length}, but got {len(encoding)}\nEncoding: {encoding}")
+            raise ValueError(
+                f"Encoding should be of length {self.encoding_length}, but got {len(encoding)}\nEncoding: {encoding}")
         print(f"Running rocket with encoding {encoding}")
         hostname_prefix = f"{self.main_hostname_prefix}_G{generation}T{testcase}R{retry}"
 
@@ -166,13 +166,18 @@ class EvoTestManager:
             f.write(f"\nEncoding: {encoding}")
 
         name = f"{hostname_prefix}_controller"
-        docker_command = ["docker","run","--rm","--name", name,"--network", "rocket_net","-v","/var/run/docker.sock:/var/run/docker.sock","-v",f"{self.shared_volume}:/shared", "-e", f"ROCKET_NETWORK_MOUNT={self.shared_volume}", "-e", f"ROCKET_XRPLD_DOCKER_CONTAINER={self.xrpl_image}", self.image]
-        python_args = ["-m", "rocket_controller", self.strategy, "--nodes", str(self.nodes), "--encoding", str(encoding),"--hostname_prefix",hostname_prefix,"--log_dir",log_dir ]
+        docker_command = ["docker", "run", "--rm", "--name", name, "--network", "rocket_net", "-v",
+                          "/var/run/docker.sock:/var/run/docker.sock", "-v", f"{self.shared_volume}:/shared", "-e",
+                          f"ROCKET_NETWORK_MOUNT={self.shared_volume}", "-e",
+                          f"ROCKET_XRPLD_DOCKER_CONTAINER={self.xrpl_image}", self.image]
+        python_args = ["-m", "rocket_controller", self.strategy, "--nodes", str(self.nodes), "--encoding",
+                       str(encoding), "--hostname_prefix", hostname_prefix, "--log_dir", log_dir]
         command = docker_command + python_args
 
         try:
-            with open(f"{log_dir}/stdout.txt", mode="w") as out_file, open(f"{log_dir}/stderr.txt", mode="w") as err_file:
-                result = subprocess.run(command, stdout=out_file, stderr=err_file, text=True, timeout=60*60)
+            with open(f"{log_dir}/stdout.txt", mode="w") as out_file, open(f"{log_dir}/stderr.txt",
+                                                                           mode="w") as err_file:
+                result = subprocess.run(command, stdout=out_file, stderr=err_file, text=True, timeout=30 * 60) # Normally takes around 13 min, so twice the time.
         except subprocess.TimeoutExpired:
             if retry < 2:
                 retry += 1
@@ -181,7 +186,6 @@ class EvoTestManager:
                 sleep(5)
                 return self.run_rocket(encoding, generation, testcase, retry)
             raise Exception(f"Rocket timed out after {retry} retries. THIS IS NOT GOOD!")
-
 
         if result.returncode != 0:
             if retry < 2:
@@ -219,11 +223,10 @@ class EvoTestManager:
         start_time = datetime.now()
         shutil.copytree("./rocket_interceptor/network", f"/shared/network")
 
-
         population = [self.initial_population() for _ in range(self.population_size)]
         for idx in range(self.generations):
-            print(f"Generation {idx+1}")
-            results = self.run_evolution_round(idx+1, population)
+            print(f"Generation {idx + 1}")
+            results = self.run_evolution_round(idx + 1, population)
 
             selected = self.selection(results)
             new_population = self.reproduction(selected)

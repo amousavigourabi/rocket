@@ -11,7 +11,7 @@ from loguru import logger
 
 from protos import ripple_pb2
 from rocket_controller.csv_logger import TransactionLogger, LedgerLogger, TXProposalLogger, AccountLogger
-from rocket_controller.interceptor_manager import InterceptorManager
+from rocket_controller.interceptor_manager import InterceptorManager, cleanup_docker_containers
 from rocket_controller.ledger_result import LedgerResult
 from rocket_controller.network_manager import NetworkManager
 from rocket_controller.spec_checker import SpecChecker
@@ -78,7 +78,7 @@ class TimeBasedIteration:
             f"Finished iteration {self.cur_iteration-1}, stopping test process..."
         )
         self._interceptor_manager.stop()
-        self._interceptor_manager.cleanup_docker_containers()
+        cleanup_docker_containers(self._network.network_config.get("hostname_prefix"))
 
     def _terminate_server(self):
         """Terminate the gRPC server."""
@@ -309,7 +309,9 @@ class TimeBasedIteration:
         else:
             self._stop_all()
             self._spec_checker.aggregate_spec_checks()
+            logger.info("SpecChecker stopped")
             self._terminate_server()
+            logger.info("Run Finished.")
 
     def _reset_values(self):
         """Reset state variables, called when interceptor is restarted."""
