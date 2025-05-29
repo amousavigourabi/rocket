@@ -18,12 +18,6 @@ def cleanup_docker_containers(hostname_prefix: str):
         containers = [c for c in all_containers if c.startswith(f"{hostname_prefix}_validator")]
         if containers:
             subprocess.run(["docker", "container", "stop"] + containers, check=True)
-
-        all_volumes = subprocess.run(["docker", "volume", "ls", "-q"], capture_output=True,
-                                     text=True).stdout.strip().splitlines()
-        volumes = [v for v in all_volumes if v.startswith(f"{hostname_prefix}_validator")]
-        if volumes:
-            subprocess.run(["docker", "volume", "rm"] + volumes, check=True)
     except Exception as e:
         logger.warning(f"Error cleaning up docker containers: {e}")
 

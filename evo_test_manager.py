@@ -40,12 +40,6 @@ def cleanup_docker(hostname_prefix: str):
         if containers:
             subprocess.run(["docker", "container", "stop"] + containers, check=True)
             subprocess.run(["docker", "container", "rm"] + containers, check=True)
-
-        all_volumes = subprocess.run(["docker", "volume", "ls", "-q"], capture_output=True,
-                                     text=True).stdout.strip().splitlines()
-        volumes = [v for v in all_volumes if v.startswith(hostname_prefix)]
-        if volumes:
-            subprocess.run(["docker", "volume", "rm"] + volumes, check=True)
     except Exception as e:
         print(f"Error cleaning up docker containers: {e}")
 
