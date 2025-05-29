@@ -36,11 +36,12 @@ def cleanup_docker(hostname_prefix: str):
     try:
         client = docker.from_env()
 
-        all_containers = client.containers.list()
+        all_containers = client.containers.list(all=True)
         containers = [c for c in all_containers if c.name.startswith(hostname_prefix)]
         for container in containers:
             try:
                 container.stop()
+                container.remove()
             except Exception as e:
                 print(f"Failed to stop container {container.name}. Error: {e}")
     except Exception as e:
@@ -102,7 +103,7 @@ class EvoTestManager:
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
         self.main_hostname_prefix = "BW_Baseline"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
-        self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
+        self.workers = 3  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
 
     def initial_population(self):
