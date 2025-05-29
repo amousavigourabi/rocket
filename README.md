@@ -132,6 +132,12 @@ tar -czvf MAIN_HOSTNAME_PREFIX.tar.gz MAIN_HOSTNAME_PREFIX/
 exit
 scp REMOTE-HOST:/data/home/NETID/logs/MAIN_HOSTNAME_PREFIX.tar.gz ./MAIN_HOSTNAME_PREFIX.tar.gz
 ````
+
+If you need to stop and remove your run (last command removes logs):
+```bash
+docker ps -a --filter "name=^/MAIN_HOSTNAME_PREFIX" --format "{{.ID}}" | xargs -r docker rm -f
+docker volume rm MAIN_HOSTNAME_PREFIX_data
+```
 ## Creating a new Strategy
 
 Rocket's design allows for easy creation of new fuzzing strategies. Below are
