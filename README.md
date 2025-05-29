@@ -125,9 +125,12 @@ ssh REMOTE-HOST
 docker run -d --name MAIN_HOSTNAME_PREFIX -v /var/run/docker.sock:/var/run/docker.sock -v MAIN_HOSTNAME_PREFIX_data:/shared rocket-image-YOURNAME evo_test_manager.py
 ```
 
-Then when you are done you can use the following ot extract the logs after which you can copy them using scp to your local machine.
+Then when you are done you can use the following to extract the logs after which you can copy them using scp to your local machine.
 ```bash
 docker cp MAIN_HOSTNAME_PREFIX:/shared/logs /data/home/NETID/logs
+tar -czvf MAIN_HOSTNAME_PREFIX.tar.gz MAIN_HOSTNAME_PREFIX/
+exit
+scp REMOTE-HOST:/data/home/NETID/logs/MAIN_HOSTNAME_PREFIX.tar.gz ./MAIN_HOSTNAME_PREFIX.tar.gz
 ````
 ## Creating a new Strategy
 
