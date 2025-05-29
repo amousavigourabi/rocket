@@ -12,9 +12,10 @@ from loguru import logger
 
 def cleanup_docker_containers(hostname_prefix: str):
     try:
-        containers = subprocess.run(
-            ["docker", "container", "ls", "-q", "-a", "--filter", f"name={hostname_prefix}_validator*"],
+        all_containers = subprocess.run(
+            ["docker", "container", "ls", "-q", "-a"],
             capture_output=True, text=True).stdout.strip().splitlines()
+        containers = [c for c in all_containers if c.startswith(f"{hostname_prefix}_validator")]
         if containers:
             subprocess.run(["docker", "container", "stop"] + containers, check=True)
 

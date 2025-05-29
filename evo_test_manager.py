@@ -34,8 +34,9 @@ def process_results(log_dir):
 
 def cleanup_docker(hostname_prefix: str):
     try:
-        containers = subprocess.run(["docker", "container", "ls", "-q", "-a", "--filter", f"name={hostname_prefix}*"],
+        all_containers = subprocess.run(["docker", "container", "ls", "-q", "-a"],
                                     capture_output=True, text=True).stdout.strip().splitlines()
+        containers = [c for c in all_containers if c.startswith(hostname_prefix)]
         if containers:
             subprocess.run(["docker", "container", "stop"] + containers, check=True)
             subprocess.run(["docker", "container", "rm"] + containers, check=True)
