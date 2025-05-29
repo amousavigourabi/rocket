@@ -1,7 +1,6 @@
 """This file contains a class to run and manage evolutionary based testing approaches."""
 import csv
 import glob
-import os
 import shutil
 from concurrent.futures import as_completed
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -222,9 +221,6 @@ class EvoTestManager:
 
     def main(self):
         start_time = datetime.now()
-        dst = "/shared/network"
-        if os.path.exists(dst):
-            shutil.rmtree(dst)
         shutil.copytree("./rocket_interceptor/network", f"/shared/network")
 
         population = [self.initial_population() for _ in range(self.population_size)]
