@@ -19,7 +19,7 @@ def run_server(mock_configs):
     mock_iteration_type = Mock()
     strategy = DummyStrategy(iteration_type=mock_iteration_type)
     mock_configs.assert_called_once()
-    strategy.network.port_to_id_dict = {10: 0, 20: 1}
+    strategy.network.hostname_to_id_dict = {10: 0, 20: 1}
     server = serve(strategy)
     mock_iteration_type.set_server.assert_called_once()
     mock_iteration_type.add_iteration.assert_called_once()

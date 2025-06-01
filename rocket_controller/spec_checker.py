@@ -83,7 +83,7 @@ class SpecChecker:
 
         
         ledger_file_path = (
-            f"logs/{self.log_dir}/iteration-{iteration}/ledger-{iteration}.csv"
+            f"{self.log_dir}/iteration-{iteration}/ledger-{iteration}.csv"
         )
 
         ledgers_data = defaultdict(list)
@@ -113,10 +113,7 @@ class SpecChecker:
                         continue
         except csv.Error as e:
             logger.critical(f"CSV Error: {e}")
-            self.spec_check_logger.log_spec_check(
-                iteration, f"CSV Error: {e}", "-", "-", "-", "-"
-            )
-            return
+            raise IOError(f"Error reading ledger file: {ledger_file_path}") from e
 
         if not ledgers_data:
             logger.critical("No valid ledger data found.")
@@ -202,8 +199,8 @@ class SpecChecker:
 
     def aggregate_spec_checks(self):
         """Aggregate the spec check results and write them to a final file."""
-        spec_check_file_path = f"logs/{self.log_dir}/spec_check_log.csv"
-        agg_spec_check_file_path = f"logs/{self.log_dir}/aggregated_spec_check_log.json"
+        spec_check_file_path = f"{self.log_dir}/spec_check_log.csv"
+        agg_spec_check_file_path = f"{self.log_dir}/aggregated_spec_check_log.json"
 
         try:
             with open(spec_check_file_path, newline="") as file:

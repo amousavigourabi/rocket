@@ -2,6 +2,10 @@
 import csv
 import glob
 import shutil
+import signal
+from concurrent.futures import as_completed
+from concurrent.futures.thread import ThreadPoolExecutor
+from curses.ascii import isxdigit
 from datetime import datetime
 import random
 import subprocess
@@ -9,16 +13,14 @@ import sys
 from pathlib import Path
 from time import sleep
 
+import docker
 import yaml
 from typing import Tuple
-
-from operators import SBX, GaussianMutation
-from rocket_controller.helper import format_datetime
 
 
 
 def process_results(log_dir):
-    result_files = glob.glob(f"logs/{log_dir}/**/result-*.csv")
+    result_files = glob.glob(f"{log_dir}/**/result-*.csv")
     validation_times = []
 
     for result_file in result_files:
@@ -30,6 +32,20 @@ def process_results(log_dir):
     return sum(validation_times) / len(validation_times) if validation_times else 0
 
 
+def cleanup_docker(hostname_prefix: str):
+    try:
+        client = docker.from_env()
+
+        all_containers = client.containers.list(all=True)
+        containers = [c for c in all_containers if c.name.startswith(hostname_prefix)]
+        for container in containers:
+            try:
+                container.stop()
+                container.remove()
+            except Exception as e:
+                print(f"Failed to stop container {container.name}. Error: {e}")
+    except Exception as e:
+        print(f"Error cleaning up docker containers: {e}")
 
 
 class EvoTestManager:
@@ -53,7 +69,6 @@ class EvoTestManager:
         if nodes < 2:
             raise ValueError(f"nodes should be at least 2, but got {nodes}")
         self.nodes = nodes
-
 
         strategy = self._config['general']['strategy']
         if not strategy in ['EvoDelayStrategy', 'EvoPriorityStrategy']:
@@ -83,6 +98,13 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
+        self.image = "rocket-image-bryan"
+        self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0"
+        # self.output_path = "/data/home/bwassenaar/shared_rocket"
+        self.main_hostname_prefix = "BW_Baseline"
+        self.shared_volume = f"{self.main_hostname_prefix}_data"
+        self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
+        # Do not use more than 5 on the research server!
 
     def initial_population(self):
         return [random.randint(self.encoding_min, self.encoding_max) for _ in range(self.encoding_length)]
@@ -106,18 +128,21 @@ class EvoTestManager:
         Returns:
             List of new populations after crossover and mutation
         """
-        crossover = SBX()
-        mutate = GaussianMutation(self.encoding_min, self.encoding_max)
+        # crossover = SBX()
+        # mutate = GaussianMutation(self.encoding_min, self.encoding_max)
+        #
+        # elite = population[0:5]
+        #
+        # crossover_population = crossover.crossover(population[:-5])
+        # mutated_population = mutate.mutate(crossover_population)
 
-        elite = population[0:5]
+        new_population: list[list[int]] = []
+        for idx, individual in enumerate(population):
+            new_population.append(self.initial_population())
+        return new_population
+        # return elite + mutated_population
 
-        crossover_population = crossover.crossover(population[:-5])
-        mutated_population = mutate.mutate(crossover_population)
-    
-        return elite + mutated_population
-
-
-    def run_rocket(self, encoding: list[int], log_dir: str, retry: int = 0):
+    def run_rocket(self, encoding: list[int], generation: int, testcase: int, retry: int = 0):
         """
         Run rocket with set configurations.
 
@@ -128,59 +153,98 @@ class EvoTestManager:
         """
 
         if len(encoding) != self.encoding_length:
-            raise ValueError(f"Encoding should be of length {self.encoding_length}, but got {len(encoding)}")
+            raise ValueError(
+                f"Encoding should be of length {self.encoding_length}, but got {len(encoding)}\nEncoding: {encoding}")
         print(f"Running rocket with encoding {encoding}")
+        hostname_prefix = f"{self.main_hostname_prefix}_G{generation}T{testcase}R{retry}"
 
-        Path.mkdir(Path(f"logs/{log_dir}"), parents=True, exist_ok=True)
-        with open(f"logs/{log_dir}/run_info.txt", mode="a") as f:
+        log_dir = f"/shared/logs/{self.main_hostname_prefix}/{hostname_prefix}"
+        Path.mkdir(Path(log_dir), parents=True, exist_ok=True)
+        with open(f"{log_dir}/run_info.txt", mode="a") as f:
             f.write(f"Seed: {self.seed}")
             f.write(f"\nEncoding: {encoding}")
 
-        command = [sys.executable, "-m", "rocket_controller", "--nodes", str(self.nodes), "--encoding", str(encoding), "--log_dir", log_dir, self.strategy]
+        name = f"{hostname_prefix}_controller"
 
-        # TODO Python process -> Docker container start depending on flag. For dev still sequential
-        process = subprocess.Popen(
-            command,
-            text=True
-        )
-        return_code = process.wait()
-        if return_code != 0: # TODO return_code does probably not work, but will be different anyway when DinD is used.
-            if retry < 3:
+        python_args = ["-m", "rocket_controller", self.strategy, "--nodes", str(self.nodes), "--encoding",
+                       str(encoding), "--hostname_prefix", hostname_prefix, "--log_dir", log_dir]
+
+        client = docker.from_env()
+        try:
+            container = client.containers.run(
+                image=self.image,
+                name=name,
+                command=python_args,
+                network="rocket_net",
+                auto_remove=False,
+                environment={
+                    "ROCKET_NETWORK_MOUNT": self.shared_volume,
+                    "ROCKET_XRPLD_DOCKER_CONTAINER": self.xrpl_image
+                },
+                volumes={
+                    "/var/run/docker.sock": {"bind": "/var/run/docker.sock", "mode": "rw"},
+                    self.shared_volume: {"bind": "/shared", "mode": "rw"},
+                },
+                detach=True,
+            )
+
+            with open(f"{log_dir}/stdout.txt", mode="w") as out_file:
+                result = container.wait(timeout=30*60)
+                logs = container.logs(stdout=True, stderr=True, timestamps=True)
+                out_file.write(logs.decode(errors="ignore"))
+            exit_code = result.get("StatusCode", -1)
+        except Exception as e:
+            if retry < 2:
                 retry += 1
                 print(f"Rocket failed on attempt {retry}. Retrying...")
-                shutil.copytree(f"logs/{log_dir}", f"logs/failed/{log_dir}/retry-{retry}")
-                shutil.rmtree(f"logs/{log_dir}")
+                cleanup_docker(hostname_prefix)
                 sleep(5)
-                return self.run_rocket(encoding, log_dir, retry)
+                return self.run_rocket(encoding, generation, testcase, retry)
+            raise Exception(f"Rocket timed out after {retry} retries. THIS IS NOT GOOD!")
+
+        if exit_code != 0:
+            if retry < 2:
+                retry += 1
+                print(f"Rocket failed on attempt {retry}. Retrying...")
+                cleanup_docker(hostname_prefix)
+                sleep(5)
+                return self.run_rocket(encoding, generation, testcase, retry)
             raise Exception(f"Rocket failed after {retry} retries. THIS IS NOT GOOD!")
 
         average_validation_time = process_results(log_dir)
-        with open(f"logs/{log_dir}/run_info.txt", mode="a") as f:
+        with open(f"{log_dir}/run_info.txt", mode="a") as f:
             f.write(f"\nAverage validation time: {average_validation_time} seconds")
         print(f"Average validation time: {average_validation_time} seconds")
+        cleanup_docker(hostname_prefix)
         return average_validation_time, encoding
 
-    def run_evolution_round(self, population: list[list[int]], log_dir: str):
+    def run_evolution_round(self, generation: int, population: list[list[int]]):
         results = []
         print(f"Running evolution with {len(population)} test cases.")
-        for idx, test_case in enumerate(population):
-            # This is the part that could be run in parallel, if we figure out how with docker networking and stuff.
-            results.append(self.run_rocket(test_case, f"{log_dir}/test_case-{idx+1}"))
+
+        with ThreadPoolExecutor(max_workers=self.workers) as executor:
+            futures = {}
+            for idx, test_case in enumerate(population):
+                future = executor.submit(self.run_rocket, test_case, generation, idx + 1, 0)
+                futures[future] = test_case
+
+            for future in as_completed(futures.keys()):
+                result = (future.result(), futures[future])
+                results.append(result)
+
         return results
 
     def main(self):
         start_time = datetime.now()
+        shutil.copytree("./rocket_interceptor/network", f"/shared/network")
+
         population = [self.initial_population() for _ in range(self.population_size)]
-        for _ in range(self.generations):
-            print(f"Generation {_+1}")
-            results = self.run_evolution_round(population, f"{format_datetime(start_time)}/generation-{_+1}")
+        for idx in range(self.generations):
+            print(f"Generation {idx + 1}")
+            results = self.run_evolution_round(idx + 1, population)
 
-            new_population = [] #elitism, add x best individuals
-
-            while len(new_population) < len(population):
-                selected = self.selection(results) # 2 paremts
-                children = self.reproduction(selected)
-                new_population.append(children)
+            selected = self.selection(results)
+            new_population = self.reproduction(selected)
 
             population = new_population
         return
@@ -189,3 +253,4 @@ class EvoTestManager:
 if __name__ == "__main__":
     manager = EvoTestManager()
     manager.main()
+

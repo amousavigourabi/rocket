@@ -22,13 +22,17 @@ The interceptor is run as a subprocess from the controller.
 ```bash
 pip install -r requirements.txt
 docker pull xrpllabsofficial/xrpld:2.3.0
+docker network create rocket_net
 ```
 
-### Adding the interceptor binary
+### Adding the interceptor
 
 After compiling the [rocket_interceptor](https://github.com/diseb-lab/rocket-interceptor) module,
 place the resulting binary in the `rocket_interceptor` subdirectory. This is where Rocket
 expects the binary to be.
+
+Copy the folder 'network' to a location which you can mount to docker.
+The xrpl nodes use this to create their config files.
 
 ### Configuration
 
@@ -71,11 +75,28 @@ overrides need to be present in the corresponding strategy's configuration file.
 
 ### Running
 
-Below is a basic example of running the tool with default settings, using
+Below is a basic example of running rocket with default settings, using
 the included RandomFuzzer as the fuzzing strategy.
+Make sure you use at least all options shown in the example.
+
+In this example the following was assumed:
+- The variable 'hostname_prefix' was set to "LOCAL" in default_network.yml
+- Your network folder from the interceptor was located in /rocket_network (this is an absolute path)
+
+Steps:
+- First build the docker image, you will have to do this after each code change.
+- Then run the container with your options.
+- Extract the logs to your local machine when the test has run
 
 ```bash
-python3 -m rocket_controller RandomFuzzer
+docker build -t rocket-image .
+docker run --name LOCAL_controller --network rocket_net -v /var/run/docker.sock:/var/run/docker.sock -v LOCAL_data:/shared -e ROCKET_NETWORK_MOUNT="LOCAL_data" -e ROCKET_XRPLD_DOCKER_CONTAINER=xrpllabsofficial/xrpld:1.7.3 rocket-image -m rocket_controller RandomFuzzer
+docker cp LOCAL_controller:/shared/logs YOUR/PATH/logs
+```
+
+If you want to use the same hostname_prefix again, you will first have to remove your controller container. IMPORTANT: You will lose the previous logs if you didn't extract them yet.
+```bash
+docker remove LOCAL_controller
 ```
 
 For the full list of CLI options, run the following command:
@@ -84,6 +105,39 @@ For the full list of CLI options, run the following command:
 python3 -m rocket_controller -h
 ```
 
+## Running the evolutionary algorithm on research server
+
+Words in CAPSLOCK are variables!
+
+prerequisites
+- Make sure you changed the variables in the init of evo_test_manager.py according to your setup.
+- Make sure you created a shared folder (shared_rocket) in your home folder on the server. The path to this folder is /data/home/NETID/shared_rocket
+- Make sure you transferred the folder network (from the interceptor repo) to this shared folder.
+
+steps:
+- First build your image.
+- Then save your image and transfer it to the server.
+- Finally run your image.
+```bash
+docker build -t rocket-image-YOURNAME .
+docker save rocket-image-YOURNAME | gzip | ssh REMOTE-HOST "gunzip | docker load"
+ssh REMOTE-HOST
+docker run -d --name MAIN_HOSTNAME_PREFIX -v /var/run/docker.sock:/var/run/docker.sock -v MAIN_HOSTNAME_PREFIX_data:/shared rocket-image-YOURNAME evo_test_manager.py
+```
+
+Then when you are done you can use the following to extract the logs after which you can copy them using scp to your local machine.
+```bash
+docker cp MAIN_HOSTNAME_PREFIX:/shared/logs /data/home/NETID/logs
+tar -czvf MAIN_HOSTNAME_PREFIX.tar.gz MAIN_HOSTNAME_PREFIX/
+exit
+scp REMOTE-HOST:/data/home/NETID/logs/MAIN_HOSTNAME_PREFIX.tar.gz ./MAIN_HOSTNAME_PREFIX.tar.gz
+````
+
+If you need to stop and remove your run (last command removes logs):
+```bash
+docker ps -a --filter "name=^/MAIN_HOSTNAME_PREFIX" --format "{{.ID}}" | xargs -r docker rm -f
+docker volume rm MAIN_HOSTNAME_PREFIX_data
+```
 ## Creating a new Strategy
 
 Rocket's design allows for easy creation of new fuzzing strategies. Below are

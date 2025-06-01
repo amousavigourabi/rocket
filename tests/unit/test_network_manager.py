@@ -16,8 +16,8 @@ def test_init():
     assert store.network_config == {}
     assert store.validator_node_list == []
     assert store.node_amount == 0
-    assert store.port_to_id_dict == {}
-    assert store.id_to_port_dict == {}
+    assert store.hostname_to_id_dict == {}
+    assert store.id_to_hostname_dict == {}
     assert store.public_to_private_key_map == {}
 
 
@@ -28,8 +28,8 @@ def test_update_network():
     assert network.network_config == {}
     assert network.validator_node_list == [node_0, node_1]
     assert network.node_amount == 2
-    assert network.port_to_id_dict == {10: 0, 11: 1}
-    assert network.id_to_port_dict == {0: 10, 1: 11}
+    assert network.hostname_to_id_dict == {10: 0, 11: 1}
+    assert network.id_to_hostname_dict == {0: 10, 1: 11}
     assert network.public_to_private_key_map == {
         "643978c4": "c548734c",
         "f82580": "3a9c94",
@@ -52,17 +52,17 @@ def test_update_network():
 def test_port_to_id_invalid():
     """Test whether port_to_id raises an error when an invalid port is given."""
     network = NetworkManager()
-    network.port_to_id_dict = {10: 0, 11: 1, 12: 2}
+    network.hostname_to_id_dict = {10: 0, 11: 1, 12: 2}
     with pytest.raises(ValueError):
-        network.port_to_id(0)
+        network.hostname_to_id(0)
 
 
 def test_id_to_port_invalid():
     """Test whether id_to_port raises an error when an invalid id is given."""
     network = NetworkManager()
-    network.id_to_port_dict = {0: 10, 1: 11, 2: 12}
+    network.id_to_hostname_dict = {0: 10, 1: 11, 2: 12}
     with pytest.raises(ValueError):
-        network.id_to_port(3)
+        network.id_to_hostname(3)
 
 
 @patch("rocket_controller.network_manager.JsonRpcClient")

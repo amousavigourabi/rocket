@@ -97,7 +97,7 @@ def test_cleanup_docker():
 
     with patch("docker.from_env", return_value=mock_docker_client):
         interceptor_manager = InterceptorManager()
-        interceptor_manager.cleanup_docker_containers()
+        cleanup_docker_containers()
 
     mock_container1.stop.assert_called_once()
     mock_container2.stop.assert_not_called()

@@ -22,7 +22,7 @@ class EvoDelayStrategy(Strategy):
         auto_parse_identical: bool = False,
         auto_parse_subsets: bool = False,
         # keep_action_log: bool = True,
-        iteration_type: TimeBasedIteration | None = LedgerBasedIteration(10, 10, 60),
+        iteration_type: TimeBasedIteration | None = LedgerBasedIteration(7, 10, 60),
         log_dir: str | None = None,
         network_overrides: Dict[str, Any] | None = None,
         strategy_overrides: Dict[str, Any] | None = None,
@@ -91,8 +91,8 @@ class EvoDelayStrategy(Strategy):
 
         # To get type index -> subtract 30, for validation, subtract 35
         type_id = message_type - 30 if message_type != 41 else 6
-        sender_node_id = self.network.port_to_id(packet.from_port)
-        receiver_node_id = self.network.port_to_id(packet.to_port)
+        sender_node_id = self.network.hostname_to_id(packet.from_hostname)
+        receiver_node_id = self.network.hostname_to_id(packet.to_hostname)
 
         # for n nodes
         # index = num(message_type) * (n * n-1)

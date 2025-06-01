@@ -138,14 +138,14 @@ class Strategy(ABC):
             if isinstance(message, ripple_pb2.TMStatusChange):
                 self.iteration_type.on_status_change(
                     message,
-                    self.network.port_to_id(packet.from_port),
-                    self.network.port_to_id(packet.to_port),
+                    self.network.hostname_to_id(packet.from_hostname),
+                    self.network.hostname_to_id(packet.to_hostname),
                 )
             elif isinstance(message, ripple_pb2.TMTransaction):
                 self.iteration_type.on_transaction(
                     message,
-                    self.network.port_to_id(packet.from_port),
-                    self.network.port_to_id(packet.to_port),
+                    self.network.hostname_to_id(packet.from_hostname),
+                    self.network.hostname_to_id(packet.to_hostname),
                 )
         except DecodingNotSupportedError:
             pass
@@ -163,8 +163,8 @@ class Strategy(ABC):
         Returns:
             Tuple[bytes, int, int]: The processed packet as bytes, the action and the send amount.
         """
-        peer_from_id = self.network.port_to_id(packet.from_port)
-        peer_to_id = self.network.port_to_id(packet.to_port)
+        peer_from_id = self.network.hostname_to_id(packet.from_hostname)
+        peer_to_id = self.network.hostname_to_id(packet.to_hostname)
 
         # Check for identical previous messages or for identical messages within broadcasts.
         # This uses booleans to check whether the functionality has to be applied automatically.

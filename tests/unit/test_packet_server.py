@@ -11,7 +11,7 @@ from rocket_controller.packet_server import PacketService
 
 def test_send_packet_no_log():
     """Test the send_packet method of PacketService without logging."""
-    packet = packet_pb2.Packet(data=b"test", from_port=10, to_port=20)
+    packet = packet_pb2.Packet(data=b"test", from_hostname="TEST_validator_0", to_hostname="TEST_validator_1")
     mock_strategy = Mock()
     mock_strategy.process_packet.return_value = (packet.data, 0, 1)
     mock_strategy.keep_action_log = False
@@ -25,7 +25,7 @@ def test_send_packet_no_log():
 
 def test_send_packet_with_log_no_logger():
     """Test the send_packet method of PacketService with logging but no existing logger."""
-    packet = packet_pb2.Packet(data=b"test", from_port=10, to_port=20)
+    packet = packet_pb2.Packet(data=b"test", from_hostname="TEST_validator_0", to_hostname="TEST_validator_1")
     mock_strategy = Mock()
     mock_strategy.process_packet.return_value = (packet.data, 0, 1)
     mock_strategy.keep_action_log = True
@@ -37,7 +37,7 @@ def test_send_packet_with_log_no_logger():
 
 def test_send_packet_with_log_and_logger():
     """Test the send_packet method of PacketService with logging and an existing logger."""
-    packet = packet_pb2.Packet(data=b"test", from_port=10, to_port=20)
+    packet = packet_pb2.Packet(data=b"test", from_hostname="TEST_validator_0", to_hostname="TEST_validator_1")
     mock_strategy = Mock()
     mock_strategy.process_packet.return_value = (packet.data, 0, 1)
     mock_strategy.keep_action_log = True
@@ -103,10 +103,7 @@ def test_get_config():
     #  all ports set to zero which is guaranteed to fail in the interceptor.
     mock_strategy = Mock()
     mock_strategy.network.network_config = {
-        "base_port_peer": 0,
-        "base_port_ws": 0,
-        "base_port_ws_admin": 0,
-        "base_port_rpc": 0,
+        "hostname_prefix": "TEST",
         "number_of_nodes": 0,
         "network_partition": [[]],
         "unl_partition": [[]],
@@ -114,17 +111,8 @@ def test_get_config():
     packet_server = PacketService(mock_strategy)
     request = packet_pb2.Config()
     response = packet_server.get_config(request, None)
-    assert response.base_port_peer == mock_strategy.network.network_config.get(
-        "base_port_peer"
-    )
-    assert response.base_port_ws == mock_strategy.network.network_config.get(
-        "base_port_ws"
-    )
-    assert response.base_port_ws_admin == mock_strategy.network.network_config.get(
-        "base_port_ws_admin"
-    )
-    assert response.base_port_rpc == mock_strategy.network.network_config.get(
-        "base_port_rpc"
+    assert response.hostname_prefix == mock_strategy.network.network_config.get(
+        "hostname_prefix"
     )
     assert response.number_of_nodes == mock_strategy.network.network_config.get(
         "number_of_nodes"
@@ -147,10 +135,7 @@ def test_get_config_raises_type_error():
     """Test the get_config method of PacketService."""
     mock_strategy = Mock()
     mock_strategy.network.network_config = {
-        "base_port_peer": 0,
-        "base_port_ws": 0,
-        "base_port_ws_admin": 0,
-        "base_port_rpc": 0,
+        "hostname_prefix": "TEST",
         "number_of_nodes": "4",
         "network_partition": [[0, 1]],
     }
@@ -163,10 +148,7 @@ def test_get_config_raises_type_error():
         packet_server.get_config(request, None)
 
     mock_strategy.network.network_config = {
-        "base_port_peer": 0,
-        "base_port_ws": 0,
-        "base_port_ws_admin": 0,
-        "base_port_rpc": 0,
+        "hostname_prefix": "TEST",
         "number_of_nodes": 0,
         "network_partition": [0],
     }
@@ -183,9 +165,6 @@ def test_get_config_raises_value_error():
     """Test the get_config method of PacketService."""
     mock_strategy = Mock()
     mock_strategy.network.network_config = {
-        "base_port_peer": 0,
-        "base_port_ws_admin": 0,
-        "base_port_rpc": 0,
         "number_of_nodes": "4",
         "network_partition": [[0, 1]],
     }
@@ -197,10 +176,7 @@ def test_get_config_raises_value_error():
         packet_server.get_config(request, None)
 
     mock_strategy.network.network_config = {
-        "base_port_peer": 0,
-        "base_port_ws": 0,
-        "base_port_ws_admin": 0,
-        "base_port_rpc": 0,
+        "hostname_prefix": "TEST",
         "number_of_nodes": 0,
     }
     packet_server = PacketService(mock_strategy)

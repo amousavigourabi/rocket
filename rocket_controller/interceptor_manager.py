@@ -1,5 +1,5 @@
 """This module contains functionality to easily interact with the network packet interceptor subprocess."""
-
+import subprocess
 import traceback
 from subprocess import PIPE, Popen, TimeoutExpired
 from sys import platform
@@ -8,6 +8,21 @@ from threading import Thread
 import docker
 from docker import DockerClient
 from loguru import logger
+
+
+def cleanup_docker_containers(hostname_prefix: str):
+    try:
+        client = docker.from_env()
+
+        all_containers = client.containers.list()
+        containers = [c for c in all_containers if c.name.startswith(f"{hostname_prefix}_validator")]
+        for container in containers:
+            try:
+                container.stop()
+            except Exception as e:
+                print(f"Failed to stop container {container.name}. Error: {e}")
+    except Exception as e:
+        print(f"Error cleaning up docker containers: {e}")
 
 
 class InterceptorManager:
@@ -33,13 +48,6 @@ class InterceptorManager:
         except Exception as e:
             logger.error(f"Error while reading subprocess output: {e}")
 
-    @staticmethod
-    def cleanup_docker_containers():
-        """Stop the validator containers."""
-        docker_client: DockerClient = docker.from_env()
-        for c in docker_client.containers.list():
-            if "validator_" in c.name:
-                c.stop()
 
     def start_new(self):
         """Starts the rocket-interceptor subprocess, and spawns a thread checking for output."""

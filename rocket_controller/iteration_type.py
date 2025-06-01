@@ -3,6 +3,7 @@ import hashlib
 import threading
 import time
 from datetime import datetime
+from time import sleep
 from typing import Dict, List, TypedDict
 
 from grpc import Server
@@ -12,7 +13,7 @@ import random
 
 from protos import ripple_pb2
 from rocket_controller.csv_logger import TransactionLogger, LedgerLogger, TXProposalLogger, AccountLogger
-from rocket_controller.interceptor_manager import InterceptorManager
+from rocket_controller.interceptor_manager import InterceptorManager, cleanup_docker_containers
 from rocket_controller.ledger_result import LedgerResult
 from rocket_controller.network_manager import NetworkManager
 from rocket_controller.spec_checker import SpecChecker
@@ -89,18 +90,18 @@ class TimeBasedIteration:
             f"Finished iteration {self.cur_iteration-1}, stopping test process..."
         )
         self._interceptor_manager.stop()
-        self._interceptor_manager.cleanup_docker_containers()
+        cleanup_docker_containers(self._network.network_config.get("hostname_prefix"))
 
     def _terminate_server(self):
         """Terminate the gRPC server."""
         if self._server:
             self._server.stop(grace=1)
 
-    def _start_timeout_timer(self):
+    def _start_timeout_timer(self, timeout_seconds: int):
         """Starts a timeout timer, which starts a new iteration when the timeout is reached."""
         if self._timer:
             self._timer.cancel()
-        self._timer = threading.Timer(self._timeout_seconds, self._timeout_reached)
+        self._timer = threading.Timer(timeout_seconds, self._timeout_reached)
         self._timer.start()
 
     def _timeout_reached(self):
@@ -303,11 +304,12 @@ class TimeBasedIteration:
             raise ValueError("Log directory not initialized")
 
         self.cur_iteration += 1
-
+        logger.debug("Stopping logLedgerResul;t")
         # Wait for the logging threads to finish
         for t in threading.enumerate():
             if "LogLedgerResult" in t.name: # TODO Stopping here is dangerous.
                 t.join()
+        logger.debug("Done stopping logLedgerResul;t")
 
         if self.cur_iteration > 1:
             self._spec_checker.spec_check(self.cur_iteration - 1, len(self._validator_nodes), self._max_ledger_seq, self._byzantine_nodes)
@@ -322,12 +324,14 @@ class TimeBasedIteration:
             self.add_iteration_callbacks()
             logger.info(f"Starting iteration {self.cur_iteration}")
             self._interceptor_manager.start_new()
-            self._start_timeout_timer()
+            self._start_timeout_timer(300)
             self._start_transactions()
         else:
             self._stop_all()
             self._spec_checker.aggregate_spec_checks()
+            logger.info("SpecChecker stopped")
             self._terminate_server()
+            logger.info("Run Finished.")
 
     def _reset_values(self):
         """Reset state variables, called when interceptor is restarted."""
@@ -347,6 +351,7 @@ class TimeBasedIteration:
         # TODO Network should not reset here!
         self._network.accounts = {}
         self._network.tx_builder = TransactionBuilder()
+        logger.debug("State variables reset.")
 
     def on_status_change( 
         self, status: ripple_pb2.TMStatusChange, from_id: int, to_id: int
@@ -380,7 +385,7 @@ class TimeBasedIteration:
                 self.ledger_validation_map[from_id]["time"] = _now
                 # At least one node has validated a new ledger, we can reset the timeout.
                 if self.ledger_timeout:
-                    self._start_timeout_timer()
+                    self._start_timeout_timer(self._timeout_seconds)
 
                 logger.info(
                     f"Node {from_id} validated ledger {self.ledger_validation_map[from_id]['seq']} in {_validation_time}"
@@ -508,7 +513,7 @@ class NoneIteration(TimeBasedIteration):
         Args:
             max_ledger_seq: Unused argument, required for the override.
         """
-        self._start_timeout_timer()
+        self._start_timeout_timer(300)
         self.cur_iteration += 1
 
     def _reset_values(self):

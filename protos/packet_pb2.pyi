@@ -17,19 +17,19 @@ class Packet(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
     DATA_FIELD_NUMBER: builtins.int
-    FROM_PORT_FIELD_NUMBER: builtins.int
-    TO_PORT_FIELD_NUMBER: builtins.int
+    FROM_HOSTNAME_FIELD_NUMBER: builtins.int
+    TO_HOSTNAME_FIELD_NUMBER: builtins.int
     data: builtins.bytes
-    from_port: builtins.int
-    to_port: builtins.int
+    from_hostname: builtins.str
+    to_hostname: builtins.str
     def __init__(
         self,
         *,
         data: builtins.bytes = ...,
-        from_port: builtins.int = ...,
-        to_port: builtins.int = ...,
+        from_hostname: builtins.str = ...,
+        to_hostname: builtins.str = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["data", b"data", "from_port", b"from_port", "to_port", b"to_port"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["data", b"data", "from_hostname", b"from_hostname", "to_hostname", b"to_hostname"]) -> None: ...
 
 global___Packet = Packet
 
@@ -58,19 +58,13 @@ global___PacketAck = PacketAck
 class ValidatorNodeInfo(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    PEER_PORT_FIELD_NUMBER: builtins.int
-    WS_PUBLIC_PORT_FIELD_NUMBER: builtins.int
-    WS_ADMIN_PORT_FIELD_NUMBER: builtins.int
-    RPC_PORT_FIELD_NUMBER: builtins.int
+    HOSTNAME_FIELD_NUMBER: builtins.int
     STATUS_FIELD_NUMBER: builtins.int
     VALIDATION_KEY_FIELD_NUMBER: builtins.int
     VALIDATION_PRIVATE_KEY_FIELD_NUMBER: builtins.int
     VALIDATION_PUBLIC_KEY_FIELD_NUMBER: builtins.int
     VALIDATION_SEED_FIELD_NUMBER: builtins.int
-    peer_port: builtins.int
-    ws_public_port: builtins.int
-    ws_admin_port: builtins.int
-    rpc_port: builtins.int
+    hostname: builtins.str
     status: builtins.str
     validation_key: builtins.str
     validation_private_key: builtins.str
@@ -79,17 +73,14 @@ class ValidatorNodeInfo(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        peer_port: builtins.int = ...,
-        ws_public_port: builtins.int = ...,
-        ws_admin_port: builtins.int = ...,
-        rpc_port: builtins.int = ...,
+        hostname: builtins.str = ...,
         status: builtins.str = ...,
         validation_key: builtins.str = ...,
         validation_private_key: builtins.str = ...,
         validation_public_key: builtins.str = ...,
         validation_seed: builtins.str = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["peer_port", b"peer_port", "rpc_port", b"rpc_port", "status", b"status", "validation_key", b"validation_key", "validation_private_key", b"validation_private_key", "validation_public_key", b"validation_public_key", "validation_seed", b"validation_seed", "ws_admin_port", b"ws_admin_port", "ws_public_port", b"ws_public_port"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["hostname", b"hostname", "status", b"status", "validation_key", b"validation_key", "validation_private_key", b"validation_private_key", "validation_public_key", b"validation_public_key", "validation_seed", b"validation_seed"]) -> None: ...
 
 global___ValidatorNodeInfo = ValidatorNodeInfo
 
@@ -138,17 +129,11 @@ global___Partition = Partition
 class Config(google.protobuf.message.Message):
     DESCRIPTOR: google.protobuf.descriptor.Descriptor
 
-    BASE_PORT_PEER_FIELD_NUMBER: builtins.int
-    BASE_PORT_WS_FIELD_NUMBER: builtins.int
-    BASE_PORT_WS_ADMIN_FIELD_NUMBER: builtins.int
-    BASE_PORT_RPC_FIELD_NUMBER: builtins.int
+    HOSTNAME_PREFIX_FIELD_NUMBER: builtins.int
     NUMBER_OF_NODES_FIELD_NUMBER: builtins.int
     NET_PARTITIONS_FIELD_NUMBER: builtins.int
     UNL_PARTITIONS_FIELD_NUMBER: builtins.int
-    base_port_peer: builtins.int
-    base_port_ws: builtins.int
-    base_port_ws_admin: builtins.int
-    base_port_rpc: builtins.int
+    hostname_prefix: builtins.str
     number_of_nodes: builtins.int
     @property
     def net_partitions(self) -> google.protobuf.internal.containers.RepeatedCompositeFieldContainer[global___Partition]: ...
@@ -157,14 +142,11 @@ class Config(google.protobuf.message.Message):
     def __init__(
         self,
         *,
-        base_port_peer: builtins.int = ...,
-        base_port_ws: builtins.int = ...,
-        base_port_ws_admin: builtins.int = ...,
-        base_port_rpc: builtins.int = ...,
+        hostname_prefix: builtins.str = ...,
         number_of_nodes: builtins.int = ...,
         net_partitions: collections.abc.Iterable[global___Partition] | None = ...,
         unl_partitions: collections.abc.Iterable[global___Partition] | None = ...,
     ) -> None: ...
-    def ClearField(self, field_name: typing.Literal["base_port_peer", b"base_port_peer", "base_port_rpc", b"base_port_rpc", "base_port_ws", b"base_port_ws", "base_port_ws_admin", b"base_port_ws_admin", "net_partitions", b"net_partitions", "number_of_nodes", b"number_of_nodes", "unl_partitions", b"unl_partitions"]) -> None: ...
+    def ClearField(self, field_name: typing.Literal["hostname_prefix", b"hostname_prefix", "net_partitions", b"net_partitions", "number_of_nodes", b"number_of_nodes", "unl_partitions", b"unl_partitions"]) -> None: ...
 
 global___Config = Config
