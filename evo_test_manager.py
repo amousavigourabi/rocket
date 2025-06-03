@@ -130,10 +130,10 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
-        self.image = "rocket-image-wishaal"
+        self.image = "rocket-image-wishaal-bunl"
         self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "WK_SBX_Gauss_LT"
+        self.main_hostname_prefix = "WK_SBX_Gauss_LT_BUNL"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
@@ -221,7 +221,7 @@ class EvoTestManager:
             )
 
             with open(f"{log_dir}/stdout.txt", mode="w") as out_file:
-                result = container.wait(timeout=3*60)
+                result = container.wait(timeout=10*60)
                 logs = container.logs(stdout=True, stderr=True, timestamps=True)
                 out_file.write(logs.decode(errors="ignore"))
             exit_code = result.get("StatusCode", -1)
