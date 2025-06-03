@@ -92,8 +92,8 @@ class SpecChecker:
         all_hashes_pass = True
         all_sequences_pass = True
         all_ledger_goal_reached = (
-                len(ledgers_data[max_seq]) == nodes
-                and max_seq >= goal_ledger_seq
+                max_seq >= goal_ledger_seq and
+                len(ledgers_data[goal_ledger_seq]) == nodes
         )
         for _, records in ledgers_data.items():
             ledger_hashes_same = all(

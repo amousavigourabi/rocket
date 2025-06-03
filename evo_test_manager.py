@@ -221,7 +221,7 @@ class EvoTestManager:
             )
 
             with open(f"{log_dir}/stdout.txt", mode="w") as out_file:
-                result = container.wait(timeout=10*60)
+                result = container.wait(timeout=8*60)
                 logs = container.logs(stdout=True, stderr=True, timestamps=True)
                 out_file.write(logs.decode(errors="ignore"))
             exit_code = result.get("StatusCode", -1)
