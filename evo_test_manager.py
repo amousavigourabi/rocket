@@ -44,6 +44,9 @@ def process_results(log_dir):
             data = json.load(f)
             failed_termination = data.get('failed_termination', 0)
             failed_agreement = data.get('failed_agreement', 0)
+            print("Log dir: {}".format(log_dir))
+            print("Termination faults: ", failed_termination)
+            print("Agreement faults: ", failed_agreement)
             total_failures = failed_termination + failed_agreement
 
     return ((sum(validation_times) / len(validation_times)) if validation_times else 0), total_failures
@@ -221,7 +224,7 @@ class EvoTestManager:
             )
 
             with open(f"{log_dir}/stdout.txt", mode="w") as out_file:
-                result = container.wait(timeout=8*60)
+                result = container.wait(timeout=10*60)
                 logs = container.logs(stdout=True, stderr=True, timestamps=True)
                 out_file.write(logs.decode(errors="ignore"))
             exit_code = result.get("StatusCode", -1)
@@ -287,6 +290,7 @@ class EvoTestManager:
             print(f"Generation {idx + 1}")
 
             tools.sortNondominated(population, len(population))
+            tools.emo.assignCrowdingDist(population)
             offspring = []
 
             while len(offspring) < self.population_size:
