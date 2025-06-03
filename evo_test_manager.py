@@ -1,8 +1,10 @@
 """This file contains a class to run and manage evolutionary based testing approaches."""
 import csv
 import glob
+import json
 import shutil
 import signal
+import time
 from concurrent.futures import as_completed
 from concurrent.futures.thread import ThreadPoolExecutor
 from curses.ascii import isxdigit
@@ -10,13 +12,16 @@ from datetime import datetime
 import random
 import subprocess
 import sys
+import copy
 from pathlib import Path
 from time import sleep
+from deap import base, creator, tools
 
 import docker
 import yaml
 from typing import Tuple
 
+from docker.errors import NotFound, APIError
 
 
 def process_results(log_dir):
@@ -29,23 +34,50 @@ def process_results(log_dir):
             for row in csv_reader:
                 if row['ledger_seq'] != '2':
                     validation_times.append(float(row['time_to_validation']))
-    return sum(validation_times) / len(validation_times) if validation_times else 0
+
+    agg_spec_check_files = glob.glob(f"{log_dir}/aggregated_spec_check_log.json")
+    total_failures = 0
+
+    if agg_spec_check_files:
+        agg_file = agg_spec_check_files[0]
+        with open(agg_file, 'r') as f:
+            data = json.load(f)
+            failed_termination = data.get('failed_termination', 0)
+            failed_agreement = data.get('failed_agreement', 0)
+            total_failures = failed_termination + failed_agreement
+
+    return ((sum(validation_times) / len(validation_times)) if validation_times else 0), total_failures
 
 
-def cleanup_docker(hostname_prefix: str):
-    try:
-        client = docker.from_env()
+def cleanup_docker(hostname_prefix: str, max_attempts: int = 8):
+    attempt = 0
 
-        all_containers = client.containers.list(all=True)
-        containers = [c for c in all_containers if c.name.startswith(hostname_prefix)]
-        for container in containers:
-            try:
-                container.stop()
-                container.remove()
-            except Exception as e:
-                print(f"Failed to stop container {container.name}. Error: {e}")
-    except Exception as e:
-        print(f"Error cleaning up docker containers: {e}")
+    while attempt < max_attempts:
+        try:
+            client = docker.from_env()
+            all_containers = client.containers.list(all=True)
+            containers = [c for c in all_containers if c.name.startswith(f"{hostname_prefix}_validator")]
+
+            for container in containers:
+                try:
+                    container.remove(force=True)
+                    print(f"Removed container: {container.name}")
+                except NotFound:
+                    print(f"Container {container.name} already removed.")
+                except APIError as e:
+                    print(f"APIError removing {container.name}: {e}")
+                except Exception as e:
+                    print(f"Unexpected error removing {container.name}: {e}")
+            return  # Success, break out of loop
+
+        except Exception as e:
+            print(f"Error accessing Docker: {e}")
+            attempt += 1
+            if attempt < max_attempts:
+                print(f"Retrying in 2 seconds... (Attempt {attempt}/{max_attempts})")
+                time.sleep(2)
+            else:
+                print("Max retry attempts reached. Exiting.")
 
 
 class EvoTestManager:
@@ -54,7 +86,7 @@ class EvoTestManager:
     def __init__(self, config_path='evo_test_manager.yaml'):
         """
         Initializes an EvoTestManager.
-        
+
         Args:
             config_path: path to the config file.
         """
@@ -98,10 +130,10 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
-        self.image = "rocket-image-bryan"
-        self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0"
+        self.image = "rocket-image-wishaal"
+        self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "BW_Baseline"
+        self.main_hostname_prefix = "WK_SBX_Gauss_LT"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
@@ -121,10 +153,10 @@ class EvoTestManager:
     def reproduction(self, population: list[list[int]]):
         """
         Perform reproduction using Simulated Binary Crossover and Gaussian Mutation.
-        
+
         Args:
             population: List of populations to perform reproduction on
-        
+
         Returns:
             List of new populations after crossover and mutation
         """
@@ -189,7 +221,7 @@ class EvoTestManager:
             )
 
             with open(f"{log_dir}/stdout.txt", mode="w") as out_file:
-                result = container.wait(timeout=30*60)
+                result = container.wait(timeout=3*60)
                 logs = container.logs(stdout=True, stderr=True, timestamps=True)
                 out_file.write(logs.decode(errors="ignore"))
             exit_code = result.get("StatusCode", -1)
@@ -211,12 +243,14 @@ class EvoTestManager:
                 return self.run_rocket(encoding, generation, testcase, retry)
             raise Exception(f"Rocket failed after {retry} retries. THIS IS NOT GOOD!")
 
-        average_validation_time = process_results(log_dir)
+        average_validation_time, violations = process_results(log_dir)
         with open(f"{log_dir}/run_info.txt", mode="a") as f:
             f.write(f"\nAverage validation time: {average_validation_time} seconds")
+            f.write(f"\nTotal violations: {violations}")
         print(f"Average validation time: {average_validation_time} seconds")
+        print(f"Total violations: {violations}")
         cleanup_docker(hostname_prefix)
-        return average_validation_time, encoding
+        return average_validation_time, violations
 
     def run_evolution_round(self, generation: int, population: list[list[int]]):
         results = []
@@ -238,19 +272,79 @@ class EvoTestManager:
         start_time = datetime.now()
         shutil.copytree("./rocket_interceptor/network", f"/shared/network")
 
+        creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # Maximize both
+        creator.create("Individual", list, fitness=creator.FitnessMulti)
+
         population = [self.initial_population() for _ in range(self.population_size)]
-        for idx in range(self.generations):
+        prev_results = self.run_evolution_round(1, population)
+        population = []
+        for (time, violations), encoding in prev_results:
+            ind = creator.Individual(encoding)
+            ind.fitness.values = (time, violations)
+            population.append(ind)
+
+        for idx in range(1, self.generations):
             print(f"Generation {idx + 1}")
-            results = self.run_evolution_round(idx + 1, population)
 
-            selected = self.selection(results)
-            new_population = self.reproduction(selected)
+            tools.sortNondominated(population, len(population))
+            offspring = []
 
-            population = new_population
+            while len(offspring) < self.population_size:
+
+                # Select two parents using tournament DCD
+                parents = tools.selTournamentDCD(population, 2)
+                parent1, parent2 = parents[0], parents[1]
+
+                # Clone parents to create children
+                child1, child2 = copy.deepcopy(parent1), copy.deepcopy(parent2)
+
+                tools.cxSimulatedBinaryBounded(child1, child2, eta=3.0, low=0, up=4000)
+
+                # Apply Gaussian mutation with probability 0.1 per child
+                tools.mutGaussian(child1, mu=0, sigma=40, indpb=(1.0 / 42.0))
+                tools.mutGaussian(child2, mu=0, sigma=40, indpb=(1.0 / 42.0))
+
+                # custom_gaussian_mutation(child1, 0, 4000)
+                # custom_gaussian_mutation(child2, 0, 4000)
+
+                # Invalidate fitness values of offspring
+                del child1.fitness.values
+                del child2.fitness.values
+
+                # Round each gene in the child and clamp
+                child1[:] = [min(4000, max(0, round(gene))) for gene in child1]
+                child2[:] = [min(4000, max(0, round(gene))) for gene in child2]
+
+                offspring.append(child1)
+                if len(offspring) < self.population_size:
+                    offspring.append(child2)
+
+            results = self.run_evolution_round(idx + 1, list(offspring))   # results is list[((time, violations), encoding)]
+
+            offspring = []
+            for (time, violations), encoding in results:
+                ind = creator.Individual(encoding)
+                ind.fitness.values = (time, violations)
+                offspring.append(ind)
+
+            # Select new generation using NSGA-II
+            population = tools.selNSGA2(population + offspring, k=self.population_size)
+
         return
+
+def custom_gaussian_mutation(individual, a, b):
+    size = len(individual)
+    for i in range(size):
+        if random.random() < (1.0 / size):  # Mutation probability = 1/n
+            xi = individual[i]
+            sigma = (b - a) / 100.0
+            individual[i] += random.gauss(xi, sigma)
+            individual[i] = min(b, max(a, individual[i]))
+    return individual,
 
 
 if __name__ == "__main__":
     manager = EvoTestManager()
     manager.main()
+
 

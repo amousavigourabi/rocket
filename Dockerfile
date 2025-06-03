@@ -6,7 +6,7 @@ WORKDIR /rocket
 
 SHELL ["/bin/bash", "-c"]
 
-ARG XRPLD="xrpllabsofficial/xrpld:2.4.0"
+ARG XRPLD="ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
 
 ENV ROCKET_XRPLD_DOCKER_CONTAINER=${XRPLD}
 
