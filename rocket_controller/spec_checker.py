@@ -75,7 +75,7 @@ class SpecChecker:
                         continue
         except csv.Error as e:
             logger.critical(f"CSV Error: {e}")
-            return
+            raise IOError(f"Error reading ledger file: {ledger_file_path}") from e
 
         if not tx_honest_proposals_data:
             logger.critical("No valid tx_proposals data found.")
@@ -83,7 +83,7 @@ class SpecChecker:
 
         
         ledger_file_path = (
-            f"{self.log_dir}/iteration-{iteration}/ledger-{iteration}.csv"
+            f"logs/{self.log_dir}/iteration-{iteration}/ledger-{iteration}.csv"
         )
 
         ledgers_data = defaultdict(list)
@@ -113,7 +113,10 @@ class SpecChecker:
                         continue
         except csv.Error as e:
             logger.critical(f"CSV Error: {e}")
-            raise IOError(f"Error reading ledger file: {ledger_file_path}") from e
+            self.spec_check_logger.log_spec_check(
+                iteration, f"CSV Error: {e}", "-", "-", "-", "-"
+            )
+            return
 
         if not ledgers_data:
             logger.critical("No valid ledger data found.")
@@ -133,8 +136,8 @@ class SpecChecker:
         honest_nodes = [node for node in range(nodes) if node not in byzantine_nodes]
 
         all_ledger_goal_reached = (
-            len([record for record in ledgers_data[max_seq] if record['node_id'] in honest_nodes]) == len(honest_nodes)
-            and max_seq >= goal_ledger_seq
+            max_seq >= goal_ledger_seq and
+            len([record for record in ledgers_data[goal_ledger_seq] if record['node_id'] in honest_nodes]) == len(honest_nodes)
         )
         for _, records in ledgers_data.items():
             honest_records = [record for record in records if record['node_id'] in honest_nodes]
@@ -199,8 +202,8 @@ class SpecChecker:
 
     def aggregate_spec_checks(self):
         """Aggregate the spec check results and write them to a final file."""
-        spec_check_file_path = f"{self.log_dir}/spec_check_log.csv"
-        agg_spec_check_file_path = f"{self.log_dir}/aggregated_spec_check_log.json"
+        spec_check_file_path = f"logs/{self.log_dir}/spec_check_log.csv"
+        agg_spec_check_file_path = f"logs/{self.log_dir}/aggregated_spec_check_log.json"
 
         try:
             with open(spec_check_file_path, newline="") as file:

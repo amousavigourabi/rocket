@@ -1,5 +1,6 @@
 """This module contains functionality to easily interact with the network packet interceptor subprocess."""
 import subprocess
+import time
 import traceback
 from subprocess import PIPE, Popen, TimeoutExpired
 from sys import platform
@@ -7,22 +8,39 @@ from threading import Thread
 
 import docker
 from docker import DockerClient
+from docker.errors import NotFound, APIError
 from loguru import logger
 
 
-def cleanup_docker_containers(hostname_prefix: str):
-    try:
-        client = docker.from_env()
+def cleanup_docker_containers(hostname_prefix: str, max_attempts: int = 8):
+    attempt = 0
 
-        all_containers = client.containers.list()
-        containers = [c for c in all_containers if c.name.startswith(f"{hostname_prefix}_validator")]
-        for container in containers:
-            try:
-                container.stop()
-            except Exception as e:
-                print(f"Failed to stop container {container.name}. Error: {e}")
-    except Exception as e:
-        print(f"Error cleaning up docker containers: {e}")
+    while attempt < max_attempts:
+        try:
+            client = docker.from_env()
+            all_containers = client.containers.list(all=True)
+            containers = [c for c in all_containers if c.name.startswith(f"{hostname_prefix}_validator")]
+
+            for container in containers:
+                try:
+                    container.remove(force=True)
+                    print(f"Removed container: {container.name}")
+                except NotFound:
+                    print(f"Container {container.name} already removed.")
+                except APIError as e:
+                    print(f"APIError removing {container.name}: {e}")
+                except Exception as e:
+                    print(f"Unexpected error removing {container.name}: {e}")
+            return  # Success, break out of loop
+
+        except Exception as e:
+            print(f"Error accessing Docker: {e}")
+            attempt += 1
+            if attempt < max_attempts:
+                print(f"Retrying in 2 seconds... (Attempt {attempt}/{max_attempts})")
+                time.sleep(2)
+            else:
+                print("Max retry attempts reached. Exiting.")
 
 
 class InterceptorManager:
