@@ -1,5 +1,6 @@
 """Module that defines certain Iteration Types."""
 import hashlib
+import random
 import threading
 import time
 from datetime import datetime
@@ -96,6 +97,8 @@ class TimeBasedIteration:
         self._timers: List[threading.Timer] = []
         self._timeout_seconds = timeout_seconds
         self.ledger_timeout = ledger_timeout
+
+        self.shared_ledger_seq = 1
 
         self._interceptor_manager = InterceptorManager()
         self._validator_nodes: List[ValidatorNode] | None = None
@@ -352,7 +355,7 @@ class TimeBasedIteration:
             self._account_logger = AccountLogger(f"{self._log_dir}/iteration-{self.cur_iteration}", self.cur_iteration)
             logger.info(f"Starting iteration {self.cur_iteration}")
             self._interceptor_manager.start_new()
-            self._start_timeout_timer(300)
+            self._start_timeout_timer(65)
             self._start_transactions()
         else:
             self._stop_all()
@@ -412,8 +415,22 @@ class TimeBasedIteration:
                 _validation_time = _now - self.ledger_validation_map[from_id]["time"]
                 self.ledger_validation_map[from_id]["time"] = _now
                 # At least one node has validated a new ledger, we can reset the timeout.
-                if self.ledger_timeout:
+
+                status.ledgerHash.hex()
+
+                seqs = [entry["seq"] for entry in self.ledger_validation_map.values()]
+
+                # Check if all are greater than the current shared seq
+                if all(seq > self.shared_ledger_seq for seq in seqs):
+                    # Find the new minimal seq
+                    new_seq = min(seqs)
+
+                    # Perform your custom logic here
+
+                    # Update shared seq
                     self._start_timeout_timer(self._timeout_seconds)
+
+                    self.shared_ledger_seq = new_seq
 
                 logger.info(
                     f"Node {from_id} validated ledger {self.ledger_validation_map[from_id]['seq']} in {_validation_time}"
