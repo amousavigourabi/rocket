@@ -134,10 +134,10 @@ class EvoTestManager:
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
         self.image = "rocket-image-calin"
-        # self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0"
-        self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
+        self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0"
+        # self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "CC_Baseline_Priority_Seeded"
+        self.main_hostname_prefix = "CC_TimeFitness_Priority_Nonseeded"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
@@ -294,6 +294,7 @@ class EvoTestManager:
 
             tools.sortNondominated(population, len(population))
             tools.emo.assignCrowdingDist(population)
+            # offspring = [self.initial_population() for _ in range(self.population_size)]
             offspring = []
 
             while len(offspring) < self.population_size:
