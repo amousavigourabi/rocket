@@ -27,7 +27,7 @@ class EvoPriorityStrategy(Strategy):
         auto_parse_identical: bool = True,
         auto_parse_subsets: bool = True,
         keep_action_log: bool = True,
-        iteration_type = LedgerBasedIteration(7, 10, 65),
+        iteration_type = LedgerBasedIteration(2, 10, 65),
         # iteration_type = NoneIteration(),
         log_dir: str | None = None,
         network_overrides=None,
