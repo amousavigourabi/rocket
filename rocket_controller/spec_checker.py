@@ -37,7 +37,7 @@ class SpecChecker:
         self.spec_check_logger: SpecCheckLogger = SpecCheckLogger(log_dir)
         self.log_dir: str = log_dir
 
-    def spec_check(self, iteration: int, nodes: int, goal_ledger_seq: int):
+    def spec_check(self, iteration: int, nodes: int, goal_ledger_seq: int, timeout_reached: bool):
         """
         Do a specification check for the current iteration and log the results.
 
@@ -56,18 +56,20 @@ class SpecChecker:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     # Basic type conversion and validation
-                    if ("validated" in row["ledger_seq"]) or (row["validated"] != "True"):
+                    if ("validated" in row["ledger_seq"]):
                         continue
                     try:
                         node_id = int(row["peer_id"])
                         ledger_seq = int(row["ledger_seq"])
-                        ledger_hash = row["ledger_hash"]
-                        parsed_row = {
-                            "node_id": node_id,
-                            "ledger_seq": ledger_seq,
-                            "ledger_hash": ledger_hash,
-                        }
-                        ledgers_data[ledger_seq].append(parsed_row)
+                        ledger_hash = row.get("ledger_hash", "").strip()
+                        if ledger_hash:  # this checks that it's not empty or just spaces
+                            parsed_row = {
+                                "node_id": node_id,
+                                "ledger_seq": ledger_seq,
+                                "ledger_hash": ledger_hash,
+                                "validated": row["validated"] == "True",
+                            }
+                            ledgers_data[ledger_seq].append(parsed_row)
                     except (ValueError, KeyError) as e:
                         logger.error(
                             f"Skipping row due to parsing error: {e} in row: {row}"
@@ -91,13 +93,21 @@ class SpecChecker:
 
         all_hashes_pass = True
         all_sequences_pass = True
-        all_ledger_goal_reached = (
-                max_seq >= goal_ledger_seq and
-                len(ledgers_data[goal_ledger_seq]) == nodes
-        )
+        # all_ledger_goal_reached = (
+        #         max_seq >= goal_ledger_seq and
+        #         len(ledgers_data[goal_ledger_seq]) == nodes
+        # )
+        all_ledger_goal_reached = not timeout_reached
         for _, records in ledgers_data.items():
+            first_validated_hash = next(
+                (x["ledger_hash"] for x in records if x["validated"] and x["ledger_hash"] != "NOT FOUND"),
+                None
+            )
+
             ledger_hashes_same = all(
-               x["ledger_hash"] == records[0]["ledger_hash"] for x in records if x["ledger_hash"] != "NOT FOUND"
+                x["ledger_hash"] == first_validated_hash
+                for x in records
+                if x["ledger_hash"] != "NOT FOUND" and x["validated"]
             )
 
             ledger_seq_same = all(

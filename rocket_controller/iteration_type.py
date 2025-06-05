@@ -6,6 +6,8 @@ from datetime import datetime
 from time import sleep
 from typing import Dict, List, TypedDict
 
+import docker
+from docker.errors import NotFound, APIError
 from grpc import Server
 from loguru import logger
 
@@ -18,6 +20,39 @@ from rocket_controller.spec_checker import SpecChecker
 from rocket_controller.transaction_builder import TransactionBuilder
 from rocket_controller.validator_node_info import ValidatorNode
 
+def cleanup_docker_controller(hostname_prefix: str, max_attempts: int = 8):
+    attempt = 0
+
+    while attempt < max_attempts:
+        try:
+            client = docker.from_env()
+            all_containers = client.containers.list(all=True)
+            containers = [c for c in all_containers if c.name.startswith(f"{hostname_prefix}_controller")]
+
+            for container in containers:
+                try:
+                    container.stop()
+                    print(f"Stopped container: {container.name}")
+                except NotFound:
+                    print(f"Container {container.name} already stopped or not found.")
+                except APIError as e:
+                    print(f"APIError stopping {container.name}: {e}")
+                except Exception as e:
+                    print(f"Unexpected error stopping {container.name}: {e}")
+            return  # Success, break out of loop
+        except Exception as e:
+            print(f"Attempt {attempt + 1}/{max_attempts} failed: {e}")
+            attempt += 1
+
+
+        except Exception as e:
+            print(f"Error accessing Docker: {e}")
+            attempt += 1
+            if attempt < max_attempts:
+                print(f"Retrying in 2 seconds... (Attempt {attempt}/{max_attempts})")
+                time.sleep(2)
+            else:
+                print("Max retry attempts reached. Exiting.")
 
 class LedgerValidationInfo(TypedDict):
     """Information about the ledger validation."""
@@ -95,8 +130,21 @@ class TimeBasedIteration:
     def _timeout_reached(self):
         """Function that is called when the timeout is reached."""
         logger.info("Timeout reached.")
+
+        logger.info("Checking correct setup")
+        try:
+            # Something went wrong on setup, we need to restart
+            if self.get_ledger_sequence(0) < 2:
+                logger.info("Setup went wrong, resetting entire test.")
+                raise RuntimeError("Ledger sequence too low. Triggering cleanup.")
+        except Exception as e:
+            print(f"Setup error: {e}")
+            cleanup_docker_controller(self._network.network_config.get("hostname_prefix"))
+            cleanup_docker_containers(self._network.network_config.get("hostname_prefix"))
+            raise  # Optional: re-raise to halt execution or continue depending on your logic
+
         self._reset_values()
-        self.add_iteration()
+        self.add_iteration(timeout_reached=True)
 
     def _start_transactions(self):
         if self._transaction_timer:
@@ -278,7 +326,7 @@ class TimeBasedIteration:
     def get_log_dir(self):
         return self._log_dir
 
-    def add_iteration(self):
+    def add_iteration(self, timeout_reached = False):
         """Add an iteration to the iteration mechanism, stops all processes when max_iterations is reached."""
         if not self._spec_checker:
             raise ValueError("SpecChecker not initialized")
@@ -294,7 +342,7 @@ class TimeBasedIteration:
         logger.debug("Done stopping logLedgerResul;t")
 
         if self.cur_iteration > 1:
-            self._spec_checker.spec_check(self.cur_iteration - 1, len(self._validator_nodes), self._max_ledger_seq)
+            self._spec_checker.spec_check(self.cur_iteration - 1, len(self._validator_nodes), self._max_ledger_seq, timeout_reached)
         if self.cur_iteration <= self._max_iterations:
             self._interceptor_manager.stop()
             self._ledger_results.new_result_logger(self._log_dir, self.cur_iteration)

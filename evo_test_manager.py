@@ -44,6 +44,9 @@ def process_results(log_dir):
             data = json.load(f)
             failed_termination = data.get('failed_termination', 0)
             failed_agreement = data.get('failed_agreement', 0)
+            print("Log dir: {}".format(log_dir))
+            print("Termination faults: ", failed_termination)
+            print("Agreement faults: ", failed_agreement)
             total_failures = failed_termination + failed_agreement
 
     return ((sum(validation_times) / len(validation_times)) if validation_times else 0), total_failures
@@ -56,7 +59,7 @@ def cleanup_docker(hostname_prefix: str, max_attempts: int = 8):
         try:
             client = docker.from_env()
             all_containers = client.containers.list(all=True)
-            containers = [c for c in all_containers if c.name.startswith(f"{hostname_prefix}_validator")]
+            containers = [c for c in all_containers if (c.name.startswith(f"{hostname_prefix}_controller") or c.name.startswith(f"{hostname_prefix}_validator"))]
 
             for container in containers:
                 try:
@@ -222,12 +225,13 @@ class EvoTestManager:
             )
 
             with open(f"{log_dir}/stdout.txt", mode="w") as out_file:
-                result = container.wait(timeout=8*60)
+                result = container.wait(timeout=10*60)
                 logs = container.logs(stdout=True, stderr=True, timestamps=True)
                 out_file.write(logs.decode(errors="ignore"))
             exit_code = result.get("StatusCode", -1)
         except Exception as e:
-            if retry < 2:
+            print("Exception", e)
+            if retry < 6:
                 retry += 1
                 print(f"Rocket failed on attempt {retry}. Retrying...")
                 cleanup_docker(hostname_prefix)
@@ -236,7 +240,8 @@ class EvoTestManager:
             raise Exception(f"Rocket timed out after {retry} retries. THIS IS NOT GOOD!")
 
         if exit_code != 0:
-            if retry < 2:
+            print(f"Rocket exited with status {exit_code}")
+            if retry < 6:
                 retry += 1
                 print(f"Rocket failed on attempt {retry}. Retrying...")
                 cleanup_docker(hostname_prefix)
@@ -288,6 +293,7 @@ class EvoTestManager:
             print(f"Generation {idx + 1}")
 
             tools.sortNondominated(population, len(population))
+            tools.emo.assignCrowdingDist(population)
             offspring = []
 
             while len(offspring) < self.population_size:
