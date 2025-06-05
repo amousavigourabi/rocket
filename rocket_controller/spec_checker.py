@@ -99,8 +99,15 @@ class SpecChecker:
         # )
         all_ledger_goal_reached = not timeout_reached
         for _, records in ledgers_data.items():
+            first_validated_hash = next(
+                (x["ledger_hash"] for x in records if x["validated"] and x["ledger_hash"] != "NOT FOUND"),
+                None
+            )
+
             ledger_hashes_same = all(
-               x["ledger_hash"] == records[0]["ledger_hash"] for x in records if (x["ledger_hash"] != "NOT FOUND" and x["validated"])
+                x["ledger_hash"] == first_validated_hash
+                for x in records
+                if x["ledger_hash"] != "NOT FOUND" and x["validated"]
             )
 
             ledger_seq_same = all(

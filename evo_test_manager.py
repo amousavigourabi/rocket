@@ -59,7 +59,7 @@ def cleanup_docker(hostname_prefix: str, max_attempts: int = 8):
         try:
             client = docker.from_env()
             all_containers = client.containers.list(all=True)
-            containers = [c for c in all_containers if c.name.startswith(f"{hostname_prefix}_validator")]
+            containers = [c for c in all_containers if (c.name.startswith(f"{hostname_prefix}_controller") or c.name.startswith(f"{hostname_prefix}_validator"))]
 
             for container in containers:
                 try:
@@ -133,10 +133,10 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
-        self.image = "rocket-image-wishaal-cunl"
+        self.image = "rocket-image-wishaal-dunl"
         self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "WK_SBX_Gauss_LT_CUNL"
+        self.main_hostname_prefix = "WK_SBX_Gauss_LT_D"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
@@ -224,12 +224,13 @@ class EvoTestManager:
             )
 
             with open(f"{log_dir}/stdout.txt", mode="w") as out_file:
-                result = container.wait(timeout=7*60)
+                result = container.wait(timeout=10*60)
                 logs = container.logs(stdout=True, stderr=True, timestamps=True)
                 out_file.write(logs.decode(errors="ignore"))
             exit_code = result.get("StatusCode", -1)
         except Exception as e:
-            if retry < 2:
+            print("Exception", e)
+            if retry < 6:
                 retry += 1
                 print(f"Rocket failed on attempt {retry}. Retrying...")
                 cleanup_docker(hostname_prefix)
@@ -238,7 +239,8 @@ class EvoTestManager:
             raise Exception(f"Rocket timed out after {retry} retries. THIS IS NOT GOOD!")
 
         if exit_code != 0:
-            if retry < 2:
+            print(f"Rocket exited with status {exit_code}")
+            if retry < 6:
                 retry += 1
                 print(f"Rocket failed on attempt {retry}. Retrying...")
                 cleanup_docker(hostname_prefix)
