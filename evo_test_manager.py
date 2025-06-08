@@ -133,12 +133,12 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
-        self.image = "rocket-image-wishaal-bunl"
+        self.image = "rocket-image-aiste"
         self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
         self.main_hostname_prefix = "WK_SBX_Gauss_LT_BUNL"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
-        self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
+        self.workers = 1  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
 
     def initial_population(self):
@@ -273,7 +273,8 @@ class EvoTestManager:
 
     def main(self):
         start_time = datetime.now()
-        shutil.copytree("./rocket_interceptor/network", f"/shared/network")
+        shutil.copytree("./rocket_interceptor/network", f"/shared/network", dirs_exist_ok=True)
+
 
         creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # Maximize both
         creator.create("Individual", list, fitness=creator.FitnessMulti)

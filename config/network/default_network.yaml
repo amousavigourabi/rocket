@@ -8,7 +8,7 @@
 hostname_prefix: "LOCAL"
 
 # The number of validator nodes to configure and start
-number_of_nodes: 5
+number_of_nodes: 7
 number_of_byzantine_nodes: 1
 
 # A 2-dimensional array containing the groups of node indices that should be connected
@@ -29,14 +29,14 @@ network_partition: []
 #
 # Leaving this empty means all nodes in the network will trust each other.
 
-unl_partition:
-  - [0, 1, 2, 3, 4]
-  - [1, 0, 2, 3, 4]
-  - [2, 0, 1, 3, 4]
-  - [3, 1, 2, 4, 5]
-  - [4, 1, 2, 3, 5]
-  - [5, 2, 3, 4, 6]
-  - [6, 2, 3, 4, 5]
+unl_partition: []
+#  - [0, 1, 2, 3, 4]
+#  - [1, 0, 2, 3, 4]
+#  - [2, 0, 1, 3, 4]
+#  - [3, 1, 2, 4, 5]
+#  - [4, 1, 2, 3, 5]
+#  - [5, 2, 3, 4, 6]
+#  - [6, 2, 3, 4, 5]
 
 # Transaction configuration
 transactions:
