@@ -506,7 +506,7 @@ class NetworkManager:
         validated = ledger_result.result.get('validated', False)
         ledger_index = ledger_result.result.get('ledger_index', None)
 
-        return ledger_hash, transactions, validated, ledger_index
+        return (ledger_hash if ledger_hash is not None else ledger_result), transactions, validated, ledger_index
 
     def get_balances(self, peer_id: int, ledger_seq: int):
         """

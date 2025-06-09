@@ -12,7 +12,7 @@ from docker.errors import NotFound, APIError
 from loguru import logger
 
 
-def cleanup_docker_containers(hostname_prefix: str, max_attempts: int = 8):
+def cleanup_docker_containers(hostname_prefix: str, max_attempts: int = 14):
     attempt = 0
 
     while attempt < max_attempts:

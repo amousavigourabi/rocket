@@ -1,5 +1,6 @@
 """Module that defines certain Iteration Types."""
 import hashlib
+import random
 import threading
 import time
 from datetime import datetime
@@ -12,7 +13,8 @@ from grpc import Server
 from loguru import logger
 
 from protos import ripple_pb2
-from rocket_controller.csv_logger import TransactionLogger, LedgerLogger, TXProposalLogger, AccountLogger
+from rocket_controller.csv_logger import TransactionLogger, LedgerLogger, TXProposalLogger, AccountLogger, \
+    AcceptedLedgerLogger
 from rocket_controller.interceptor_manager import InterceptorManager, cleanup_docker_containers
 from rocket_controller.ledger_result import LedgerResult
 from rocket_controller.network_manager import NetworkManager
@@ -20,7 +22,7 @@ from rocket_controller.spec_checker import SpecChecker
 from rocket_controller.transaction_builder import TransactionBuilder
 from rocket_controller.validator_node_info import ValidatorNode
 
-def cleanup_docker_controller(hostname_prefix: str, max_attempts: int = 8):
+def cleanup_docker_controller(hostname_prefix: str, max_attempts: int = 14):
     attempt = 0
 
     while attempt < max_attempts:
@@ -86,6 +88,7 @@ class TimeBasedIteration:
         self._ledger_logger: LedgerLogger | None = None
         self._tx_proposal_logger: TXProposalLogger | None = None
         self._account_logger: AccountLogger | None = None
+        self._accepted_ledger_logger: AcceptedLedgerLogger | None = None
         self._spec_checker: SpecChecker | None = None
 
         self._max_iterations = max_iterations
@@ -96,6 +99,8 @@ class TimeBasedIteration:
         self._timers: List[threading.Timer] = []
         self._timeout_seconds = timeout_seconds
         self.ledger_timeout = ledger_timeout
+
+        self.shared_ledger_seq = 1
 
         self._interceptor_manager = InterceptorManager()
         self._validator_nodes: List[ValidatorNode] | None = None
@@ -350,9 +355,10 @@ class TimeBasedIteration:
             self._ledger_logger = LedgerLogger(f"{self._log_dir}/iteration-{self.cur_iteration}", self.cur_iteration)
             self._tx_proposal_logger = TXProposalLogger(f"{self._log_dir}/iteration-{self.cur_iteration}", self.cur_iteration)
             self._account_logger = AccountLogger(f"{self._log_dir}/iteration-{self.cur_iteration}", self.cur_iteration)
+            self._accepted_ledger_logger = AcceptedLedgerLogger(f"{self._log_dir}/iteration-{self.cur_iteration}", self.cur_iteration)
             logger.info(f"Starting iteration {self.cur_iteration}")
             self._interceptor_manager.start_new()
-            self._start_timeout_timer(300)
+            self._start_timeout_timer(65)
             self._start_transactions()
         else:
             self._stop_all()
@@ -412,8 +418,24 @@ class TimeBasedIteration:
                 _validation_time = _now - self.ledger_validation_map[from_id]["time"]
                 self.ledger_validation_map[from_id]["time"] = _now
                 # At least one node has validated a new ledger, we can reset the timeout.
-                if self.ledger_timeout:
+
+                status.ledgerHash.hex()
+
+                self._accepted_ledger_logger.log_accepted_ledger(from_id, to_id, status.ledgerSeq, status.ledgerHash.hex())
+
+                seqs = [entry["seq"] for entry in self.ledger_validation_map.values()]
+
+                # Check if all are greater than the current shared seq
+                if all(seq > self.shared_ledger_seq for seq in seqs):
+                    # Find the new minimal seq
+                    new_seq = min(seqs)
+
+                    # Perform your custom logic here
+
+                    # Update shared seq
                     self._start_timeout_timer(self._timeout_seconds)
+
+                    self.shared_ledger_seq = new_seq
 
                 logger.info(
                     f"Node {from_id} validated ledger {self.ledger_validation_map[from_id]['seq']} in {_validation_time}"

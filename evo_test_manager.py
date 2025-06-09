@@ -52,7 +52,7 @@ def process_results(log_dir):
     return ((sum(validation_times) / len(validation_times)) if validation_times else 0), total_failures
 
 
-def cleanup_docker(hostname_prefix: str, max_attempts: int = 8):
+def cleanup_docker(hostname_prefix: str, max_attempts: int = 14):
     attempt = 0
 
     while attempt < max_attempts:
@@ -133,9 +133,11 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
+
         self.image = "rocket-image-calin"
         self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0"
         # self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
+        # self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
         self.main_hostname_prefix = "CC_TimeFitness_Priority_Nonseeded"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
@@ -225,7 +227,7 @@ class EvoTestManager:
             )
 
             with open(f"{log_dir}/stdout.txt", mode="w") as out_file:
-                result = container.wait(timeout=10*60)
+                result = container.wait(timeout=20*60)
                 logs = container.logs(stdout=True, stderr=True, timestamps=True)
                 out_file.write(logs.decode(errors="ignore"))
             exit_code = result.get("StatusCode", -1)

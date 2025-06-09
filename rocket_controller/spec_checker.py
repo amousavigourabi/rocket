@@ -50,6 +50,25 @@ class SpecChecker:
             f"{self.log_dir}/iteration-{iteration}/ledger-{iteration}.csv"
         )
 
+        accepted_ledger_file_path = (
+            f"{self.log_dir}/iteration-{iteration}/accepted-ledger-{iteration}.csv"
+        )
+
+        accepted_ledgers_data = defaultdict(list)
+        seen_peer_ids_per_seq = defaultdict(set)
+
+        with open(accepted_ledger_file_path) as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                seq = int(row["ledger_seq"])
+                peer_id = row["peer_id"]
+                ledger_hash = row["ledger_hash"]
+
+                # If this peer_id hasn't yet contributed to this ledger_seq
+                if peer_id not in seen_peer_ids_per_seq[seq]:
+                    accepted_ledgers_data[seq].append(ledger_hash)
+                    seen_peer_ids_per_seq[seq].add(peer_id)
+
         ledgers_data = defaultdict(list)
         try:
             with open(ledger_file_path) as csvfile:
@@ -115,6 +134,29 @@ class SpecChecker:
             )
             all_hashes_pass &= ledger_hashes_same
             all_sequences_pass &= ledger_seq_same
+
+        # for seq, hashes in accepted_ledgers_data.items():
+        #     # Count how many times each hash appears
+        #     from collections import Counter
+        #     counter = Counter(hashes)
+        #
+        #     # Get the most common hash count
+        #     most_common_count = counter.most_common(1)[0][1] if counter else 0
+        #
+        #     # Total entries for this seq
+        #     total = len(hashes)
+        #
+        #     # Number of entries that differ from the most common hash
+        #     differing = total - most_common_count
+        #
+        #     # Check condition: at most 2 differs
+        #     if differing > 1:
+        #         all_hashes_pass = False
+        #         break
+
+        all_ledger_goal_reached &= all(entry["validated"] for entry in ledgers_data[goal_ledger_seq])
+
+        # all_ledger_goal_reached &= len(set(entry["ledger_hash"] for entry in ledgers_data[goal_ledger_seq])) == 1
 
         self.spec_check_logger.log_spec_check(
             iteration,

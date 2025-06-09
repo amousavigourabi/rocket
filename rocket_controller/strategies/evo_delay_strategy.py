@@ -107,4 +107,4 @@ class EvoDelayStrategy(Strategy):
         # Get index through a default function
         # Return with delay=self.delays[index]
 
-        return packet.data, round(self.delays[index]), 1
+        return packet.data, round(self.delays[index]) if self.iteration_type.get_ledger_sequence(self.network.hostname_to_id(packet.from_hostname)) < 10 else 0, 1
