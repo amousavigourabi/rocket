@@ -134,7 +134,7 @@ class EvoTestManager:
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
         self.image = "rocket-image-wishaal-dunl"
-        self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold:latest"
+        self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
         self.main_hostname_prefix = "WK_SBX_Gauss_LT_D"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
@@ -277,77 +277,72 @@ class EvoTestManager:
         start_time = datetime.now()
         shutil.copytree("./rocket_interceptor/network", f"/shared/network")
 
-        creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # Maximize both
-        creator.create("Individual", list, fitness=creator.FitnessMulti)
+        # creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # Maximize both
+        # creator.create("Individual", list, fitness=creator.FitnessMulti)
 
         population = [self.initial_population() for _ in range(self.population_size)]
         prev_results = self.run_evolution_round(1, population)
-        population = []
-        for (time, violations), encoding in prev_results:
-            ind = creator.Individual(encoding)
-            ind.fitness.values = (time, violations)
-            population.append(ind)
+        # population = []
+        # for (time, violations), encoding in prev_results:
+        #     ind = creator.Individual(encoding)
+        #     ind.fitness.values = (time, violations)
+        #     population.append(ind)
 
         for idx in range(1, self.generations):
             print(f"Generation {idx + 1}")
 
-            tools.sortNondominated(population, len(population))
-            tools.emo.assignCrowdingDist(population)
-            offspring = []
+            # tools.sortNondominated(population, len(population))
+            # tools.emo.assignCrowdingDist(population)
+            offspring = [self.initial_population() for _ in range(self.population_size)]
 
-            while len(offspring) < self.population_size:
-
-                # Select two parents using tournament DCD
-                parents = tools.selTournamentDCD(population, 2)
-                parent1, parent2 = parents[0], parents[1]
-
-                # Clone parents to create children
-                child1, child2 = copy.deepcopy(parent1), copy.deepcopy(parent2)
-
-                tools.cxSimulatedBinaryBounded(child1, child2, eta=3.0, low=0, up=4000)
-
-                # Apply Gaussian mutation with probability 0.1 per child
-                tools.mutGaussian(child1, mu=0, sigma=40, indpb=(1.0 / 42.0))
-                tools.mutGaussian(child2, mu=0, sigma=40, indpb=(1.0 / 42.0))
-
-                # custom_gaussian_mutation(child1, 0, 4000)
-                # custom_gaussian_mutation(child2, 0, 4000)
-
-                # Invalidate fitness values of offspring
-                del child1.fitness.values
-                del child2.fitness.values
-
-                # Round each gene in the child and clamp
-                child1[:] = [min(4000, max(0, round(gene))) for gene in child1]
-                child2[:] = [min(4000, max(0, round(gene))) for gene in child2]
-
-                offspring.append(child1)
-                if len(offspring) < self.population_size:
-                    offspring.append(child2)
+            # while len(offspring) < self.population_size:
+            #
+            #     # Select two parents using tournament DCD
+            #     parents = tools.selTournamentDCD(population, 2)
+            #     parent1, parent2 = parents[0], parents[1]
+            #
+            #     # Clone parents to create children
+            #     child1, child2 = copy.deepcopy(parent1), copy.deepcopy(parent2)
+            #
+            #     # sbx_with_prob(child1, child2, eta=3.0)
+            #
+            #     # tools.cxSimulatedBinaryBounded(child1, child2, eta=3.0, low=0, up=4000)
+            #     tools.cxBlend(child1, child2, alpha=0.7)
+            #
+            #     # Apply Gaussian mutation with probability 0.1 per child
+            #     tools.mutGaussian(child1, mu=0, sigma=40, indpb=(1.0 / 42.0))
+            #     tools.mutGaussian(child2, mu=0, sigma=40, indpb=(1.0 / 42.0))
+            #
+            #     # tools.mutPolynomialBounded(child1, eta=20.0, low=0, up=4000, indpb=(1.0 / 42.0))
+            #     # tools.mutPolynomialBounded(child2, eta=20.0, low=0, up=4000, indpb=(1.0 / 42.0))
+            #
+            #     # custom_gaussian_mutation(child1, 0, 4000)
+            #     # custom_gaussian_mutation(child2, 0, 4000)
+            #
+            #     # Invalidate fitness values of offspring
+            #     del child1.fitness.values
+            #     del child2.fitness.values
+            #
+            #     # Round each gene in the child and clamp
+            #     child1[:] = [min(4000, max(0, round(gene))) for gene in child1]
+            #     child2[:] = [min(4000, max(0, round(gene))) for gene in child2]
+            #
+            #     offspring.append(child1)
+            #     if len(offspring) < self.population_size:
+            #         offspring.append(child2)
 
             results = self.run_evolution_round(idx + 1, list(offspring))   # results is list[((time, violations), encoding)]
 
-            offspring = []
-            for (time, violations), encoding in results:
-                ind = creator.Individual(encoding)
-                ind.fitness.values = (time, violations)
-                offspring.append(ind)
-
-            # Select new generation using NSGA-II
-            population = tools.selNSGA2(population + offspring, k=self.population_size)
+            # offspring = []
+            # for (time, violations), encoding in results:
+            #     ind = creator.Individual(encoding)
+            #     ind.fitness.values = (time, violations)
+            #     offspring.append(ind)
+            #
+            # # Select new generation using NSGA-II
+            # population = tools.selNSGA2(population + offspring, k=self.population_size)
 
         return
-
-def custom_gaussian_mutation(individual, a, b):
-    size = len(individual)
-    for i in range(size):
-        if random.random() < (1.0 / size):  # Mutation probability = 1/n
-            xi = individual[i]
-            sigma = (b - a) / 100.0
-            individual[i] += random.gauss(xi, sigma)
-            individual[i] = min(b, max(a, individual[i]))
-    return individual,
-
 
 if __name__ == "__main__":
     manager = EvoTestManager()
