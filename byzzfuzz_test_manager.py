@@ -123,9 +123,9 @@ class ByzzFuzzTestManager:
             self.corrupt_probability = baseline['corrupt_probability']
 
         self.image = "rocket-image-aiste"
-        self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
+        self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0" #"ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "byzzfuzz_UNL100_seeded_"
+        self.main_hostname_prefix = "byzzfuzz_UNL100_xrpld_2.4.0"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!

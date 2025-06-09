@@ -1,5 +1,5 @@
 general:
-  strategy: ByzzFuzzBaseline
+  strategy: ByzzFuzzStrategy
   seed: null
 
 byzzfuzz:
@@ -8,7 +8,7 @@ byzzfuzz:
   max_network_faults: 5
   min_process_faults: 0
   max_process_faults: 5
-  small_scope: true
+  small_scope: false
 
 baseline:
   drop_probability: 0.1
