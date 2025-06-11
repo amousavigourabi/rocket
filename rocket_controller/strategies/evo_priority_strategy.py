@@ -27,7 +27,7 @@ class EvoPriorityStrategy(Strategy):
         auto_parse_identical: bool = True,
         auto_parse_subsets: bool = True,
         keep_action_log: bool = True,
-        iteration_type = LedgerBasedIteration(1, 10, 65),
+        iteration_type = LedgerBasedIteration(10, 14, 65),
         # iteration_type = NoneIteration(),
         log_dir: str | None = None,
         network_overrides=None,
@@ -90,6 +90,9 @@ class EvoPriorityStrategy(Strategy):
     def handle_packet(self, packet: packet_pb2.Packet) -> Tuple[bytes, int, int]:
         message, message_type_no = PacketEncoderDecoder.decode_packet(packet)
         # return packet.data, 0, 1
+
+        if self.iteration_type.get_ledger_sequence(self.network.hostname_to_id(packet.from_hostname)) > 10:
+            return packet.data, 0, 1
 
         if message_type_no not in set(range(30, 36)).union({41}):
             return packet.data, 0, 1

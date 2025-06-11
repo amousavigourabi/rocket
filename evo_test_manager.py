@@ -25,15 +25,25 @@ from docker.errors import NotFound, APIError
 
 
 def process_results(log_dir):
-    result_files = glob.glob(f"{log_dir}/**/result-*.csv")
-    validation_times = []
+    # Count TMProposeSet messages
+    action_files = glob.glob(f"{log_dir}/**/action-*.csv", recursive=True)
+    propose_count = 0
 
-    for result_file in result_files:
-        with open(result_file, 'r') as f:
-            csv_reader = csv.DictReader(f)
-            for row in csv_reader:
-                if row['ledger_seq'] != '2':
-                    validation_times.append(float(row['time_to_validation']))
+    for action_file in action_files:
+        with open(action_file, newline='') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get('message_type') == 'TMProposeSet':
+                    propose_count += 1
+    # result_files = glob.glob(f"{log_dir}/**/result-*.csv")
+    # validation_times = []
+
+    # for result_file in result_files:
+    #     with open(result_file, 'r') as f:
+    #         csv_reader = csv.DictReader(f)
+    #         for row in csv_reader:
+    #             if row['ledger_seq'] != '2':
+    #                 validation_times.append(float(row['time_to_validation']))
 
     agg_spec_check_files = glob.glob(f"{log_dir}/aggregated_spec_check_log.json")
     total_failures = 0
@@ -49,7 +59,14 @@ def process_results(log_dir):
             print("Agreement faults: ", failed_agreement)
             total_failures = failed_termination + failed_agreement
 
-    return ((sum(validation_times) / len(validation_times)) if validation_times else 0), total_failures
+    avg_propose_count = 0
+
+    if action_files:
+        avg_propose_count = propose_count / len(action_files)
+    else:
+        avg_propose_count = 0
+    # return ((sum(validation_times) / len(validation_times)) if validation_times else 0), total_failures
+    return avg_propose_count, total_failures
 
 
 def cleanup_docker(hostname_prefix: str, max_attempts: int = 14):
@@ -139,9 +156,9 @@ class EvoTestManager:
         # self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
         # self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "CC_TimeFitness_Priority_Nonseeded"
+        self.main_hostname_prefix = "CC_ProposalFitness_Priority_Nonseeded_Iterations"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
-        self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
+        self.workers = 10  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
 
     def initial_population(self):
@@ -251,14 +268,17 @@ class EvoTestManager:
                 return self.run_rocket(encoding, generation, testcase, retry)
             raise Exception(f"Rocket failed after {retry} retries. THIS IS NOT GOOD!")
 
-        average_validation_time, violations = process_results(log_dir)
+        # average_validation_time, violations = process_results(log_dir)
+        proposal_count, violations = process_results(log_dir)
         with open(f"{log_dir}/run_info.txt", mode="a") as f:
-            f.write(f"\nAverage validation time: {average_validation_time} seconds")
+            # f.write(f"\nAverage validation time: {average_validation_time} seconds")
+            f.write(f"\nProposal count: {proposal_count}")
             f.write(f"\nTotal violations: {violations}")
-        print(f"Average validation time: {average_validation_time} seconds")
+        # print(f"Average validation time: {average_validation_time} seconds")
+        print(f"Proposal count: {proposal_count}")
         print(f"Total violations: {violations}")
         cleanup_docker(hostname_prefix)
-        return average_validation_time, violations
+        return proposal_count, violations
 
     def run_evolution_round(self, generation: int, population: list[list[int]]):
         results = []
@@ -286,17 +306,17 @@ class EvoTestManager:
         population = [self.initial_population() for _ in range(self.population_size)]
         prev_results = self.run_evolution_round(1, population)
         population = []
-        for (time, violations), encoding in prev_results:
+        for (proposals, violations), encoding in prev_results:
             ind = creator.Individual(encoding)
-            ind.fitness.values = (time, violations)
+            ind.fitness.values = (proposals, violations)
             population.append(ind)
 
         for idx in range(1, self.generations):
             print(f"Generation {idx + 1}")
+            # offspring = [self.initial_population() for _ in range(self.population_size)]
 
             tools.sortNondominated(population, len(population))
             tools.emo.assignCrowdingDist(population)
-            # offspring = [self.initial_population() for _ in range(self.population_size)]
             offspring = []
 
             while len(offspring) < self.population_size:
@@ -317,6 +337,11 @@ class EvoTestManager:
                 # custom_gaussian_mutation(child1, 0, 4000)
                 # custom_gaussian_mutation(child2, 0, 4000)
 
+                print(f"Child 1 proposals: {child1.fitness.values[0]}")
+                print(f"Child 2 proposals: {child2.fitness.values[0]}")
+                # print(f"Child 1 violations: {child1.fitness.values[1]}")
+                # print(f"Child 2 violations: {child2.fitness.values[1]}")
+
                 # Invalidate fitness values of offspring
                 del child1.fitness.values
                 del child2.fitness.values
@@ -329,12 +354,12 @@ class EvoTestManager:
                 if len(offspring) < self.population_size:
                     offspring.append(child2)
 
-            results = self.run_evolution_round(idx + 1, list(offspring))   # results is list[((time, violations), encoding)]
+            results = self.run_evolution_round(idx + 1, list(offspring))   # results is list[((time/proposals, violations), encoding)]
 
             offspring = []
-            for (time, violations), encoding in results:
+            for (proposals, violations), encoding in results:
                 ind = creator.Individual(encoding)
-                ind.fitness.values = (time, violations)
+                ind.fitness.values = (proposals, violations)
                 offspring.append(ind)
 
             # Select new generation using NSGA-II
