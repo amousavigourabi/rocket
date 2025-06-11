@@ -73,6 +73,7 @@ accepted_ledger_log_columns = [
     "peer_to_id",
     "ledger_seq",
     "ledger_hash",
+    "raw_contents"
 ]
 
 
@@ -540,6 +541,7 @@ class AcceptedLedgerLogger(CSVLogger):
             peer_to_id: int,
             ledger_seq: int,
             ledger_hash: str,
+            raw_contents: str
     ):
         """
         Log a transaction validation row to the CSV file.
@@ -555,5 +557,6 @@ class AcceptedLedgerLogger(CSVLogger):
             peer_to_id,
             ledger_seq,
             ledger_hash,
+            raw_contents
         ])
 

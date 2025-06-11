@@ -508,6 +508,18 @@ class NetworkManager:
 
         return (ledger_hash if ledger_hash is not None else ledger_result), transactions, validated, ledger_index
 
+
+    def get_ledger_by_hash(self, ledgerhash: str, peer_id: int) -> (str | None, list[str] | None):
+        validator = self.validator_node_list[peer_id]
+        rpc_address = f"http://{validator.rpc.as_url()}/"
+        client = JsonRpcClient(rpc_address)
+        ledger_result = client.request(xrpl.models.requests.Ledger(ledger_hash=ledgerhash, transactions=True, ))
+
+        ledger = ledger_result.result.get('ledger', {})
+        transactions = ledger.get('transactions', None)
+
+        return transactions
+
     def get_balances(self, peer_id: int, ledger_seq: int):
         """
         Get balances of all self-created accounts (self.accounts)

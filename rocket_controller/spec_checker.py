@@ -7,6 +7,7 @@ from typing import Any, List
 from loguru import logger
 
 from rocket_controller.csv_logger import SpecCheckLogger
+from collections import Counter
 
 
 def _get_last_row(file_path: str) -> List[Any]:
@@ -65,8 +66,11 @@ class SpecChecker:
                 ledger_hash = row["ledger_hash"]
 
                 # If this peer_id hasn't yet contributed to this ledger_seq
-                if peer_id not in seen_peer_ids_per_seq[seq]:
-                    accepted_ledgers_data[seq].append(ledger_hash)
+                if (peer_id not in seen_peer_ids_per_seq[seq]) and (row["raw_contents"] not in ('', '[]', [], None)):
+                    accepted_ledgers_data[seq].append({
+                        "ledger_hash": ledger_hash,
+                        "transactions": row["raw_contents"],
+                    })
                     seen_peer_ids_per_seq[seq].add(peer_id)
 
         ledgers_data = defaultdict(list)
@@ -135,24 +139,47 @@ class SpecChecker:
             all_hashes_pass &= ledger_hashes_same
             all_sequences_pass &= ledger_seq_same
 
-        # for seq, hashes in accepted_ledgers_data.items():
-        #     # Count how many times each hash appears
-        #     from collections import Counter
-        #     counter = Counter(hashes)
-        #
-        #     # Get the most common hash count
-        #     most_common_count = counter.most_common(1)[0][1] if counter else 0
-        #
-        #     # Total entries for this seq
-        #     total = len(hashes)
-        #
-        #     # Number of entries that differ from the most common hash
-        #     differing = total - most_common_count
-        #
-        #     # Check condition: at most 2 differs
-        #     if differing > 1:
-        #         all_hashes_pass = False
-        #         break
+        for seq, dicts in accepted_ledgers_data.items():
+            # Filter out entries with empty or irrelevant raw_contents
+            valid_entries = [
+                (d["ledger_hash"], d["raw_contents"])
+                for d in dicts
+                if d.get("raw_contents") not in ('', '[]', [], None)
+            ]
+
+            # Get all unique hashes and all unique transactions
+            unique_hashes = set(hash_ for hash_, _ in valid_entries)
+            unique_transactions = set(tx for _, tx in valid_entries)
+
+            # Check if there's more than one unique hash and more than one unique transaction
+            if len(unique_hashes) > 1 and len(unique_transactions) > 1:
+                all_hashes_pass = False
+                break
+
+        with open(accepted_ledger_file_path) as csvfile:
+            reader = csv.DictReader(csvfile)
+            current_seq = None
+            current_count = 0
+
+            for row in reader:
+                seq = row["ledger_seq"]
+
+                if current_seq is None:
+                    current_seq = seq
+                    current_count = 1
+                elif seq == current_seq:
+                    current_count += 1
+                else:
+                    # Sequence changed: validate previous group
+                    if current_count != 5:
+                        all_hashes_pass = True
+                        break
+                    current_seq = seq
+                    current_count = 1
+
+            # Final group check after loop
+            if current_count != 5:
+                all_hashes_pass = True
 
         all_ledger_goal_reached &= all(entry["validated"] for entry in ledgers_data[goal_ledger_seq])
 

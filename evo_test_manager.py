@@ -306,8 +306,8 @@ class EvoTestManager:
 
                 # sbx_with_prob(child1, child2, eta=3.0)
 
-                # tools.cxSimulatedBinaryBounded(child1, child2, eta=3.0, low=0, up=4000)
-                tools.cxBlend(child1, child2, alpha=0.7)
+                tools.cxSimulatedBinaryBounded(child1, child2, eta=3.0, low=0, up=4000)
+                # tools.cxBlend(child1, child2, alpha=0.7)
 
                 # Apply Gaussian mutation with probability 0.1 per child
                 tools.mutGaussian(child1, mu=0, sigma=40, indpb=(1.0 / 42.0))

@@ -419,9 +419,9 @@ class TimeBasedIteration:
                 self.ledger_validation_map[from_id]["time"] = _now
                 # At least one node has validated a new ledger, we can reset the timeout.
 
-                status.ledgerHash.hex()
+                raw_contents = self._network.get_ledger_by_hash(status.ledgerHash.hex().upper(), from_id)
 
-                self._accepted_ledger_logger.log_accepted_ledger(from_id, to_id, status.ledgerSeq, status.ledgerHash.hex())
+                self._accepted_ledger_logger.log_accepted_ledger(from_id, to_id, status.ledgerSeq, status.ledgerHash.hex(), raw_contents)
 
                 seqs = [entry["seq"] for entry in self.ledger_validation_map.values()]
 
