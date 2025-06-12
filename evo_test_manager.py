@@ -26,7 +26,7 @@ from docker.errors import NotFound, APIError
 
 def process_results(log_dir):
     # Count TMProposeSet messages
-    action_files = glob.glob(f"{log_dir}/**/action-*.csv", recursive=True)
+    action_files = glob.glob(f"{log_dir}/**/action-*.csv")
     propose_count = 0
 
     for action_file in action_files:
@@ -59,14 +59,8 @@ def process_results(log_dir):
             print("Agreement faults: ", failed_agreement)
             total_failures = failed_termination + failed_agreement
 
-    avg_propose_count = 0
-
-    if action_files:
-        avg_propose_count = propose_count / len(action_files)
-    else:
-        avg_propose_count = 0
     # return ((sum(validation_times) / len(validation_times)) if validation_times else 0), total_failures
-    return avg_propose_count, total_failures
+    return propose_count, total_failures
 
 
 def cleanup_docker(hostname_prefix: str, max_attempts: int = 14):
@@ -156,7 +150,7 @@ class EvoTestManager:
         # self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-lower-agreement-threshold:latest"
         # self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "CC_ProposalFitness_Priority_Nonseeded_Iterations"
+        self.main_hostname_prefix = "CC_ProposalFitness_Ten_Iterations"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 10  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!

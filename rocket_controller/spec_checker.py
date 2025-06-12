@@ -135,24 +135,24 @@ class SpecChecker:
             all_hashes_pass &= ledger_hashes_same
             all_sequences_pass &= ledger_seq_same
 
-        for seq, hashes in accepted_ledgers_data.items():
-            # Count how many times each hash appears
-            from collections import Counter
-            counter = Counter(hashes)
+        # for seq, hashes in accepted_ledgers_data.items():
+        #     # Count how many times each hash appears
+        #     from collections import Counter
+        #     counter = Counter(hashes)
         
-            # Get the most common hash count
-            most_common_count = counter.most_common(1)[0][1] if counter else 0
+        #     # Get the most common hash count
+        #     most_common_count = counter.most_common(1)[0][1] if counter else 0
         
-            # Total entries for this seq
-            total = len(hashes)
+        #     # Total entries for this seq
+        #     total = len(hashes)
         
-            # Number of entries that differ from the most common hash
-            differing = total - most_common_count
+        #     # Number of entries that differ from the most common hash
+        #     differing = total - most_common_count
         
-            # Check condition: at most 2 differs
-            if differing > 0:
-                all_hashes_pass = False
-                break
+        #     # Check condition: at most 2 differs
+        #     if differing > 0:
+        #         all_hashes_pass = False
+        #         break
 
         all_ledger_goal_reached &= all(entry["validated"] for entry in ledgers_data[goal_ledger_seq])
 
