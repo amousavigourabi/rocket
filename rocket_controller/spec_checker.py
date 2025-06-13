@@ -69,7 +69,7 @@ class SpecChecker:
                 if (peer_id not in seen_peer_ids_per_seq[seq]) and (row["raw_contents"] not in ('', '[]', [], None)):
                     accepted_ledgers_data[seq].append({
                         "ledger_hash": ledger_hash,
-                        "transactions": row["raw_contents"],
+                        "raw_contents": row["raw_contents"],
                     })
                     seen_peer_ids_per_seq[seq].add(peer_id)
 
@@ -139,6 +139,9 @@ class SpecChecker:
             all_hashes_pass &= ledger_hashes_same
             all_sequences_pass &= ledger_seq_same
 
+
+        found_seq = None
+
         for seq, dicts in accepted_ledgers_data.items():
             # Filter out entries with empty or irrelevant raw_contents
             valid_entries = [
@@ -149,37 +152,49 @@ class SpecChecker:
 
             # Get all unique hashes and all unique transactions
             unique_hashes = set(hash_ for hash_, _ in valid_entries)
-            unique_transactions = set(tx for _, tx in valid_entries)
 
             # Check if there's more than one unique hash and more than one unique transaction
-            if len(unique_hashes) > 1 and len(unique_transactions) > 1:
+
+            # Count occurrences of each raw_contents
+            tx_counter = Counter(tx for _, tx in valid_entries)
+
+            # Identify how many unique raw_contents have more than one occurrence
+            multi_occurring_tx = [tx for tx, count in tx_counter.items() if count > 1]
+
+            # Flag if at least 2 different raw_contents each occur more than once
+            if len(unique_hashes) > 1 and len(multi_occurring_tx) >= 2:
                 all_hashes_pass = False
+                found_seq = seq
                 break
 
-        with open(accepted_ledger_file_path) as csvfile:
-            reader = csv.DictReader(csvfile)
-            current_seq = None
-            current_count = 0
-
-            for row in reader:
-                seq = row["ledger_seq"]
-
-                if current_seq is None:
-                    current_seq = seq
-                    current_count = 1
-                elif seq == current_seq:
-                    current_count += 1
-                else:
-                    # Sequence changed: validate previous group
-                    if current_count != 5:
-                        all_hashes_pass = True
-                        break
-                    current_seq = seq
-                    current_count = 1
+        # if found_seq is not None:
+        #     with open(accepted_ledger_file_path) as csvfile:
+        #         reader = csv.DictReader(csvfile)
+        #         current_seq = None
+        #         current_count = 0
+        #
+        #         for row in reader:
+        #             if row["ledger_seq"] > found_seq and current_count == 5:
+        #                 break
+        #
+        #             seq = row["ledger_seq"]
+        #
+        #             if current_seq is None:
+        #                 current_seq = seq
+        #                 current_count = 1
+        #             elif seq == current_seq:
+        #                 current_count += 1
+        #             else:
+        #                 # Sequence changed: validate previous group
+        #                 if current_count != 5:
+        #                     all_hashes_pass = True
+        #                     break
+        #                 current_seq = seq
+        #                 current_count = 1
 
             # Final group check after loop
-            if current_count != 5:
-                all_hashes_pass = True
+            # if current_count != 5:
+            #     all_hashes_pass = True
 
         all_ledger_goal_reached &= all(entry["validated"] for entry in ledgers_data[goal_ledger_seq])
 
