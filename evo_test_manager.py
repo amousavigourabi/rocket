@@ -136,7 +136,7 @@ class EvoTestManager:
         self.image = "rocket-image-atour"
         self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "AMG_TournamentN"
+        self.main_hostname_prefix = "AMG_ElitismN"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
@@ -297,8 +297,8 @@ class EvoTestManager:
 
             while len(offspring) < self.population_size:
 
-                # Select two parents using tournament DCD
-                parents = tools.selTournamentDCD(population, 2)
+                # Select two parents using elitism
+                parents = tools.selBest(population, 2)
                 parent1, parent2 = parents[0], parents[1]
 
                 # Clone parents to create children
