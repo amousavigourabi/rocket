@@ -133,10 +133,10 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
-        self.image = "rocket-image-wishaal-dunl"
-        self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0"
+        self.image = "rocket-image-atour"
+        self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "WK_SBX_Gauss_LT_D"
+        self.main_hostname_prefix = "AMG_TournamentN"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
