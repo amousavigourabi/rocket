@@ -298,7 +298,7 @@ class EvoTestManager:
             while len(offspring) < self.population_size:
 
                 # Select two parents using elitism
-                parents = tools.selBest(population, 2)
+                parents = tools.selRoulette(population, 2)
                 parent1, parent2 = parents[0], parents[1]
 
                 # Clone parents to create children
