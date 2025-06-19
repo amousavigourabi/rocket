@@ -306,18 +306,16 @@ class EvoTestManager:
 
                 # sbx_with_prob(child1, child2, eta=3.0)
 
-                tools.cxSimulatedBinaryBounded(child1, child2, eta=3.0, low=0, up=4000)
-                # tools.cxBlend(child1, child2, alpha=0.7)
+                tools.cxSimulatedBinaryBounded(child1, child2, eta=3.0, low=0, up=4000)     # SBX
+                # tools.cxBlend(child1, child2, alpha=0.7)                                  # Blend-a
 
-                # Apply Gaussian mutation with probability 0.1 per child
+                # Gaussian Mutation
                 tools.mutGaussian(child1, mu=0, sigma=40, indpb=(1.0 / 42.0))
                 tools.mutGaussian(child2, mu=0, sigma=40, indpb=(1.0 / 42.0))
 
+                # Polynomial Mutation
                 # tools.mutPolynomialBounded(child1, eta=20.0, low=0, up=4000, indpb=(1.0 / 42.0))
                 # tools.mutPolynomialBounded(child2, eta=20.0, low=0, up=4000, indpb=(1.0 / 42.0))
-
-                # custom_gaussian_mutation(child1, 0, 4000)
-                # custom_gaussian_mutation(child2, 0, 4000)
 
                 # Invalidate fitness values of offspring
                 del child1.fitness.values
