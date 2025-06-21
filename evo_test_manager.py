@@ -291,8 +291,8 @@ class EvoTestManager:
         start_time = datetime.now()
         shutil.copytree("./rocket_interceptor/network", f"/shared/network")
 
-        creator.create("FitnessMulti", base.Fitness, weights=(1.0))  # Maximize both
-        creator.create("Individual", list, fitness=creator.FitnessMulti)
+        creator.create("FitnessMax", base.Fitness, weights=(1.0,))  # Maximize both
+        creator.create("Individual", list, fitness=creator.FitnessMax)
 
         population = [self.initial_population() for _ in range(self.population_size)]
         prev_results = self.run_evolution_round(1, population)
