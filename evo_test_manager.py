@@ -299,7 +299,7 @@ class EvoTestManager:
         population = []
         for (time, proposals, _), encoding in prev_results:
             ind = creator.Individual(encoding)
-            ind.fitness.values = proposals
+            ind.fitness.values = (proposals,)
             population.append(ind)
 
         for idx in range(1, self.generations):
@@ -350,7 +350,7 @@ class EvoTestManager:
             offspring = []
             for (time, proposals, _), encoding in results:
                 ind = creator.Individual(encoding)
-                ind.fitness.values = proposals
+                ind.fitness.values = (proposals,)
                 offspring.append(ind)
 
             # Select new generation using NSGA-II
