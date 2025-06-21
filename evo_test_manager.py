@@ -145,7 +145,7 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
-        self.image = "rocket-image-atour"
+        self.image = "rocket-image-atour-proposal-elitism"
         self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
         self.main_hostname_prefix = "AMG_ProposalElitism"
