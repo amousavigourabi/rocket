@@ -145,10 +145,10 @@ class EvoTestManager:
         self.encoding_max = encoding['max_value']
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
-        self.image = "rocket-image-atour-time-elitism"
+        self.image = "rocket-image-atour-time-roulette"
         self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "AMG_TimeElitism"
+        self.main_hostname_prefix = "AMG_TimeRoulette"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
@@ -354,7 +354,7 @@ class EvoTestManager:
                 offspring.append(ind)
 
             # Select new generation using NSGA-II
-            population = tools.selBest(population + offspring, k=self.population_size)
+            population = tools.selRoulette(population + offspring, k=self.population_size)
 
         return
 
