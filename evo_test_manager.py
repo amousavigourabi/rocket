@@ -148,7 +148,7 @@ class EvoTestManager:
         self.image = "rocket-image-atour"
         self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "AMG_TimeElitism"
+        self.main_hostname_prefix = "AMG_ProposalElitism"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
@@ -299,7 +299,7 @@ class EvoTestManager:
         population = []
         for (time, proposals, _), encoding in prev_results:
             ind = creator.Individual(encoding)
-            ind.fitness.values = time
+            ind.fitness.values = proposals
             population.append(ind)
 
         for idx in range(1, self.generations):
@@ -350,7 +350,7 @@ class EvoTestManager:
             offspring = []
             for (time, proposals, _), encoding in results:
                 ind = creator.Individual(encoding)
-                ind.fitness.values = time
+                ind.fitness.values = proposals
                 offspring.append(ind)
 
             # Select new generation using NSGA-II
