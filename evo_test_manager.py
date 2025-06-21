@@ -148,7 +148,7 @@ class EvoTestManager:
         self.image = "rocket-image-atour"
         self.xrpl_image = "ghcr.io/amousavigourabi/docker-rippled/seeded-2.4.0-fully-lowered-threshold:latest"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
-        self.main_hostname_prefix = "AMG_NSGAII"
+        self.main_hostname_prefix = "AMG_TimeElitism"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
         self.workers = 5  # workers refers to the amount of rocket controllers started at the same time. This means you will need 10 free threads per worker.
         # Do not use more than 5 on the research server!
@@ -291,7 +291,7 @@ class EvoTestManager:
         start_time = datetime.now()
         shutil.copytree("./rocket_interceptor/network", f"/shared/network")
 
-        creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # Maximize both
+        creator.create("FitnessMulti", base.Fitness, weights=(1.0))  # Maximize both
         creator.create("Individual", list, fitness=creator.FitnessMulti)
 
         population = [self.initial_population() for _ in range(self.population_size)]
@@ -299,7 +299,7 @@ class EvoTestManager:
         population = []
         for (time, proposals, _), encoding in prev_results:
             ind = creator.Individual(encoding)
-            ind.fitness.values = (time, proposals)
+            ind.fitness.values = time
             population.append(ind)
 
         for idx in range(1, self.generations):
@@ -312,7 +312,7 @@ class EvoTestManager:
             while len(offspring) < self.population_size:
 
                 # Select two parents using elitism
-                parents = tools.selTournamentDCD(population, 2)
+                parents = tools.selBest(population, 2)
                 parent1, parent2 = parents[0], parents[1]
 
                 # Clone parents to create children
@@ -350,11 +350,11 @@ class EvoTestManager:
             offspring = []
             for (time, proposals, _), encoding in results:
                 ind = creator.Individual(encoding)
-                ind.fitness.values = (time, proposals)
+                ind.fitness.values = time
                 offspring.append(ind)
 
             # Select new generation using NSGA-II
-            population = tools.selNSGA2(population + offspring, k=self.population_size)
+            population = tools.selBest(population + offspring, k=self.population_size)
 
         return
 
