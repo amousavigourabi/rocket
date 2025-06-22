@@ -1,0 +1,325 @@
+2025-06-21T17:32:27.588376874Z 2025-06-21 17:32:27.588 | DEBUG    | rocket_controller.strategies.strategy:__init__:82 - Initialized final strategy parameters:
+2025-06-21T17:32:27.588426928Z 	{'encoding': [2553, 368, 3890, 911, 2619, 488, 3448, 1482, 3750, 685, 1496, 2876, 3021, 936, 2782, 92, 1207, 882, 1905, 3040, 3848, 989, 2281, 1691, 3440, 1459, 2008, 1098, 3693, 3277, 325, 2752, 3341, 1293, 309, 2524, 1701, 2003, 3443, 2237, 2424, 3516, 687, 1079, 441, 1160, 10, 552, 2542, 2404, 244, 2031, 2194, 3894, 3665, 2653, 3388, 2852, 2273, 324, 2583, 3900, 1909, 2693, 151, 2450, 384, 117, 1437, 3287, 148, 2151, 1659, 3346, 1410, 3385, 1554, 3808, 2752, 3816, 1466, 337, 2841, 3183, 3504, 2595, 3483, 2506, 417, 3661, 2158, 2274, 2171, 1649, 1451, 3298, 1704, 1986, 3039, 880, 666, 1693, 3585, 1547, 932, 2757, 1645, 3501, 736, 3023, 293, 2706, 438, 845, 1822, 1212, 2039, 83, 3573, 971, 14, 1631, 1458, 194, 2454, 327, 1801, 1728, 3098, 1647, 3273, 1714, 2692, 1812, 3943, 1629, 3703, 1537, 1266, 760]}
+2025-06-21T17:32:27.588542396Z 2025-06-21 17:32:27.588 | DEBUG    | rocket_controller.strategies.strategy:__init__:83 - Initialized final strategy network configuration:
+2025-06-21T17:32:27.588575859Z 	{'hostname_prefix': 'AMG_NSGAII_G24T3R0', 'number_of_nodes': 5, 'network_partition': [], 'unl_partition': [], 'transactions': {'genesis': [{'peer_id': 1, 'amount': 100001000000, 'sender_account': 'None', 'destination_account': 'Account1'}, {'peer_id': 1, 'amount': 100001000000, 'sender_account': 'None', 'destination_account': 'Account2'}, {'peer_id': 1, 'amount': 100001000000, 'sender_account': 'None', 'destination_account': 'Account3'}], 'regular': [{'peer_id': 0, 'amount': 80000000000, 'sender_account': 'Account1', 'destination_account': 'Account2', 'time': 2}, {'peer_id': 1, 'amount': 81000000000, 'sender_account': 'Account1', 'destination_account': 'Account3', 'time': 2}, {'peer_id': 2, 'amount': 82000000000, 'sender_account': 'Account1', 'destination_account': 'Account3', 'time': 2}, {'peer_id': 3, 'amount': 83000000000, 'sender_account': 'Account1', 'destination_account': 'Account2', 'time': 2}]}}
+2025-06-21T17:32:27.596655318Z 2025-06-21 17:32:27.596 | DEBUG    | rocket_controller.iteration_type:add_iteration:342 - Stopping logLedgerResul;t
+2025-06-21T17:32:27.596712355Z 2025-06-21 17:32:27.596 | DEBUG    | rocket_controller.iteration_type:add_iteration:347 - Done stopping logLedgerResul;t
+2025-06-21T17:32:27.597394011Z 2025-06-21 17:32:27.597 | INFO     | rocket_controller.iteration_type:add_iteration:359 - Starting iteration 1
+2025-06-21T17:32:27.597470445Z 2025-06-21 17:32:27.597 | INFO     | rocket_controller.interceptor_manager:start_new:70 - Starting interceptor
+2025-06-21T17:32:27.598870105Z 2025-06-21 17:32:27.598 | INFO     | rocket_controller.iteration_type:_start_transactions:157 - Starting Transaction.
+2025-06-21T17:32:47.417996594Z 2025-06-21 17:32:47.416 | INFO     | rocket_controller.strategies.strategy:update_network:124 - Updating the strategy's network information
+2025-06-21T17:32:47.599523085Z 2025-06-21 17:32:47.599 | INFO     | rocket_controller.iteration_type:_perform_transactions:163 - Waiting for validator nodes to be initialized...
+2025-06-21T17:32:47.599573440Z 2025-06-21 17:32:47.599 | INFO     | rocket_controller.iteration_type:_perform_transactions:167 - Waiting for network to be initialized...
+2025-06-21T17:32:47.599649784Z 2025-06-21 17:32:47.599 | INFO     | rocket_controller.iteration_type:_perform_transactions:171 - Waiting for ledger to be available before submitting transaction...
+2025-06-21T17:33:10.177481552Z 2025-06-21 17:33:10.177 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 2 in 0:00:22.690831
+2025-06-21T17:33:10.609610993Z 2025-06-21 17:33:10.609 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 2 in 0:00:23.122559
+2025-06-21T17:33:10.723976515Z 2025-06-21 17:33:10.723 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 2 in 0:00:23.248222
+2025-06-21T17:33:10.876715077Z 2025-06-21 17:33:10.876 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 2 in 0:00:23.399852
+2025-06-21T17:33:10.941641093Z 2025-06-21 17:33:10.941 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 2 in 0:00:23.461722
+2025-06-21T17:33:12.603549192Z 2025-06-21 17:33:12.603 | INFO     | rocket_controller.iteration_type:_perform_transactions:177 - Attempting to submit 3 Genesis Transactions and 4 Regular Transactions to the network.
+2025-06-21T17:33:12.603727388Z 2025-06-21 17:33:12.603 | INFO     | rocket_controller.iteration_type:_perform_transactions:187 - Sending 100001000000 from None to Account1 using peer 1...
+2025-06-21T17:33:12.604405437Z 2025-06-21 17:33:12.604 | INFO     | rocket_controller.iteration_type:_perform_transactions:187 - Sending 100001000000 from None to Account2 using peer 1...
+2025-06-21T17:33:12.615170402Z 2025-06-21 17:33:12.614 | INFO     | rocket_controller.iteration_type:_perform_transactions:187 - Sending 100001000000 from None to Account3 using peer 1...
+2025-06-21T17:33:12.648959407Z 2025-06-21 17:33:12.648 | INFO     | rocket_controller.network_manager:get_account:428 - Creating account Account2 with seed ssdjb8eMd7nyhL5e81TtbD3wJvVfm and address rE6ZdkVng2Siq2uGwFgyva5vvWDHbva1bG
+2025-06-21T17:33:12.709340210Z 2025-06-21 17:33:12.708 | INFO     | rocket_controller.network_manager:get_account:428 - Creating account Account1 with seed snw7gaM6fYgr5K2Kct589194hA8Ce and address rGKTupjijk57vRcpAkoDAnm9uiPp16kSrw
+2025-06-21T17:33:12.720806057Z 2025-06-21 17:33:12.720 | INFO     | rocket_controller.network_manager:get_account:428 - Creating account Account3 with seed shGMr8bDgV4WXuo9y68bSXf51G7FD and address rnAcffSvdKJ1bxuPnNmxCQvmPsHLcPQb1P
+2025-06-21T17:33:13.601096655Z 2025-06-21 17:33:13.600 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 3 in 0:00:03.001913
+2025-06-21T17:33:13.704812800Z 2025-06-21 17:33:13.704 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 3 in 0:00:03.001372
+2025-06-21T17:33:14.034310486Z 2025-06-21 17:33:14.034 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 3 in 0:00:03.020574
+2025-06-21T17:33:14.261419722Z 2025-06-21 17:33:14.261 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 3 in 0:00:03.158168
+2025-06-21T17:33:14.514721783Z 2025-06-21 17:33:14.514 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 3 in 0:00:04.155935
+2025-06-21T17:33:14.669422538Z 2025-06-21 17:33:14.668 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction E1A858D6EDE069330ADC0C7ADB23FF7B3D11924A8904B81EE30D6D91952042CF submitted successfully
+2025-06-21T17:33:15.619327081Z 2025-06-21 17:33:15.618 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction 9ECB3A8C1DC6EF8046F66F8D0A058713780EB7D933D065AB0298C80B3805C80D submitted successfully
+2025-06-21T17:33:16.407033599Z 2025-06-21 17:33:16.406 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction 9795A7D94B20429126CD65051634327444FF8C8DE8DAAF12CD546FD11AC119E6 submitted successfully
+2025-06-21T17:33:16.603586358Z 2025-06-21 17:33:16.603 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 4 in 0:00:03.001543
+2025-06-21T17:33:16.732287722Z 2025-06-21 17:33:16.731 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 4 in 0:00:03.001411
+2025-06-21T17:33:16.881454620Z 2025-06-21 17:33:16.880 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 4 in 0:00:02.981274
+2025-06-21T17:33:17.919083520Z 2025-06-21 17:33:17.918 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 4 in 0:00:03.809738
+2025-06-21T17:33:18.182940193Z 2025-06-21 17:33:18.182 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 4 in 0:00:03.845247
+2025-06-21T17:33:19.616972209Z 2025-06-21 17:33:19.616 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 5 in 0:00:03.000415
+2025-06-21T17:33:19.762985429Z 2025-06-21 17:33:19.762 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 5 in 0:00:03.001078
+2025-06-21T17:33:19.880316306Z 2025-06-21 17:33:19.879 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 5 in 0:00:03.000928
+2025-06-21T17:33:20.919726514Z 2025-06-21 17:33:20.919 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 5 in 0:00:03.000904
+2025-06-21T17:33:21.408640429Z 2025-06-21 17:33:21.408 | INFO     | rocket_controller.iteration_type:_perform_transactions:201 - Sending 80000000000 from Account1 to Account2 after 2 seconds using peer 0...
+2025-06-21T17:33:21.409259437Z 2025-06-21 17:33:21.408 | INFO     | rocket_controller.iteration_type:_perform_transactions:201 - Sending 81000000000 from Account1 to Account3 after 2 seconds using peer 1...
+2025-06-21T17:33:21.409907389Z 2025-06-21 17:33:21.409 | INFO     | rocket_controller.iteration_type:_perform_transactions:201 - Sending 82000000000 from Account1 to Account3 after 2 seconds using peer 2...
+2025-06-21T17:33:21.410487854Z 2025-06-21 17:33:21.410 | INFO     | rocket_controller.iteration_type:_perform_transactions:201 - Sending 83000000000 from Account1 to Account2 after 2 seconds using peer 3...
+2025-06-21T17:33:22.869913150Z 2025-06-21 17:33:22.869 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 6 in 0:00:03.002598
+2025-06-21T17:33:23.155967788Z 2025-06-21 17:33:23.155 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 5 in 0:00:05.003414
+2025-06-21T17:33:24.660474968Z 2025-06-21 17:33:24.660 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction CB26DE91B8885697D33709C321AB948A2D9CAB2AC7A9D6675C807EE866968A4B submitted successfully
+2025-06-21T17:33:24.672751305Z 2025-06-21 17:33:24.672 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction 01B3775064F95B4A154DC563B32B7BD3012009F8354BD8AEA83450C6333D1231 submitted successfully
+2025-06-21T17:33:24.786653817Z 2025-06-21 17:33:24.786 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 6 in 0:00:05.129854
+2025-06-21T17:33:24.814520281Z 2025-06-21 17:33:24.814 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction 65144F4A4F51F7D70ECE43F03884CE093BCC720876F342829261E278AD4A37AB submitted successfully
+2025-06-21T17:33:24.815998459Z 2025-06-21 17:33:24.814 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction 5D09B881E2A2F73D7203B1934635C17DA1109481196FD6CA6E1EB7CF55C02F6E submitted successfully
+2025-06-21T17:33:27.735309913Z 2025-06-21 17:33:27.734 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 6 in 0:00:08.006478
+2025-06-21T17:33:28.865877963Z 2025-06-21 17:33:28.865 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 7 in 0:00:06.002953
+2025-06-21T17:33:30.154976692Z 2025-06-21 17:33:30.154 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 6 in 0:00:07.004156
+2025-06-21T17:33:30.605320583Z 2025-06-21 17:33:30.604 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 7 in 0:00:05.877692
+2025-06-21T17:33:34.764853288Z 2025-06-21 17:33:34.764 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 7 in 0:00:07.006176
+2025-06-21T17:33:37.170695814Z 2025-06-21 17:33:37.169 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 7 in 0:00:07.006000
+2025-06-21T17:33:42.754896777Z 2025-06-21 17:33:42.754 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 8 in 0:00:08.002323
+2025-06-21T17:33:42.874576172Z 2025-06-21 17:33:42.874 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 8 in 0:00:14.012358
+2025-06-21T17:33:43.914735174Z 2025-06-21 17:33:43.914 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 6 in 0:00:23.028014
+2025-06-21T17:33:44.599084164Z 2025-06-21 17:33:44.597 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 8 in 0:00:14.007399
+2025-06-21T17:33:45.164741661Z 2025-06-21 17:33:45.164 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 8 in 0:00:08.004104
+2025-06-21T17:33:45.880092623Z 2025-06-21 17:33:45.879 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 9 in 0:00:03.000926
+2025-06-21T17:33:47.601550615Z 2025-06-21 17:33:47.601 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 9 in 0:00:03.001529
+2025-06-21T17:33:49.751732064Z 2025-06-21 17:33:49.751 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 9 in 0:00:07.004961
+2025-06-21T17:33:50.878502614Z 2025-06-21 17:33:50.878 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 10 in 0:00:05.003701
+2025-06-21T17:33:51.637225871Z 2025-06-21 17:33:51.636 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 10 in 0:00:04.004680
+2025-06-21T17:33:52.188910672Z 2025-06-21 17:33:52.188 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 9 in 0:00:07.002760
+2025-06-21T17:33:56.758806308Z 2025-06-21 17:33:56.758 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 10 in 0:00:07.011251
+2025-06-21T17:33:57.171813379Z 2025-06-21 17:33:57.171 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 10 in 0:00:05.002393
+2025-06-21T17:33:59.773912804Z 2025-06-21 17:33:59.773 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 11 in 0:00:03.001446
+2025-06-21T17:34:00.174605088Z 2025-06-21 17:34:00.174 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 11 in 0:00:03.001326
+2025-06-21T17:34:06.918208844Z 2025-06-21 17:34:06.917 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 11 in 0:00:16.004657
+2025-06-21T17:34:07.210153866Z 2025-06-21 17:34:07.209 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 12 in 0:00:07.002238
+2025-06-21T17:34:07.780294574Z 2025-06-21 17:34:07.779 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 12 in 0:00:08.003669
+2025-06-21T17:34:22.922249850Z 2025-06-21 17:34:22.921 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 12 in 0:00:16.005087
+2025-06-21T17:34:23.225772844Z 2025-06-21 17:34:23.225 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 13 in 0:00:16.012118
+2025-06-21T17:34:23.778900409Z 2025-06-21 17:34:23.778 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 13 in 0:00:16.006707
+2025-06-21T17:34:30.965255411Z 2025-06-21 17:34:30.964 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 7 in 0:00:47.019413
+2025-06-21T17:34:38.894428341Z 2025-06-21 17:34:38.893 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 13 in 0:00:16.005609
+2025-06-21T17:34:39.197077828Z 2025-06-21 17:34:39.196 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 14 in 0:00:16.005377
+2025-06-21T17:34:39.757905900Z 2025-06-21 17:34:39.757 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 14 in 0:00:16.008655
+2025-06-21T17:34:50.974731150Z 2025-06-21 17:34:50.974 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 8 in 0:00:20.005214
+2025-06-21T17:34:54.898144678Z 2025-06-21 17:34:54.897 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 14 in 0:00:16.005428
+2025-06-21T17:34:55.197371960Z 2025-06-21 17:34:55.196 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 15 in 0:00:16.006703
+2025-06-21T17:34:55.771082375Z 2025-06-21 17:34:55.770 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 15 in 0:00:16.011032
+2025-06-21T17:35:10.948140470Z 2025-06-21 17:35:10.947 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 15 in 0:00:16.005507
+2025-06-21T17:35:10.986012206Z 2025-06-21 17:35:10.985 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 9 in 0:00:20.049440
+2025-06-21T17:35:11.218642391Z 2025-06-21 17:35:11.218 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 16 in 0:00:16.019573
+2025-06-21T17:35:11.777431736Z 2025-06-21 17:35:11.777 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 16 in 0:00:16.006646
+2025-06-21T17:35:26.945519157Z 2025-06-21 17:35:26.945 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 16 in 0:00:16.006010
+2025-06-21T17:35:27.234983251Z 2025-06-21 17:35:27.234 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 17 in 0:00:15.994997
+2025-06-21T17:35:27.820064046Z 2025-06-21 17:35:27.819 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 17 in 0:00:16.008728
+2025-06-21T17:35:30.992418202Z 2025-06-21 17:35:30.991 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 10 in 0:00:19.962628
+2025-06-21T17:35:41.982403427Z 2025-06-21 17:35:41.982 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 16 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006).
+2025-06-21T17:35:41.982523955Z 2025-06-21 17:35:41.982 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006):
+2025-06-21T17:35:41.982536428Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_713179', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_713179', 'ledger_index': 16, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_713179', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:35:41.986893929Z 2025-06-21 17:35:41.986 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 3
+2025-06-21T17:35:42.260618007Z 2025-06-21 17:35:42.260 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 17 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_0, port=6006).
+2025-06-21T17:35:42.260865374Z 2025-06-21 17:35:42.260 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_0, port=6006):
+2025-06-21T17:35:42.260887355Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_390548', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_390548', 'ledger_index': 17, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_390548', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:35:42.265350175Z 2025-06-21 17:35:42.265 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 0
+2025-06-21T17:35:42.849031748Z 2025-06-21 17:35:42.848 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 17 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_4, port=6006).
+2025-06-21T17:35:42.849178675Z 2025-06-21 17:35:42.848 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_4, port=6006):
+2025-06-21T17:35:42.849194705Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_361392', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_361392', 'ledger_index': 17, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_361392', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:35:42.852798665Z 2025-06-21 17:35:42.852 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 4
+2025-06-21T17:35:42.918254073Z 2025-06-21 17:35:42.917 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 17 in 0:00:16.005656
+2025-06-21T17:35:43.242524532Z 2025-06-21 17:35:43.242 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 18 in 0:00:16.004860
+2025-06-21T17:35:43.790111771Z 2025-06-21 17:35:43.789 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 18 in 0:00:16.003984
+2025-06-21T17:35:46.019815178Z 2025-06-21 17:35:46.019 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 10 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006).
+2025-06-21T17:35:46.019957917Z 2025-06-21 17:35:46.019 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006):
+2025-06-21T17:35:46.019973166Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_426164', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_426164', 'ledger_index': 10, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_426164', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:35:46.022895690Z 2025-06-21 17:35:46.022 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 1
+2025-06-21T17:35:50.653169135Z 2025-06-21 17:35:50.652 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 11 in 0:01:59.035896
+2025-06-21T17:35:50.995302228Z 2025-06-21 17:35:50.994 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 11 in 0:00:20.003912
+2025-06-21T17:35:58.024477564Z 2025-06-21 17:35:58.024 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 17 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006).
+2025-06-21T17:35:58.024617017Z 2025-06-21 17:35:58.024 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006):
+2025-06-21T17:35:58.024646843Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_782715', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_782715', 'ledger_index': 17, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_782715', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:35:58.028667529Z 2025-06-21 17:35:58.028 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 3
+2025-06-21T17:35:58.271004339Z 2025-06-21 17:35:58.270 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 18 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_0, port=6006).
+2025-06-21T17:35:58.271222561Z 2025-06-21 17:35:58.270 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_0, port=6006):
+2025-06-21T17:35:58.271234513Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_830478', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_830478', 'ledger_index': 18, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_830478', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:35:58.276132714Z 2025-06-21 17:35:58.275 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 0
+2025-06-21T17:35:58.823877817Z 2025-06-21 17:35:58.823 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 18 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_4, port=6006).
+2025-06-21T17:35:58.824210324Z 2025-06-21 17:35:58.823 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_4, port=6006):
+2025-06-21T17:35:58.824227878Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_436130', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_436130', 'ledger_index': 18, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_436130', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:35:58.833299061Z 2025-06-21 17:35:58.832 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 4
+2025-06-21T17:35:58.946354465Z 2025-06-21 17:35:58.945 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 18 in 0:00:16.005584
+2025-06-21T17:35:59.258822217Z 2025-06-21 17:35:59.258 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 19 in 0:00:16.005187
+2025-06-21T17:35:59.796267940Z 2025-06-21 17:35:59.795 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 19 in 0:00:16.005938
+2025-06-21T17:36:05.686176263Z 2025-06-21 17:36:05.685 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 11 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_2, port=6006).
+2025-06-21T17:36:05.686546471Z 2025-06-21 17:36:05.686 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_2, port=6006):
+2025-06-21T17:36:05.686567631Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_188502', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_188502', 'ledger_index': 11, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_188502', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:05.691763453Z 2025-06-21 17:36:05.691 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 2
+2025-06-21T17:36:06.029580454Z 2025-06-21 17:36:06.029 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 11 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006).
+2025-06-21T17:36:06.029782345Z 2025-06-21 17:36:06.029 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006):
+2025-06-21T17:36:06.029799367Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_534930', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_534930', 'ledger_index': 11, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_534930', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:06.032765704Z 2025-06-21 17:36:06.032 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 1
+2025-06-21T17:36:10.644187653Z 2025-06-21 17:36:10.643 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 12 in 0:00:20.006718
+2025-06-21T17:36:10.958136786Z 2025-06-21 17:36:10.957 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 12 in 0:00:20.004994
+2025-06-21T17:36:13.975660982Z 2025-06-21 17:36:13.975 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 18 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006).
+2025-06-21T17:36:13.975778634Z 2025-06-21 17:36:13.975 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006):
+2025-06-21T17:36:13.975794805Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_729582', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_729582', 'ledger_index': 18, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_729582', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:13.978908369Z 2025-06-21 17:36:13.978 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 3
+2025-06-21T17:36:14.284442379Z 2025-06-21 17:36:14.284 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 19 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_0, port=6006).
+2025-06-21T17:36:14.284559770Z 2025-06-21 17:36:14.284 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_0, port=6006):
+2025-06-21T17:36:14.284578445Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_932922', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_932922', 'ledger_index': 19, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_932922', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:14.287326079Z 2025-06-21 17:36:14.287 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 0
+2025-06-21T17:36:14.828940061Z 2025-06-21 17:36:14.828 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 19 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_4, port=6006).
+2025-06-21T17:36:14.829277748Z 2025-06-21 17:36:14.829 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_4, port=6006):
+2025-06-21T17:36:14.829287697Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_866529', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_866529', 'ledger_index': 19, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_866529', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:14.838766270Z 2025-06-21 17:36:14.838 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 4
+2025-06-21T17:36:14.963564983Z 2025-06-21 17:36:14.963 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 19 in 0:00:16.006832
+2025-06-21T17:36:15.264038586Z 2025-06-21 17:36:15.263 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 20 in 0:00:16.006902
+2025-06-21T17:36:15.800133967Z 2025-06-21 17:36:15.799 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 20 in 0:00:16.004080
+2025-06-21T17:36:20.647144180Z 2025-06-21 17:36:20.646 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 19 in 0:00:10.002723
+2025-06-21T17:36:20.962659284Z 2025-06-21 17:36:20.962 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 19 in 0:00:10.002784
+2025-06-21T17:36:22.666287739Z 2025-06-21 17:36:22.665 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 20 in 0:00:02.009694
+2025-06-21T17:36:22.957551489Z 2025-06-21 17:36:22.957 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 20 in 0:00:08.007063
+2025-06-21T17:36:23.044467001Z 2025-06-21 17:36:23.043 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 20 in 0:00:02.038626
+2025-06-21T17:36:23.045229449Z 2025-06-21 17:36:23.044 | INFO     | rocket_controller.iteration_type:validate_transactions:253 - Only showing transactions for Node 0. For all nodes see the transaction log.
+2025-06-21T17:36:23.106900132Z 2025-06-21 17:36:23.106 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction E1A858D6EDE069330ADC0C7ADB23FF7B3D11924A8904B81EE30D6D91952042CF validated: False
+2025-06-21T17:36:23.150959548Z 2025-06-21 17:36:23.150 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 9ECB3A8C1DC6EF8046F66F8D0A058713780EB7D933D065AB0298C80B3805C80D validated: False
+2025-06-21T17:36:23.188128744Z 2025-06-21 17:36:23.187 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 9795A7D94B20429126CD65051634327444FF8C8DE8DAAF12CD546FD11AC119E6 validated: False
+2025-06-21T17:36:23.225361550Z 2025-06-21 17:36:23.225 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction CB26DE91B8885697D33709C321AB948A2D9CAB2AC7A9D6675C807EE866968A4B validated: False
+2025-06-21T17:36:23.261723895Z 2025-06-21 17:36:23.261 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 01B3775064F95B4A154DC563B32B7BD3012009F8354BD8AEA83450C6333D1231 validated: False
+2025-06-21T17:36:23.300858209Z 2025-06-21 17:36:23.300 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 65144F4A4F51F7D70ECE43F03884CE093BCC720876F342829261E278AD4A37AB validated: False
+2025-06-21T17:36:23.336717654Z 2025-06-21 17:36:23.336 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 5D09B881E2A2F73D7203B1934635C17DA1109481196FD6CA6E1EB7CF55C02F6E validated: False
+2025-06-21T17:36:25.679690655Z 2025-06-21 17:36:25.679 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 12 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_2, port=6006).
+2025-06-21T17:36:25.679804029Z 2025-06-21 17:36:25.679 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_2, port=6006):
+2025-06-21T17:36:25.679822724Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_640905', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_640905', 'ledger_index': 12, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_640905', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:25.688276123Z 2025-06-21 17:36:25.688 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 2
+2025-06-21T17:36:26.015683737Z 2025-06-21 17:36:26.015 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 12 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006).
+2025-06-21T17:36:26.015726458Z 2025-06-21 17:36:26.015 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006):
+2025-06-21T17:36:26.015735124Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_126510', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_126510', 'ledger_index': 12, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_126510', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:26.019409046Z 2025-06-21 17:36:26.019 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 1
+2025-06-21T17:36:28.597554796Z 2025-06-21 17:36:28.597 | DEBUG    | rocket_controller.iteration_type:_reset_values:372 - Iteration complete, Resetting state variables...
+2025-06-21T17:36:28.623396201Z 2025-06-21 17:36:28.623 | DEBUG    | rocket_controller.iteration_type:_reset_values:388 - State variables reset.
+2025-06-21T17:36:28.623565311Z 2025-06-21 17:36:28.623 | DEBUG    | rocket_controller.iteration_type:add_iteration:342 - Stopping logLedgerResul;t
+2025-06-21T17:36:29.992836850Z 2025-06-21 17:36:29.992 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 19 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006).
+2025-06-21T17:36:29.992895521Z 2025-06-21 17:36:29.992 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006):
+2025-06-21T17:36:29.992909347Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_457202', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_457202', 'ledger_index': 19, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_457202', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:29.996470446Z 2025-06-21 17:36:29.996 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 3
+2025-06-21T17:36:30.291992204Z 2025-06-21 17:36:30.291 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 20 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_0, port=6006).
+2025-06-21T17:36:30.292185228Z 2025-06-21 17:36:30.291 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_0, port=6006):
+2025-06-21T17:36:30.292206378Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_543240', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_543240', 'ledger_index': 20, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_543240', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:30.296892961Z 2025-06-21 17:36:30.296 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 0
+2025-06-21T17:36:30.823935247Z 2025-06-21 17:36:30.823 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 20 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_4, port=6006).
+2025-06-21T17:36:30.823993216Z 2025-06-21 17:36:30.823 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_4, port=6006):
+2025-06-21T17:36:30.824019846Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_521441', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_521441', 'ledger_index': 20, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_521441', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:30.826935186Z 2025-06-21 17:36:30.826 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 4
+2025-06-21T17:36:35.683211176Z 2025-06-21 17:36:35.682 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 19 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_2, port=6006).
+2025-06-21T17:36:35.683277130Z 2025-06-21 17:36:35.683 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_2, port=6006):
+2025-06-21T17:36:35.683300484Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_841433', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_841433', 'ledger_index': 19, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_841433', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:35.686055943Z 2025-06-21 17:36:35.685 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 2
+2025-06-21T17:36:35.989701421Z 2025-06-21 17:36:35.989 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 19 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006).
+2025-06-21T17:36:35.989815617Z 2025-06-21 17:36:35.989 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006):
+2025-06-21T17:36:35.989839813Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_17133', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_17133', 'ledger_index': 19, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_17133', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:35.992776934Z 2025-06-21 17:36:35.992 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 1
+2025-06-21T17:36:37.775511655Z 2025-06-21 17:36:37.775 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 20 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_2, port=6006).
+2025-06-21T17:36:37.775568863Z 2025-06-21 17:36:37.775 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_2, port=6006):
+2025-06-21T17:36:37.775580375Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_356083', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_356083', 'ledger_index': 20, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_356083', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:37.779359615Z 2025-06-21 17:36:37.779 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 2
+2025-06-21T17:36:37.995721286Z 2025-06-21 17:36:37.995 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 20 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006).
+2025-06-21T17:36:37.995810684Z 2025-06-21 17:36:37.995 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_3, port=6006):
+2025-06-21T17:36:37.995830622Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_503234', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_503234', 'ledger_index': 20, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_503234', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:37.999035078Z 2025-06-21 17:36:37.998 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 3
+2025-06-21T17:36:38.073389283Z 2025-06-21 17:36:38.072 | ERROR    | rocket_controller.ledger_result:_fetch_ledger:55 - Could not fetch ledger 20 from connection SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006).
+2025-06-21T17:36:38.073675493Z 2025-06-21 17:36:38.073 | DEBUG    | rocket_controller.ledger_result:_fetch_ledger:58 - Response from SocketAddress(host=AMG_NSGAII_G24T3R0_validator_1, port=6006):
+2025-06-21T17:36:38.073703525Z Response(status=<ResponseStatus.ERROR: 'error'>, result={'error': 'lgrNotFound', 'error_code': 21, 'error_message': 'ledgerNotFound', 'id': 'RequestMethod.LEDGER_556114', 'request': {'accounts': False, 'binary': False, 'command': 'ledger', 'expand': False, 'full': False, 'id': 'RequestMethod.LEDGER_556114', 'ledger_index': 20, 'owner_funds': False, 'queue': False, 'transactions': False}, 'status': 'error', 'type': 'response'}, id='RequestMethod.LEDGER_556114', type=<ResponseType.RESPONSE: 'response'>)
+2025-06-21T17:36:38.078673252Z 2025-06-21 17:36:38.078 | ERROR    | rocket_controller.ledger_result:log_ledger_result:83 - Could not retrieve ledger from node 1
+2025-06-21T17:36:38.080919660Z 2025-06-21 17:36:38.080 | DEBUG    | rocket_controller.iteration_type:add_iteration:347 - Done stopping logLedgerResul;t
+2025-06-21T17:36:38.082508027Z 2025-06-21 17:36:38.082 | DEBUG    | rocket_controller.spec_checker:spec_check:113 - Found data for ledger sequences: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+2025-06-21T17:36:38.083369903Z 2025-06-21 17:36:38.083 | INFO     | rocket_controller.spec_checker:spec_check:210 - Specification check for iteration 1: reached goal ledger: False, same ledger hashes: False, same ledger sequences: True
+2025-06-21T17:36:38.083449172Z 2025-06-21 17:36:38.083 | INFO     | rocket_controller.iteration_type:_stop_all:117 - Finished iteration 1, stopping test process...
+2025-06-21T17:36:38.083559090Z 2025-06-21 17:36:38.083 | INFO     | rocket_controller.interceptor_manager:stop:99 - Stopping interceptor
+2025-06-21T17:36:38.096204588Z 2025-06-21 17:36:38.095 | DEBUG    | rocket_controller.interceptor_manager:__check_output:60 - 
+2025-06-21T17:36:38.096216981Z 
+2025-06-21T17:36:38.096224265Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096231339Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 0 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096239464Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2025-06-21T17:36:38.096246748Z 
+2025-06-21T17:36:38.096253009Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096259822Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 0 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096267627Z 
+2025-06-21T17:36:38.096273859Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096280401Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 0 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096287595Z 
+2025-06-21T17:36:38.096293887Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096300469Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 0 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096307653Z 
+2025-06-21T17:36:38.096313854Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096320377Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096327530Z 
+2025-06-21T17:36:38.096333792Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096355082Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096362546Z 
+2025-06-21T17:36:38.096368808Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096375340Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096382554Z 
+2025-06-21T17:36:38.096388786Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096395318Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096402522Z 
+2025-06-21T17:36:38.096408753Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096415386Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096423271Z 
+2025-06-21T17:36:38.096429482Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096435955Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096443549Z 
+2025-06-21T17:36:38.096449741Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096456243Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096463396Z 
+2025-06-21T17:36:38.096469628Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096476561Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096483785Z 
+2025-06-21T17:36:38.096489987Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096496469Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096511667Z 
+2025-06-21T17:36:38.096517959Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096524452Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096531615Z 
+2025-06-21T17:36:38.096537867Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096544349Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096551533Z 
+2025-06-21T17:36:38.096557895Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096564387Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096571550Z 
+2025-06-21T17:36:38.096577792Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096584595Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096591829Z 
+2025-06-21T17:36:38.096598612Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096605184Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096612347Z 
+2025-06-21T17:36:38.096618559Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096625081Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096632305Z 
+2025-06-21T17:36:38.096641332Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096647935Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 4 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096662783Z 
+2025-06-21T17:36:38.096669034Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096675527Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 2 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096682720Z 
+2025-06-21T17:36:38.096688922Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096695434Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 2 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096702608Z 
+2025-06-21T17:36:38.096708849Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096715362Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 2 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096722545Z 
+2025-06-21T17:36:38.096729048Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096735610Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 2 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096742934Z 
+2025-06-21T17:36:38.096749146Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096755638Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 3 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096762881Z 
+2025-06-21T17:36:38.096769093Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096776006Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 3 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096783160Z 
+2025-06-21T17:36:38.096789361Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096795824Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 3 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096802977Z 
+2025-06-21T17:36:38.096816673Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096823406Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 3 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096830569Z 
+2025-06-21T17:36:38.096836761Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096843634Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 1 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096850847Z 
+2025-06-21T17:36:38.096857059Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096863561Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 1 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096870725Z 
+2025-06-21T17:36:38.096876987Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096883469Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 1 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096890612Z 
+2025-06-21T17:36:38.096896824Z thread 'tokio-runtime-worker' panicked at src/connection_handler.rs:199:14:
+2025-06-21T17:36:38.096903757Z Error occurred while requesting message and action from the controller.: Status { code: Unknown, message: "Exception calling application: Node 1 not found in ledger validation map.", metadata: MetadataMap { headers: {"content-type": "application/grpc"} }, source: None }
+2025-06-21T17:36:38.096911041Z 
+2025-06-21T17:36:45.009322257Z 2025-06-21 17:36:45.008 | INFO     | rocket_controller.spec_checker:aggregate_spec_checks:272 - Aggregated spec check results: {'total_iterations': 1, 'correct_runs': 0, 'timeout_before_startup': 0, 'errors': 0, 'failed_termination': 1, 'failed_agreement': 1, 'failed_termination_iterations': ['1'], 'failed_agreement_iterations': ['1']}
+2025-06-21T17:36:45.009988945Z 2025-06-21 17:36:45.009 | INFO     | rocket_controller.iteration_type:add_iteration:366 - SpecChecker stopped
+2025-06-21T17:36:45.011283227Z 2025-06-21 17:36:45.010 | INFO     | rocket_controller.iteration_type:add_iteration:368 - Run Finished.
+2025-06-21T17:36:45.020098258Z Removed container: AMG_NSGAII_G24T3R0_validator_4
+2025-06-21T17:36:45.020145167Z Removed container: AMG_NSGAII_G24T3R0_validator_3
+2025-06-21T17:36:45.020157290Z Removed container: AMG_NSGAII_G24T3R0_validator_2
+2025-06-21T17:36:45.020168341Z Removed container: AMG_NSGAII_G24T3R0_validator_1
+2025-06-21T17:36:45.020177408Z Removed container: AMG_NSGAII_G24T3R0_validator_0

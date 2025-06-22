@@ -1,0 +1,145 @@
+2025-06-21T15:48:30.325331852Z 2025-06-21 15:48:30.324 | DEBUG    | rocket_controller.strategies.strategy:__init__:82 - Initialized final strategy parameters:
+2025-06-21T15:48:30.325398968Z 	{'encoding': [3864, 1931, 3644, 3932, 1921, 1460, 1209, 1773, 983, 953, 3296, 2732, 212, 1469, 26, 1554, 2061, 1795, 1845, 530, 2095, 1373, 1242, 568, 1894, 175, 3692, 76, 65, 3161, 1986, 3354, 3448, 1859, 3290, 462, 3899, 673, 2140, 719, 3049, 3016, 453, 555, 2341, 941, 1424, 2016, 2025, 3809, 2933, 1385, 911, 3042, 2674, 3603, 445, 1040, 788, 2004, 382, 162, 3040, 803, 2557, 313, 2684, 1606, 1528, 1366, 846, 3841, 1619, 3623, 3292, 40, 717, 3026, 1662, 314, 1953, 1774, 3782, 2432, 3100, 689, 2121, 2219, 669, 3694, 2146, 2608, 768, 3643, 908, 692, 484, 3046, 1924, 2021, 3129, 1688, 2886, 1190, 1781, 1443, 1432, 2931, 1968, 3516, 545, 1558, 390, 3017, 590, 3460, 437, 1631, 3114, 687, 711, 2259, 650, 1165, 965, 3015, 1999, 1624, 3279, 3024, 3314, 100, 1406, 1359, 1477, 2453, 1012, 3732, 2875, 3591]}
+2025-06-21T15:48:30.325405150Z 2025-06-21 15:48:30.325 | DEBUG    | rocket_controller.strategies.strategy:__init__:83 - Initialized final strategy network configuration:
+2025-06-21T15:48:30.325409318Z 	{'hostname_prefix': 'AMG_TournamentDCD_G10T1R0', 'number_of_nodes': 5, 'network_partition': [], 'unl_partition': [], 'transactions': {'genesis': [{'peer_id': 1, 'amount': 100001000000, 'sender_account': 'None', 'destination_account': 'Account1'}, {'peer_id': 1, 'amount': 100001000000, 'sender_account': 'None', 'destination_account': 'Account2'}, {'peer_id': 1, 'amount': 100001000000, 'sender_account': 'None', 'destination_account': 'Account3'}], 'regular': [{'peer_id': 0, 'amount': 80000000000, 'sender_account': 'Account1', 'destination_account': 'Account2', 'time': 2}, {'peer_id': 1, 'amount': 81000000000, 'sender_account': 'Account1', 'destination_account': 'Account3', 'time': 2}, {'peer_id': 2, 'amount': 82000000000, 'sender_account': 'Account1', 'destination_account': 'Account3', 'time': 2}, {'peer_id': 3, 'amount': 83000000000, 'sender_account': 'Account1', 'destination_account': 'Account2', 'time': 2}]}}
+2025-06-21T15:48:30.333946726Z 2025-06-21 15:48:30.333 | DEBUG    | rocket_controller.iteration_type:add_iteration:342 - Stopping logLedgerResul;t
+2025-06-21T15:48:30.334009113Z 2025-06-21 15:48:30.333 | DEBUG    | rocket_controller.iteration_type:add_iteration:347 - Done stopping logLedgerResul;t
+2025-06-21T15:48:30.334731347Z 2025-06-21 15:48:30.334 | INFO     | rocket_controller.iteration_type:add_iteration:359 - Starting iteration 1
+2025-06-21T15:48:30.334772755Z 2025-06-21 15:48:30.334 | INFO     | rocket_controller.interceptor_manager:start_new:70 - Starting interceptor
+2025-06-21T15:48:30.336047071Z 2025-06-21 15:48:30.335 | INFO     | rocket_controller.iteration_type:_start_transactions:157 - Starting Transaction.
+2025-06-21T15:48:50.336671225Z 2025-06-21 15:48:50.336 | INFO     | rocket_controller.iteration_type:_perform_transactions:163 - Waiting for validator nodes to be initialized...
+2025-06-21T15:48:58.201174852Z 2025-06-21 15:48:58.200 | INFO     | rocket_controller.strategies.strategy:update_network:124 - Updating the strategy's network information
+2025-06-21T15:49:00.337137250Z 2025-06-21 15:49:00.336 | INFO     | rocket_controller.iteration_type:_perform_transactions:167 - Waiting for network to be initialized...
+2025-06-21T15:49:00.337209045Z 2025-06-21 15:49:00.337 | INFO     | rocket_controller.iteration_type:_perform_transactions:171 - Waiting for ledger to be available before submitting transaction...
+2025-06-21T15:49:20.115272984Z 2025-06-21 15:49:20.115 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 2 in 0:00:21.856528
+2025-06-21T15:49:20.445596274Z 2025-06-21 15:49:20.445 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 2 in 0:00:22.170452
+2025-06-21T15:49:20.548064705Z 2025-06-21 15:49:20.547 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 2 in 0:00:22.273787
+2025-06-21T15:49:20.725574367Z 2025-06-21 15:49:20.725 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 2 in 0:00:22.486608
+2025-06-21T15:49:20.923669211Z 2025-06-21 15:49:20.923 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 2 in 0:00:22.674683
+2025-06-21T15:49:22.340054667Z 2025-06-21 15:49:22.339 | INFO     | rocket_controller.iteration_type:_perform_transactions:177 - Attempting to submit 3 Genesis Transactions and 4 Regular Transactions to the network.
+2025-06-21T15:49:22.340236070Z 2025-06-21 15:49:22.339 | INFO     | rocket_controller.iteration_type:_perform_transactions:187 - Sending 100001000000 from None to Account1 using peer 1...
+2025-06-21T15:49:22.345976858Z 2025-06-21 15:49:22.345 | INFO     | rocket_controller.iteration_type:_perform_transactions:187 - Sending 100001000000 from None to Account2 using peer 1...
+2025-06-21T15:49:22.361872287Z 2025-06-21 15:49:22.361 | INFO     | rocket_controller.iteration_type:_perform_transactions:187 - Sending 100001000000 from None to Account3 using peer 1...
+2025-06-21T15:49:22.375876997Z 2025-06-21 15:49:22.375 | INFO     | rocket_controller.network_manager:get_account:428 - Creating account Account1 with seed ssAwwC9HmFjTzKXuGfgzLtSnUYtTt and address rwFpbFXkqh3a1A8hDWiddehjBqD8pE2UfK
+2025-06-21T15:49:22.422962851Z 2025-06-21 15:49:22.422 | INFO     | rocket_controller.network_manager:get_account:428 - Creating account Account3 with seed shDKyd9zJs46KdusWTLvEyrsthpGh and address rJ145toXcJ3y1HheRydAQ8H3V1QMWC5DKx
+2025-06-21T15:49:22.434881261Z 2025-06-21 15:49:22.434 | INFO     | rocket_controller.network_manager:get_account:428 - Creating account Account2 with seed snxChKV9MH75EQJZGksoqzyeAbi3u and address rsnkBWU51Fj15aE9xM1h7fYqysyj3BjUFr
+2025-06-21T15:49:23.910300359Z 2025-06-21 15:49:23.910 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 3 in 0:00:03.000936
+2025-06-21T15:49:24.143164736Z 2025-06-21 15:49:24.142 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 3 in 0:00:03.036081
+2025-06-21T15:49:24.253087912Z 2025-06-21 15:49:24.252 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction 7509284A0446F12105A4B055B288DAE70D9B861AEDA2D8FD15E762982F8D798A submitted successfully
+2025-06-21T15:49:24.411973824Z 2025-06-21 15:49:24.411 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 3 in 0:00:04.000722
+2025-06-21T15:49:24.515173115Z 2025-06-21 15:49:24.514 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 3 in 0:00:04.000130
+2025-06-21T15:49:25.191520078Z 2025-06-21 15:49:25.191 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 3 in 0:00:05.001075
+2025-06-21T15:49:25.252709378Z 2025-06-21 15:49:25.252 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction 8D7BB8BFB073F456BBC99C840A5E2EB3AA1A77EEB77C2EA32A8295E2CC130F3C submitted successfully
+2025-06-21T15:49:26.034412655Z 2025-06-21 15:49:26.034 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction FB8BDE362D7A165A3FAF963EBE9AB9B33D378DCF2A7D4BD497FEB115E8296D3B submitted successfully
+2025-06-21T15:49:27.549976778Z 2025-06-21 15:49:27.549 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 4 in 0:00:03.001481
+2025-06-21T15:49:27.767032760Z 2025-06-21 15:49:27.766 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 4 in 0:00:04.001662
+2025-06-21T15:49:27.914904399Z 2025-06-21 15:49:27.914 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 4 in 0:00:03.966467
+2025-06-21T15:49:28.102187444Z 2025-06-21 15:49:28.101 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 4 in 0:00:03.004957
+2025-06-21T15:49:28.414320344Z 2025-06-21 15:49:28.413 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 4 in 0:00:04.001412
+2025-06-21T15:49:31.035458401Z 2025-06-21 15:49:31.035 | INFO     | rocket_controller.iteration_type:_perform_transactions:201 - Sending 80000000000 from Account1 to Account2 after 2 seconds using peer 0...
+2025-06-21T15:49:31.035816216Z 2025-06-21 15:49:31.035 | INFO     | rocket_controller.iteration_type:_perform_transactions:201 - Sending 81000000000 from Account1 to Account3 after 2 seconds using peer 1...
+2025-06-21T15:49:31.036153022Z 2025-06-21 15:49:31.036 | INFO     | rocket_controller.iteration_type:_perform_transactions:201 - Sending 82000000000 from Account1 to Account3 after 2 seconds using peer 2...
+2025-06-21T15:49:31.036445214Z 2025-06-21 15:49:31.036 | INFO     | rocket_controller.iteration_type:_perform_transactions:201 - Sending 83000000000 from Account1 to Account2 after 2 seconds using peer 3...
+2025-06-21T15:49:31.744384955Z 2025-06-21 15:49:31.744 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 5 in 0:00:04.002084
+2025-06-21T15:49:31.930282104Z 2025-06-21 15:49:31.929 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 5 in 0:00:04.001688
+2025-06-21T15:49:32.104341834Z 2025-06-21 15:49:32.104 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 5 in 0:00:04.002526
+2025-06-21T15:49:32.452813079Z 2025-06-21 15:49:32.452 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 5 in 0:00:04.002345
+2025-06-21T15:49:32.516305878Z 2025-06-21 15:49:32.515 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 5 in 0:00:05.002141
+2025-06-21T15:49:34.080577515Z 2025-06-21 15:49:34.080 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction CB6E1F5F23A4BBD7BD221AFE54CBED60F007C83D60FA2B877B5D84C5E636D762 submitted successfully
+2025-06-21T15:49:34.153490118Z 2025-06-21 15:49:34.153 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction 5D4D7045DA150A8DF273BF04496A37EE701D1B738AA4724060F13076E0EA1FFD submitted successfully
+2025-06-21T15:49:34.163933865Z 2025-06-21 15:49:34.163 | INFO     | rocket_controller.iteration_type:perform_transaction:248 - Transaction 037C38B168BD48EF1F3112A61178511EF88D2B39B51593BB4F105B35928E6709 submitted successfully
+2025-06-21T15:49:34.860710173Z 2025-06-21 15:49:34.860 | INFO     | rocket_controller.iteration_type:perform_transaction:221 - Transaction 1F43E0C0DD7FA60B4B4525FDCC3C6A6294567ED061231166AF12A7A1E46D0638 not submitted: Insufficient XRP balance to send.
+2025-06-21T15:49:35.567028536Z 2025-06-21 15:49:35.566 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 6 in 0:00:03.000709
+2025-06-21T15:49:35.771321885Z 2025-06-21 15:49:35.770 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 6 in 0:00:04.001239
+2025-06-21T15:49:35.944459625Z 2025-06-21 15:49:35.944 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 6 in 0:00:04.001830
+2025-06-21T15:49:36.140921560Z 2025-06-21 15:49:36.140 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 6 in 0:00:04.000634
+2025-06-21T15:49:36.451864165Z 2025-06-21 15:49:36.451 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 6 in 0:00:04.000746
+2025-06-21T15:49:42.530740050Z 2025-06-21 15:49:42.530 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 7 in 0:00:07.003870
+2025-06-21T15:49:42.740202570Z 2025-06-21 15:49:42.739 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 7 in 0:00:07.001649
+2025-06-21T15:49:42.941416136Z 2025-06-21 15:49:42.941 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 7 in 0:00:07.002730
+2025-06-21T15:49:43.146589057Z 2025-06-21 15:49:43.146 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 7 in 0:00:07.002824
+2025-06-21T15:49:43.422620274Z 2025-06-21 15:49:43.422 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 7 in 0:00:07.003119
+2025-06-21T15:49:46.774199045Z 2025-06-21 15:49:46.773 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 8 in 0:00:04.002176
+2025-06-21T15:49:47.420492432Z 2025-06-21 15:49:47.420 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 8 in 0:00:04.000471
+2025-06-21T15:49:47.957970874Z 2025-06-21 15:49:47.957 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 8 in 0:00:05.002611
+2025-06-21T15:49:53.425085492Z 2025-06-21 15:49:53.424 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 9 in 0:00:06.004749
+2025-06-21T15:49:53.740160874Z 2025-06-21 15:49:53.739 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 9 in 0:00:07.003969
+2025-06-21T15:49:53.963085120Z 2025-06-21 15:49:53.962 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 9 in 0:00:06.004205
+2025-06-21T15:49:56.461389952Z 2025-06-21 15:49:56.460 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 10 in 0:00:03.002183
+2025-06-21T15:49:56.759830890Z 2025-06-21 15:49:56.759 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 10 in 0:00:03.000344
+2025-06-21T15:49:56.959276371Z 2025-06-21 15:49:56.958 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 10 in 0:00:03.000144
+2025-06-21T15:49:57.138482611Z 2025-06-21 15:49:57.138 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 9 in 0:00:14.008011
+2025-06-21T15:49:59.151635282Z 2025-06-21 15:49:59.151 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 11 in 0:00:01.999446
+2025-06-21T15:49:59.462231679Z 2025-06-21 15:49:59.461 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 11 in 0:00:03.002275
+2025-06-21T15:49:59.743913297Z 2025-06-21 15:49:59.743 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 11 in 0:00:03.002296
+2025-06-21T15:49:59.966023628Z 2025-06-21 15:49:59.965 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 11 in 0:00:03.001373
+2025-06-21T15:50:00.532512306Z 2025-06-21 15:50:00.532 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 11 in 0:00:18.009601
+2025-06-21T15:50:02.136824564Z 2025-06-21 15:50:02.136 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 12 in 0:00:03.001470
+2025-06-21T15:50:02.462567709Z 2025-06-21 15:50:02.462 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 12 in 0:00:03.000538
+2025-06-21T15:50:02.608213239Z 2025-06-21 15:50:02.607 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 12 in 0:00:02.043951
+2025-06-21T15:50:02.777988145Z 2025-06-21 15:50:02.777 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 12 in 0:00:03.000794
+2025-06-21T15:50:02.969239356Z 2025-06-21 15:50:02.968 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 12 in 0:00:03.001354
+2025-06-21T15:50:05.118481515Z 2025-06-21 15:50:05.118 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 13 in 0:00:03.001461
+2025-06-21T15:50:05.454245179Z 2025-06-21 15:50:05.453 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 13 in 0:00:03.001758
+2025-06-21T15:50:05.556230842Z 2025-06-21 15:50:05.555 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 13 in 0:00:02.956929
+2025-06-21T15:50:05.764746117Z 2025-06-21 15:50:05.764 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 13 in 0:00:03.000568
+2025-06-21T15:50:05.971922786Z 2025-06-21 15:50:05.971 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 13 in 0:00:03.000928
+2025-06-21T15:50:08.155138300Z 2025-06-21 15:50:08.154 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 14 in 0:00:03.000996
+2025-06-21T15:50:08.429569271Z 2025-06-21 15:50:08.429 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 14 in 0:00:03.000662
+2025-06-21T15:50:08.533382125Z 2025-06-21 15:50:08.532 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 14 in 0:00:03.001998
+2025-06-21T15:50:08.768001774Z 2025-06-21 15:50:08.767 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 14 in 0:00:03.001156
+2025-06-21T15:50:08.956123378Z 2025-06-21 15:50:08.955 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 14 in 0:00:03.001382
+2025-06-21T15:50:11.146366175Z 2025-06-21 15:50:11.146 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 15 in 0:00:03.001222
+2025-06-21T15:50:11.438572786Z 2025-06-21 15:50:11.438 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 15 in 0:00:03.000949
+2025-06-21T15:50:11.534441652Z 2025-06-21 15:50:11.534 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 15 in 0:00:03.000847
+2025-06-21T15:50:11.779206326Z 2025-06-21 15:50:11.778 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 15 in 0:00:03.001344
+2025-06-21T15:50:11.941285363Z 2025-06-21 15:50:11.940 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 15 in 0:00:03.001567
+2025-06-21T15:50:14.158104029Z 2025-06-21 15:50:14.157 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 16 in 0:00:03.001100
+2025-06-21T15:50:14.468183565Z 2025-06-21 15:50:14.467 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 16 in 0:00:03.001507
+2025-06-21T15:50:14.571095467Z 2025-06-21 15:50:14.570 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 16 in 0:00:03.001297
+2025-06-21T15:50:14.770462583Z 2025-06-21 15:50:14.770 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 16 in 0:00:03.001853
+2025-06-21T15:50:14.982881139Z 2025-06-21 15:50:14.982 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 16 in 0:00:03.000810
+2025-06-21T15:50:17.164514763Z 2025-06-21 15:50:17.164 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 17 in 0:00:03.002048
+2025-06-21T15:50:17.460359284Z 2025-06-21 15:50:17.459 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 17 in 0:00:03.002879
+2025-06-21T15:50:17.574579687Z 2025-06-21 15:50:17.574 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 17 in 0:00:03.000875
+2025-06-21T15:50:17.773550615Z 2025-06-21 15:50:17.773 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 17 in 0:00:03.001158
+2025-06-21T15:50:17.964610778Z 2025-06-21 15:50:17.964 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 17 in 0:00:03.001233
+2025-06-21T15:50:20.124828936Z 2025-06-21 15:50:20.124 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 18 in 0:00:03.001019
+2025-06-21T15:50:20.436807077Z 2025-06-21 15:50:20.436 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 18 in 0:00:03.000314
+2025-06-21T15:50:20.537316304Z 2025-06-21 15:50:20.536 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 18 in 0:00:03.001215
+2025-06-21T15:50:20.786743803Z 2025-06-21 15:50:20.786 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 18 in 0:00:03.001416
+2025-06-21T15:50:20.960304067Z 2025-06-21 15:50:20.959 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 18 in 0:00:03.001724
+2025-06-21T15:50:23.127292542Z 2025-06-21 15:50:23.126 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 19 in 0:00:03.001583
+2025-06-21T15:50:23.438183642Z 2025-06-21 15:50:23.437 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 19 in 0:00:03.001308
+2025-06-21T15:50:23.573121139Z 2025-06-21 15:50:23.572 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 19 in 0:00:03.001225
+2025-06-21T15:50:23.789674172Z 2025-06-21 15:50:23.789 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 19 in 0:00:03.002143
+2025-06-21T15:50:23.946050444Z 2025-06-21 15:50:23.945 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 19 in 0:00:03.002906
+2025-06-21T15:50:26.174551157Z 2025-06-21 15:50:26.173 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 1 validated ledger 20 in 0:00:03.000744
+2025-06-21T15:50:26.440919620Z 2025-06-21 15:50:26.440 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 2 validated ledger 20 in 0:00:03.001954
+2025-06-21T15:50:26.541369916Z 2025-06-21 15:50:26.541 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 4 validated ledger 20 in 0:00:03.001065
+2025-06-21T15:50:26.773587634Z 2025-06-21 15:50:26.773 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 0 validated ledger 20 in 0:00:03.000370
+2025-06-21T15:50:26.983629034Z 2025-06-21 15:50:26.983 | INFO     | rocket_controller.iteration_type:on_status_change:440 - Node 3 validated ledger 20 in 0:00:03.000336
+2025-06-21T15:50:26.984272900Z 2025-06-21 15:50:26.984 | INFO     | rocket_controller.iteration_type:validate_transactions:253 - Only showing transactions for Node 0. For all nodes see the transaction log.
+2025-06-21T15:50:27.021846558Z 2025-06-21 15:50:27.021 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 7509284A0446F12105A4B055B288DAE70D9B861AEDA2D8FD15E762982F8D798A validated: True
+2025-06-21T15:50:27.058061110Z 2025-06-21 15:50:27.057 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 8D7BB8BFB073F456BBC99C840A5E2EB3AA1A77EEB77C2EA32A8295E2CC130F3C validated: True
+2025-06-21T15:50:27.095070552Z 2025-06-21 15:50:27.094 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction FB8BDE362D7A165A3FAF963EBE9AB9B33D378DCF2A7D4BD497FEB115E8296D3B validated: True
+2025-06-21T15:50:27.131614245Z 2025-06-21 15:50:27.131 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction CB6E1F5F23A4BBD7BD221AFE54CBED60F007C83D60FA2B877B5D84C5E636D762 validated: False
+2025-06-21T15:50:27.167245245Z 2025-06-21 15:50:27.166 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 5D4D7045DA150A8DF273BF04496A37EE701D1B738AA4724060F13076E0EA1FFD validated: False
+2025-06-21T15:50:27.203368945Z 2025-06-21 15:50:27.202 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 037C38B168BD48EF1F3112A61178511EF88D2B39B51593BB4F105B35928E6709 validated: True
+2025-06-21T15:50:27.239494679Z 2025-06-21 15:50:27.239 | INFO     | rocket_controller.iteration_type:validate_transaction:274 - Transaction 1F43E0C0DD7FA60B4B4525FDCC3C6A6294567ED061231166AF12A7A1E46D0638 validated: True
+2025-06-21T15:50:32.383312496Z 2025-06-21 15:50:32.382 | DEBUG    | rocket_controller.iteration_type:_reset_values:372 - Iteration complete, Resetting state variables...
+2025-06-21T15:50:32.409598342Z 2025-06-21 15:50:32.409 | DEBUG    | rocket_controller.iteration_type:_reset_values:388 - State variables reset.
+2025-06-21T15:50:32.409833266Z 2025-06-21 15:50:32.409 | DEBUG    | rocket_controller.iteration_type:add_iteration:342 - Stopping logLedgerResul;t
+2025-06-21T15:50:32.409979632Z 2025-06-21 15:50:32.409 | DEBUG    | rocket_controller.iteration_type:add_iteration:347 - Done stopping logLedgerResul;t
+2025-06-21T15:50:32.411245081Z 2025-06-21 15:50:32.411 | DEBUG    | rocket_controller.spec_checker:spec_check:113 - Found data for ledger sequences: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+2025-06-21T15:50:32.412190085Z 2025-06-21 15:50:32.412 | INFO     | rocket_controller.spec_checker:spec_check:210 - Specification check for iteration 1: reached goal ledger: True, same ledger hashes: True, same ledger sequences: True
+2025-06-21T15:50:32.412288531Z 2025-06-21 15:50:32.412 | INFO     | rocket_controller.iteration_type:_stop_all:117 - Finished iteration 1, stopping test process...
+2025-06-21T15:50:32.412420240Z 2025-06-21 15:50:32.412 | INFO     | rocket_controller.interceptor_manager:stop:99 - Stopping interceptor
+2025-06-21T15:50:40.379498642Z 2025-06-21 15:50:40.379 | INFO     | rocket_controller.spec_checker:aggregate_spec_checks:272 - Aggregated spec check results: {'total_iterations': 1, 'correct_runs': 1, 'timeout_before_startup': 0, 'errors': 0, 'failed_termination': 0, 'failed_agreement': 0, 'failed_termination_iterations': [], 'failed_agreement_iterations': []}
+2025-06-21T15:50:40.380031859Z 2025-06-21 15:50:40.379 | INFO     | rocket_controller.iteration_type:add_iteration:366 - SpecChecker stopped
+2025-06-21T15:50:40.381410251Z 2025-06-21 15:50:40.381 | INFO     | rocket_controller.iteration_type:add_iteration:368 - Run Finished.
+2025-06-21T15:50:40.394046529Z Removed container: AMG_TournamentDCD_G10T1R0_validator_4
+2025-06-21T15:50:40.394074271Z Removed container: AMG_TournamentDCD_G10T1R0_validator_3
+2025-06-21T15:50:40.394079321Z Removed container: AMG_TournamentDCD_G10T1R0_validator_2
+2025-06-21T15:50:40.394083959Z Removed container: AMG_TournamentDCD_G10T1R0_validator_1
+2025-06-21T15:50:40.394087877Z Removed container: AMG_TournamentDCD_G10T1R0_validator_0

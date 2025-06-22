@@ -1,0 +1,25 @@
+2025-06-21T17:59:33.138333326Z 2025-06-21 17:59:33.137 | DEBUG    | rocket_controller.strategies.strategy:__init__:82 - Initialized final strategy parameters:
+2025-06-21T17:59:33.138386106Z 	{'encoding': [3151, 1575, 1673, 2771, 93, 1243, 239, 28, 2290, 125, 3850, 2202, 3203, 529, 2570, 3648, 400, 568, 3422, 3219, 2065, 224, 3252, 2188, 908, 1790, 144, 3827, 591, 3167, 3732, 1279, 1487, 449, 1384, 3379, 1537, 3743, 2458, 3508, 337, 1333, 3711, 1199, 529, 3296, 1384, 3353, 1879, 1442, 3603, 3866, 2422, 3513, 1530, 1379, 3128, 3516, 585, 3185, 2373, 1603, 1357, 3512, 1880, 508, 1687, 3833, 3352, 875, 938, 682, 2665, 3542, 3710, 2951, 2242, 2714, 751, 506, 2979, 1413, 1608, 418, 1186, 1158, 814, 1674, 154, 2933, 1602, 2308, 3995, 592, 3243, 1190, 3432, 2399, 1425, 1689, 1284, 3992, 3222, 3783, 3843, 541, 2667, 1639, 1750, 1538, 773, 2582, 2700, 3224, 1977, 2132, 3201, 2974, 2510, 3145, 3187, 2856, 2244, 420, 971, 287, 1305, 353, 1801, 3653, 2196, 82, 726, 1704, 799, 78, 1012, 3456, 2716, 1669]}
+2025-06-21T17:59:33.138396425Z 2025-06-21 17:59:33.138 | DEBUG    | rocket_controller.strategies.strategy:__init__:83 - Initialized final strategy network configuration:
+2025-06-21T17:59:33.138400653Z 	{'hostname_prefix': 'AMG_ProposalElitism_G26T8R0', 'number_of_nodes': 5, 'network_partition': [], 'unl_partition': [], 'transactions': {'genesis': [{'peer_id': 1, 'amount': 100001000000, 'sender_account': 'None', 'destination_account': 'Account1'}, {'peer_id': 1, 'amount': 100001000000, 'sender_account': 'None', 'destination_account': 'Account2'}, {'peer_id': 1, 'amount': 100001000000, 'sender_account': 'None', 'destination_account': 'Account3'}], 'regular': [{'peer_id': 0, 'amount': 80000000000, 'sender_account': 'Account1', 'destination_account': 'Account2', 'time': 2}, {'peer_id': 1, 'amount': 81000000000, 'sender_account': 'Account1', 'destination_account': 'Account3', 'time': 2}, {'peer_id': 2, 'amount': 82000000000, 'sender_account': 'Account1', 'destination_account': 'Account3', 'time': 2}, {'peer_id': 3, 'amount': 83000000000, 'sender_account': 'Account1', 'destination_account': 'Account2', 'time': 2}]}}
+2025-06-21T17:59:33.146955805Z 2025-06-21 17:59:33.146 | DEBUG    | rocket_controller.iteration_type:add_iteration:342 - Stopping logLedgerResul;t
+2025-06-21T17:59:33.147002073Z 2025-06-21 17:59:33.146 | DEBUG    | rocket_controller.iteration_type:add_iteration:347 - Done stopping logLedgerResul;t
+2025-06-21T17:59:33.147731360Z 2025-06-21 17:59:33.147 | INFO     | rocket_controller.iteration_type:add_iteration:359 - Starting iteration 1
+2025-06-21T17:59:33.147764383Z 2025-06-21 17:59:33.147 | INFO     | rocket_controller.interceptor_manager:start_new:70 - Starting interceptor
+2025-06-21T17:59:33.149010387Z 2025-06-21 17:59:33.148 | INFO     | rocket_controller.iteration_type:_start_transactions:157 - Starting Transaction.
+2025-06-21T17:59:53.149980033Z 2025-06-21 17:59:53.149 | INFO     | rocket_controller.iteration_type:_perform_transactions:163 - Waiting for validator nodes to be initialized...
+2025-06-21T18:00:00.217852156Z 2025-06-21 18:00:00.217 | INFO     | rocket_controller.strategies.strategy:update_network:124 - Updating the strategy's network information
+2025-06-21T18:00:01.223161637Z 2025-06-21 18:00:01.222 | DEBUG    | rocket_controller.interceptor_manager:__check_output:60 - 
+2025-06-21T18:00:01.223190883Z 
+2025-06-21T18:00:01.223198878Z thread 'main' panicked at src/peer_connector.rs:150:17:
+2025-06-21T18:00:01.223205991Z Response status code expected to be 101 but was: 503
+2025-06-21T18:00:01.223227021Z Body of the response: f
+2025-06-21T18:00:01.223234275Z {"peer-ips":[]}
+2025-06-21T18:00:01.223241388Z 0
+2025-06-21T18:00:01.223247820Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2025-06-21T18:00:01.223254643Z 
+2025-06-21T18:00:03.150598325Z 2025-06-21 18:00:03.150 | INFO     | rocket_controller.iteration_type:_perform_transactions:167 - Waiting for network to be initialized...
+2025-06-21T18:00:03.150698714Z 2025-06-21 18:00:03.150 | INFO     | rocket_controller.iteration_type:_perform_transactions:171 - Waiting for ledger to be available before submitting transaction...
+2025-06-21T18:00:38.149485119Z 2025-06-21 18:00:38.148 | INFO     | rocket_controller.iteration_type:_timeout_reached:137 - Timeout reached.
+2025-06-21T18:00:38.149614553Z 2025-06-21 18:00:38.149 | INFO     | rocket_controller.iteration_type:_timeout_reached:139 - Checking correct setup
+2025-06-21T18:00:38.149815934Z 2025-06-21 18:00:38.149 | INFO     | rocket_controller.iteration_type:_timeout_reached:143 - Setup went wrong, resetting entire test.
