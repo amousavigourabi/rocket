@@ -10,7 +10,20 @@ On the branches `atour-dcd`, `atour-nsga`, `atour-proposal-elitism`,
 `atour-proposal-roulette`, `atour-proposal-tournament`,
 `atour-random`, `atour-time-elitism`, `atour-time-roulette`, and
 `atour-time-tournament`, the code and setup used to run the
-experiments can be found.
+experiments can be found. These branches correspond to the
+following configurations described in my thesis.
+
+| Branch | Configuration |
+| --- | --- |
+| `atour-random` | Baseline |
+| `atour-time-elitism` | Elitist time |
+| `atour-proposal-elitism` | Elitist proposal |
+| `atour-time-roulette` | Roulette time |
+| `atour-proposal-roulette` | Roulette proposal |
+| `atour-time-tournament` | Tournament time |
+| `atour-proposal-tournament` | Tournament proposal |
+| `atour-dcd` | DCD tournament |
+| `atour-nsga` | NSGA-II |
 
 The raw result logs of the experiments are included under `./logs/`
 in this branch, ready to be directly analyzed using the notebook
