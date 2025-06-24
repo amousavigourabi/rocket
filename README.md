@@ -1,5 +1,7 @@
 # Reproduction package CSE3000 Atour
 
+> This project is a part of the [Research Project](https://github.com/TU-Delft-CSE/Research-Project) 2025 in the Bachelor's Computer Science and Engineering at [TU Delft](https://https//github.com/TU-Delft-CSE).
+
 The analyzer used to detect agreement violations and process the
 statistics associated with the violations, time fitness, proposal
 fitness, and their relationships is included as a Jupyter Notebook.
