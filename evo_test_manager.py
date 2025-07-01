@@ -2,6 +2,7 @@
 import csv
 import glob
 import json
+import os
 import shutil
 import signal
 import time
@@ -281,7 +282,15 @@ class EvoTestManager:
 
     def main(self):
         start_time = datetime.now()
-        shutil.copytree("./rocket_interceptor/network", f"/shared/network")
+        source = "./rocket_interceptor/network"
+        destination = "/shared/network"
+
+        # Remove destination if it exists
+        if os.path.exists(destination):
+            shutil.rmtree(destination)
+
+        # Copy source to destination
+        shutil.copytree(source, destination)
 
         creator.create("FitnessMulti", base.Fitness, weights=(1.0, 1.0))  # Maximize both
         creator.create("Individual", list, fitness=creator.FitnessMulti)
