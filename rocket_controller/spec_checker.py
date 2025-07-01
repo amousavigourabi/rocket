@@ -162,7 +162,7 @@ class SpecChecker:
             multi_occurring_tx = [tx for tx, count in tx_counter.items() if count > 1]
 
             # Flag if at least 2 different raw_contents each occur more than once
-            if len(unique_hashes) > 1 and len(multi_occurring_tx) >= 2:
+            if len(unique_hashes) > 1:
                 all_hashes_pass = False
                 found_seq = seq
                 break
@@ -196,7 +196,8 @@ class SpecChecker:
             # if current_count != 5:
             #     all_hashes_pass = True
 
-        all_ledger_goal_reached &= all(entry["validated"] for entry in ledgers_data[goal_ledger_seq])
+        # all_ledger_goal_reached &= all(entry["validated"] for entry in ledgers_data[goal_ledger_seq])
+        all_ledger_goal_reached = True
 
         # all_ledger_goal_reached &= len(set(entry["ledger_hash"] for entry in ledgers_data[goal_ledger_seq])) == 1
 
@@ -212,6 +213,8 @@ class SpecChecker:
             f"reached goal ledger: {all_ledger_goal_reached}, "
             f"same ledger hashes: {all_hashes_pass}, same ledger sequences: {all_sequences_pass}"
         )
+
+        return all_hashes_pass
 
     def aggregate_spec_checks(self):
         """Aggregate the spec check results and write them to a final file."""

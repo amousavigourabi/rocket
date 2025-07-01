@@ -134,7 +134,7 @@ class EvoTestManager:
         self.encoding_length = 7 * self.nodes * (self.nodes - 1)
 
         self.image = "rocket-image-wishaal-dunl"
-        self.xrpl_image = "xrpllabsofficial/xrpld:2.4.0"
+        self.xrpl_image = "xrpllabsofficial/xrpld:2.5.0"
         # self.output_path = "/data/home/bwassenaar/shared_rocket"
         self.main_hostname_prefix = "WK_SBX_Gauss_LT_D"
         self.shared_volume = f"{self.main_hostname_prefix}_data"
@@ -187,6 +187,8 @@ class EvoTestManager:
             encoding: encoding of numbers to be used by evolutionary strategy
         """
 
+        encoding = [2881, 1790, 2545, 44, 2585, 760, 804, 2045, 1330, 1755, 2602, 2916, 3570, 2836, 1525, 184, 1434, 2680, 2025, 1115, 2057, 236, 273, 1890, 630, 3493, 3763, 2155, 1219, 230, 586, 3400, 1459, 3767, 3507, 3745, 72, 2712, 1976, 3599, 2852, 3355, 2788, 2190, 3257, 1497, 3187, 74, 2827, 812, 1824, 3939, 92, 865, 2922, 2600, 1867, 207, 3724, 3463, 2822, 1583, 1914, 3093, 1684, 2792, 829, 3321, 2223, 2092, 2943, 2642, 2711, 791, 3801, 3678, 2163, 1094, 29, 2003, 541, 2960, 3009, 525, 6, 1390, 2340, 76, 517, 1304, 1222, 2009, 1870, 1559, 932, 1009, 2318, 1986, 669, 3580, 43, 3236, 1430, 234, 1126, 1042, 834, 364, 770, 1261, 3118, 1272, 1884, 80, 2438, 2182, 1633, 3128, 1992, 3966, 1790, 1746, 3205, 1436, 473, 1391, 2267, 2942, 351, 2775, 2502, 1564, 733, 971, 566, 372, 1577, 2694, 3632, 1608]
+
         if len(encoding) != self.encoding_length:
             raise ValueError(
                 f"Encoding should be of length {self.encoding_length}, but got {len(encoding)}\nEncoding: {encoding}")
@@ -228,6 +230,10 @@ class EvoTestManager:
                 logs = container.logs(stdout=True, stderr=True, timestamps=True)
                 out_file.write(logs.decode(errors="ignore"))
             exit_code = result.get("StatusCode", -1)
+
+        except UnicodeError as e:
+            print(e)
+            raise e
         except Exception as e:
             print("Exception", e)
             if retry < 6:

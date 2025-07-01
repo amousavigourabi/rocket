@@ -6,7 +6,7 @@ WORKDIR /rocket
 
 SHELL ["/bin/bash", "-c"]
 
-ARG XRPLD="xrpllabsofficial/xrpld:2.4.0"
+ARG XRPLD="xrpllabsofficial/xrpld:2.5.0"
 
 ENV ROCKET_XRPLD_DOCKER_CONTAINER=${XRPLD}
 
